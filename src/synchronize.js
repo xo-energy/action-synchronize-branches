@@ -70,4 +70,4 @@ async function synchronizeBranches() {
   }
 }
 
-module.exports = { getChildDirectories: getChildRepositories, synchronizeBranches };
+module.exports = { getChildRepositories, synchronizeBranches };
