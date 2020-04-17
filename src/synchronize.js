@@ -27,23 +27,24 @@ async function getChildRepositories(path) {
 }
 
 /**
- * Attempt to fetch a matching branch in every git repository in the current directory.
+ * Attempt to fetch a matching branch in every git repository in a directory
+ * @param {string} path the directory containing the repositories to synchronize
  */
-async function synchronizeBranches() {
+async function synchronizeBranches(path) {
   if (context.ref === "refs/heads/master" || context.ref.startsWith("refs/tags/")) {
     core.info(`Skipping synchronize for ${context.ref}`);
     return;
   }
 
   const branch = basename(context.ref);
-  const children = (await getChildRepositories(".")).filter(
-    (path) => basename(path) !== context.repo.repo
+  const children = (await getChildRepositories(path)).filter(
+    (child) => basename(child) !== context.repo.repo
   );
 
   for (let i = 0; i < children.length; ++i) {
-    const path = children[i];
-    const name = basename(path);
-    const git = simpleGit(path);
+    const child = children[i];
+    const name = basename(child);
+    const git = simpleGit(child);
 
     // try to fetch a branch with the same name
     // eslint-disable-next-line no-await-in-loop

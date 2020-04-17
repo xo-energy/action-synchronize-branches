@@ -1,0 +1,13 @@
+name: Synchronize Branches
+description: Synchronize branches in a multi-repo build
+inputs:
+  path:
+    description: The directory containing the repositories to synchronize
+    required: true
+    default: '.'
+runs:
+  using: node12
+  main: dist/index.js
+branding:
+  icon: git-branch
+  color: green

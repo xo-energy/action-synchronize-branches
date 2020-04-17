@@ -3,7 +3,8 @@ const { synchronizeBranches } = require("./synchronize");
 
 async function main() {
   try {
-    await synchronizeBranches();
+    const path = core.getInput("path", { required: true });
+    await synchronizeBranches(path);
   } catch (e) {
     core.setFailed(e.message);
   }
