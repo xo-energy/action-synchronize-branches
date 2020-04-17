@@ -1,0 +1,46 @@
+{
+  "name": "action-synchronize-branches",
+  "description": "GitHub Action to synchronize the checked out branch in multi-repo builds",
+  "license": "ISC",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "prebuild": "npm run lint && npm run clean",
+    "build": "ncc build src/main.js -m",
+    "clean": "shx rm -rf dist/*",
+    "debug": "node --inspect-brk -r dotenv/config src/main.js",
+    "lint": "eslint . --cache --fix",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@actions/core": "^1.2.3",
+    "@actions/github": "^2.1.1",
+    "simple-git": "^1.132.0"
+  },
+  "devDependencies": {
+    "@zeit/ncc": "^0.22.1",
+    "dotenv": "^8.2.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jest": "^23.8.2",
+    "eslint-plugin-prettier": "^3.1.3",
+    "husky": "^4.2.5",
+    "jest": "^25.3.0",
+    "lint-staged": "^10.1.4",
+    "prettier": "^2.0.4",
+    "shx": "^0.3.2"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.js": "eslint --cache --fix"
+  }
+}
