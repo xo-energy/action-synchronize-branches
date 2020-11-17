@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "scripts": {
     "prebuild": "npm run lint && npm run test && npm run clean",
-    "build": "ncc build src/main.js -m",
+    "build": "ncc build src/main.js -s",
     "clean": "shx rm -rf dist/*",
     "debug": "node --inspect-brk -r dotenv/config src/main.js",
     "lint": "eslint . --cache --fix",

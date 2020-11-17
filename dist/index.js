@@ -1,1 +1,11701 @@
-module.exports=(()=>{var __webpack_modules__={7351:function(e,t,r){"use strict";var s=this&&this.__importStar||function(e){if(e&&e.__esModule)return e;var t={};if(e!=null)for(var r in e)if(Object.hasOwnProperty.call(e,r))t[r]=e[r];t["default"]=e;return t};Object.defineProperty(t,"__esModule",{value:true});const n=s(r(2087));const o=r(5278);function issueCommand(e,t,r){const s=new Command(e,t,r);process.stdout.write(s.toString()+n.EOL)}t.issueCommand=issueCommand;function issue(e,t=""){issueCommand(e,{},t)}t.issue=issue;const i="::";class Command{constructor(e,t,r){if(!e){e="missing.command"}this.command=e;this.properties=t;this.message=r}toString(){let e=i+this.command;if(this.properties&&Object.keys(this.properties).length>0){e+=" ";let t=true;for(const r in this.properties){if(this.properties.hasOwnProperty(r)){const s=this.properties[r];if(s){if(t){t=false}else{e+=","}e+=`${r}=${escapeProperty(s)}`}}}}e+=`${i}${escapeData(this.message)}`;return e}}function escapeData(e){return o.toCommandValue(e).replace(/%/g,"%25").replace(/\r/g,"%0D").replace(/\n/g,"%0A")}function escapeProperty(e){return o.toCommandValue(e).replace(/%/g,"%25").replace(/\r/g,"%0D").replace(/\n/g,"%0A").replace(/:/g,"%3A").replace(/,/g,"%2C")}},2186:function(e,t,r){"use strict";var s=this&&this.__awaiter||function(e,t,r,s){function adopt(e){return e instanceof r?e:new r(function(t){t(e)})}return new(r||(r=Promise))(function(r,n){function fulfilled(e){try{step(s.next(e))}catch(e){n(e)}}function rejected(e){try{step(s["throw"](e))}catch(e){n(e)}}function step(e){e.done?r(e.value):adopt(e.value).then(fulfilled,rejected)}step((s=s.apply(e,t||[])).next())})};var n=this&&this.__importStar||function(e){if(e&&e.__esModule)return e;var t={};if(e!=null)for(var r in e)if(Object.hasOwnProperty.call(e,r))t[r]=e[r];t["default"]=e;return t};Object.defineProperty(t,"__esModule",{value:true});const o=r(7351);const i=r(717);const a=r(5278);const c=n(r(2087));const u=n(r(5622));var l;(function(e){e[e["Success"]=0]="Success";e[e["Failure"]=1]="Failure"})(l=t.ExitCode||(t.ExitCode={}));function exportVariable(e,t){const r=a.toCommandValue(t);process.env[e]=r;const s=process.env["GITHUB_ENV"]||"";if(s){const t="_GitHubActionsFileCommandDelimeter_";const s=`${e}<<${t}${c.EOL}${r}${c.EOL}${t}`;i.issueCommand("ENV",s)}else{o.issueCommand("set-env",{name:e},r)}}t.exportVariable=exportVariable;function setSecret(e){o.issueCommand("add-mask",{},e)}t.setSecret=setSecret;function addPath(e){const t=process.env["GITHUB_PATH"]||"";if(t){i.issueCommand("PATH",e)}else{o.issueCommand("add-path",{},e)}process.env["PATH"]=`${e}${u.delimiter}${process.env["PATH"]}`}t.addPath=addPath;function getInput(e,t){const r=process.env[`INPUT_${e.replace(/ /g,"_").toUpperCase()}`]||"";if(t&&t.required&&!r){throw new Error(`Input required and not supplied: ${e}`)}return r.trim()}t.getInput=getInput;function setOutput(e,t){o.issueCommand("set-output",{name:e},t)}t.setOutput=setOutput;function setCommandEcho(e){o.issue("echo",e?"on":"off")}t.setCommandEcho=setCommandEcho;function setFailed(e){process.exitCode=l.Failure;error(e)}t.setFailed=setFailed;function isDebug(){return process.env["RUNNER_DEBUG"]==="1"}t.isDebug=isDebug;function debug(e){o.issueCommand("debug",{},e)}t.debug=debug;function error(e){o.issue("error",e instanceof Error?e.toString():e)}t.error=error;function warning(e){o.issue("warning",e instanceof Error?e.toString():e)}t.warning=warning;function info(e){process.stdout.write(e+c.EOL)}t.info=info;function startGroup(e){o.issue("group",e)}t.startGroup=startGroup;function endGroup(){o.issue("endgroup")}t.endGroup=endGroup;function group(e,t){return s(this,void 0,void 0,function*(){startGroup(e);let r;try{r=yield t()}finally{endGroup()}return r})}t.group=group;function saveState(e,t){o.issueCommand("save-state",{name:e},t)}t.saveState=saveState;function getState(e){return process.env[`STATE_${e}`]||""}t.getState=getState},717:function(e,t,r){"use strict";var s=this&&this.__importStar||function(e){if(e&&e.__esModule)return e;var t={};if(e!=null)for(var r in e)if(Object.hasOwnProperty.call(e,r))t[r]=e[r];t["default"]=e;return t};Object.defineProperty(t,"__esModule",{value:true});const n=s(r(5747));const o=s(r(2087));const i=r(5278);function issueCommand(e,t){const r=process.env[`GITHUB_${e}`];if(!r){throw new Error(`Unable to find environment variable for file command ${e}`)}if(!n.existsSync(r)){throw new Error(`Missing file at path: ${r}`)}n.appendFileSync(r,`${i.toCommandValue(t)}${o.EOL}`,{encoding:"utf8"})}t.issueCommand=issueCommand},5278:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});function toCommandValue(e){if(e===null||e===undefined){return""}else if(typeof e==="string"||e instanceof String){return e}return JSON.stringify(e)}t.toCommandValue=toCommandValue},4087:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t.Context=void 0;const s=r(5747);const n=r(2087);class Context{constructor(){this.payload={};if(process.env.GITHUB_EVENT_PATH){if(s.existsSync(process.env.GITHUB_EVENT_PATH)){this.payload=JSON.parse(s.readFileSync(process.env.GITHUB_EVENT_PATH,{encoding:"utf8"}))}else{const e=process.env.GITHUB_EVENT_PATH;process.stdout.write(`GITHUB_EVENT_PATH ${e} does not exist${n.EOL}`)}}this.eventName=process.env.GITHUB_EVENT_NAME;this.sha=process.env.GITHUB_SHA;this.ref=process.env.GITHUB_REF;this.workflow=process.env.GITHUB_WORKFLOW;this.action=process.env.GITHUB_ACTION;this.actor=process.env.GITHUB_ACTOR;this.job=process.env.GITHUB_JOB;this.runNumber=parseInt(process.env.GITHUB_RUN_NUMBER,10);this.runId=parseInt(process.env.GITHUB_RUN_ID,10)}get issue(){const e=this.payload;return Object.assign(Object.assign({},this.repo),{number:(e.issue||e.pull_request||e).number})}get repo(){if(process.env.GITHUB_REPOSITORY){const[e,t]=process.env.GITHUB_REPOSITORY.split("/");return{owner:e,repo:t}}if(this.payload.repository){return{owner:this.payload.repository.owner.login,repo:this.payload.repository.name}}throw new Error("context.repo requires a GITHUB_REPOSITORY environment variable like 'owner/repo'")}}t.Context=Context},5438:function(e,t,r){"use strict";var s=this&&this.__createBinding||(Object.create?function(e,t,r,s){if(s===undefined)s=r;Object.defineProperty(e,s,{enumerable:true,get:function(){return t[r]}})}:function(e,t,r,s){if(s===undefined)s=r;e[s]=t[r]});var n=this&&this.__setModuleDefault||(Object.create?function(e,t){Object.defineProperty(e,"default",{enumerable:true,value:t})}:function(e,t){e["default"]=t});var o=this&&this.__importStar||function(e){if(e&&e.__esModule)return e;var t={};if(e!=null)for(var r in e)if(Object.hasOwnProperty.call(e,r))s(t,e,r);n(t,e);return t};Object.defineProperty(t,"__esModule",{value:true});t.getOctokit=t.context=void 0;const i=o(r(4087));const a=r(3030);t.context=new i.Context;function getOctokit(e,t){return new a.GitHub(a.getOctokitOptions(e,t))}t.getOctokit=getOctokit},7914:function(e,t,r){"use strict";var s=this&&this.__createBinding||(Object.create?function(e,t,r,s){if(s===undefined)s=r;Object.defineProperty(e,s,{enumerable:true,get:function(){return t[r]}})}:function(e,t,r,s){if(s===undefined)s=r;e[s]=t[r]});var n=this&&this.__setModuleDefault||(Object.create?function(e,t){Object.defineProperty(e,"default",{enumerable:true,value:t})}:function(e,t){e["default"]=t});var o=this&&this.__importStar||function(e){if(e&&e.__esModule)return e;var t={};if(e!=null)for(var r in e)if(Object.hasOwnProperty.call(e,r))s(t,e,r);n(t,e);return t};Object.defineProperty(t,"__esModule",{value:true});t.getApiBaseUrl=t.getProxyAgent=t.getAuthString=void 0;const i=o(r(9925));function getAuthString(e,t){if(!e&&!t.auth){throw new Error("Parameter token or opts.auth is required")}else if(e&&t.auth){throw new Error("Parameters token and opts.auth may not both be specified")}return typeof t.auth==="string"?t.auth:`token ${e}`}t.getAuthString=getAuthString;function getProxyAgent(e){const t=new i.HttpClient;return t.getAgent(e)}t.getProxyAgent=getProxyAgent;function getApiBaseUrl(){return process.env["GITHUB_API_URL"]||"https://api.github.com"}t.getApiBaseUrl=getApiBaseUrl},3030:function(e,t,r){"use strict";var s=this&&this.__createBinding||(Object.create?function(e,t,r,s){if(s===undefined)s=r;Object.defineProperty(e,s,{enumerable:true,get:function(){return t[r]}})}:function(e,t,r,s){if(s===undefined)s=r;e[s]=t[r]});var n=this&&this.__setModuleDefault||(Object.create?function(e,t){Object.defineProperty(e,"default",{enumerable:true,value:t})}:function(e,t){e["default"]=t});var o=this&&this.__importStar||function(e){if(e&&e.__esModule)return e;var t={};if(e!=null)for(var r in e)if(Object.hasOwnProperty.call(e,r))s(t,e,r);n(t,e);return t};Object.defineProperty(t,"__esModule",{value:true});t.getOctokitOptions=t.GitHub=t.context=void 0;const i=o(r(4087));const a=o(r(7914));const c=r(6762);const u=r(3044);const l=r(4193);t.context=new i.Context;const p=a.getApiBaseUrl();const d={baseUrl:p,request:{agent:a.getProxyAgent(p)}};t.GitHub=c.Octokit.plugin(u.restEndpointMethods,l.paginateRest).defaults(d);function getOctokitOptions(e,t){const r=Object.assign({},t||{});const s=a.getAuthString(e,r);if(s){r.auth=s}return r}t.getOctokitOptions=getOctokitOptions},9925:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(8605);const n=r(7211);const o=r(6443);let i;var a;(function(e){e[e["OK"]=200]="OK";e[e["MultipleChoices"]=300]="MultipleChoices";e[e["MovedPermanently"]=301]="MovedPermanently";e[e["ResourceMoved"]=302]="ResourceMoved";e[e["SeeOther"]=303]="SeeOther";e[e["NotModified"]=304]="NotModified";e[e["UseProxy"]=305]="UseProxy";e[e["SwitchProxy"]=306]="SwitchProxy";e[e["TemporaryRedirect"]=307]="TemporaryRedirect";e[e["PermanentRedirect"]=308]="PermanentRedirect";e[e["BadRequest"]=400]="BadRequest";e[e["Unauthorized"]=401]="Unauthorized";e[e["PaymentRequired"]=402]="PaymentRequired";e[e["Forbidden"]=403]="Forbidden";e[e["NotFound"]=404]="NotFound";e[e["MethodNotAllowed"]=405]="MethodNotAllowed";e[e["NotAcceptable"]=406]="NotAcceptable";e[e["ProxyAuthenticationRequired"]=407]="ProxyAuthenticationRequired";e[e["RequestTimeout"]=408]="RequestTimeout";e[e["Conflict"]=409]="Conflict";e[e["Gone"]=410]="Gone";e[e["TooManyRequests"]=429]="TooManyRequests";e[e["InternalServerError"]=500]="InternalServerError";e[e["NotImplemented"]=501]="NotImplemented";e[e["BadGateway"]=502]="BadGateway";e[e["ServiceUnavailable"]=503]="ServiceUnavailable";e[e["GatewayTimeout"]=504]="GatewayTimeout"})(a=t.HttpCodes||(t.HttpCodes={}));var c;(function(e){e["Accept"]="accept";e["ContentType"]="content-type"})(c=t.Headers||(t.Headers={}));var u;(function(e){e["ApplicationJson"]="application/json"})(u=t.MediaTypes||(t.MediaTypes={}));function getProxyUrl(e){let t=o.getProxyUrl(new URL(e));return t?t.href:""}t.getProxyUrl=getProxyUrl;const l=[a.MovedPermanently,a.ResourceMoved,a.SeeOther,a.TemporaryRedirect,a.PermanentRedirect];const p=[a.BadGateway,a.ServiceUnavailable,a.GatewayTimeout];const d=["OPTIONS","GET","DELETE","HEAD"];const f=10;const m=5;class HttpClientError extends Error{constructor(e,t){super(e);this.name="HttpClientError";this.statusCode=t;Object.setPrototypeOf(this,HttpClientError.prototype)}}t.HttpClientError=HttpClientError;class HttpClientResponse{constructor(e){this.message=e}readBody(){return new Promise(async(e,t)=>{let r=Buffer.alloc(0);this.message.on("data",e=>{r=Buffer.concat([r,e])});this.message.on("end",()=>{e(r.toString())})})}}t.HttpClientResponse=HttpClientResponse;function isHttps(e){let t=new URL(e);return t.protocol==="https:"}t.isHttps=isHttps;class HttpClient{constructor(e,t,r){this._ignoreSslError=false;this._allowRedirects=true;this._allowRedirectDowngrade=false;this._maxRedirects=50;this._allowRetries=false;this._maxRetries=1;this._keepAlive=false;this._disposed=false;this.userAgent=e;this.handlers=t||[];this.requestOptions=r;if(r){if(r.ignoreSslError!=null){this._ignoreSslError=r.ignoreSslError}this._socketTimeout=r.socketTimeout;if(r.allowRedirects!=null){this._allowRedirects=r.allowRedirects}if(r.allowRedirectDowngrade!=null){this._allowRedirectDowngrade=r.allowRedirectDowngrade}if(r.maxRedirects!=null){this._maxRedirects=Math.max(r.maxRedirects,0)}if(r.keepAlive!=null){this._keepAlive=r.keepAlive}if(r.allowRetries!=null){this._allowRetries=r.allowRetries}if(r.maxRetries!=null){this._maxRetries=r.maxRetries}}}options(e,t){return this.request("OPTIONS",e,null,t||{})}get(e,t){return this.request("GET",e,null,t||{})}del(e,t){return this.request("DELETE",e,null,t||{})}post(e,t,r){return this.request("POST",e,t,r||{})}patch(e,t,r){return this.request("PATCH",e,t,r||{})}put(e,t,r){return this.request("PUT",e,t,r||{})}head(e,t){return this.request("HEAD",e,null,t||{})}sendStream(e,t,r,s){return this.request(e,t,r,s)}async getJson(e,t={}){t[c.Accept]=this._getExistingOrDefaultHeader(t,c.Accept,u.ApplicationJson);let r=await this.get(e,t);return this._processResponse(r,this.requestOptions)}async postJson(e,t,r={}){let s=JSON.stringify(t,null,2);r[c.Accept]=this._getExistingOrDefaultHeader(r,c.Accept,u.ApplicationJson);r[c.ContentType]=this._getExistingOrDefaultHeader(r,c.ContentType,u.ApplicationJson);let n=await this.post(e,s,r);return this._processResponse(n,this.requestOptions)}async putJson(e,t,r={}){let s=JSON.stringify(t,null,2);r[c.Accept]=this._getExistingOrDefaultHeader(r,c.Accept,u.ApplicationJson);r[c.ContentType]=this._getExistingOrDefaultHeader(r,c.ContentType,u.ApplicationJson);let n=await this.put(e,s,r);return this._processResponse(n,this.requestOptions)}async patchJson(e,t,r={}){let s=JSON.stringify(t,null,2);r[c.Accept]=this._getExistingOrDefaultHeader(r,c.Accept,u.ApplicationJson);r[c.ContentType]=this._getExistingOrDefaultHeader(r,c.ContentType,u.ApplicationJson);let n=await this.patch(e,s,r);return this._processResponse(n,this.requestOptions)}async request(e,t,r,s){if(this._disposed){throw new Error("Client has already been disposed.")}let n=new URL(t);let o=this._prepareRequest(e,n,s);let i=this._allowRetries&&d.indexOf(e)!=-1?this._maxRetries+1:1;let c=0;let u;while(c<i){u=await this.requestRaw(o,r);if(u&&u.message&&u.message.statusCode===a.Unauthorized){let e;for(let t=0;t<this.handlers.length;t++){if(this.handlers[t].canHandleAuthentication(u)){e=this.handlers[t];break}}if(e){return e.handleAuthentication(this,o,r)}else{return u}}let t=this._maxRedirects;while(l.indexOf(u.message.statusCode)!=-1&&this._allowRedirects&&t>0){const i=u.message.headers["location"];if(!i){break}let a=new URL(i);if(n.protocol=="https:"&&n.protocol!=a.protocol&&!this._allowRedirectDowngrade){throw new Error("Redirect from HTTPS to HTTP protocol. This downgrade is not allowed for security reasons. If you want to allow this behavior, set the allowRedirectDowngrade option to true.")}await u.readBody();if(a.hostname!==n.hostname){for(let e in s){if(e.toLowerCase()==="authorization"){delete s[e]}}}o=this._prepareRequest(e,a,s);u=await this.requestRaw(o,r);t--}if(p.indexOf(u.message.statusCode)==-1){return u}c+=1;if(c<i){await u.readBody();await this._performExponentialBackoff(c)}}return u}dispose(){if(this._agent){this._agent.destroy()}this._disposed=true}requestRaw(e,t){return new Promise((r,s)=>{let n=function(e,t){if(e){s(e)}r(t)};this.requestRawWithCallback(e,t,n)})}requestRawWithCallback(e,t,r){let s;if(typeof t==="string"){e.options.headers["Content-Length"]=Buffer.byteLength(t,"utf8")}let n=false;let o=(e,t)=>{if(!n){n=true;r(e,t)}};let i=e.httpModule.request(e.options,e=>{let t=new HttpClientResponse(e);o(null,t)});i.on("socket",e=>{s=e});i.setTimeout(this._socketTimeout||3*6e4,()=>{if(s){s.end()}o(new Error("Request timeout: "+e.options.path),null)});i.on("error",function(e){o(e,null)});if(t&&typeof t==="string"){i.write(t,"utf8")}if(t&&typeof t!=="string"){t.on("close",function(){i.end()});t.pipe(i)}else{i.end()}}getAgent(e){let t=new URL(e);return this._getAgent(t)}_prepareRequest(e,t,r){const o={};o.parsedUrl=t;const i=o.parsedUrl.protocol==="https:";o.httpModule=i?n:s;const a=i?443:80;o.options={};o.options.host=o.parsedUrl.hostname;o.options.port=o.parsedUrl.port?parseInt(o.parsedUrl.port):a;o.options.path=(o.parsedUrl.pathname||"")+(o.parsedUrl.search||"");o.options.method=e;o.options.headers=this._mergeHeaders(r);if(this.userAgent!=null){o.options.headers["user-agent"]=this.userAgent}o.options.agent=this._getAgent(o.parsedUrl);if(this.handlers){this.handlers.forEach(e=>{e.prepareRequest(o.options)})}return o}_mergeHeaders(e){const t=e=>Object.keys(e).reduce((t,r)=>(t[r.toLowerCase()]=e[r],t),{});if(this.requestOptions&&this.requestOptions.headers){return Object.assign({},t(this.requestOptions.headers),t(e))}return t(e||{})}_getExistingOrDefaultHeader(e,t,r){const s=e=>Object.keys(e).reduce((t,r)=>(t[r.toLowerCase()]=e[r],t),{});let n;if(this.requestOptions&&this.requestOptions.headers){n=s(this.requestOptions.headers)[t]}return e[t]||n||r}_getAgent(e){let t;let a=o.getProxyUrl(e);let c=a&&a.hostname;if(this._keepAlive&&c){t=this._proxyAgent}if(this._keepAlive&&!c){t=this._agent}if(!!t){return t}const u=e.protocol==="https:";let l=100;if(!!this.requestOptions){l=this.requestOptions.maxSockets||s.globalAgent.maxSockets}if(c){if(!i){i=r(4294)}const e={maxSockets:l,keepAlive:this._keepAlive,proxy:{proxyAuth:`${a.username}:${a.password}`,host:a.hostname,port:a.port}};let s;const n=a.protocol==="https:";if(u){s=n?i.httpsOverHttps:i.httpsOverHttp}else{s=n?i.httpOverHttps:i.httpOverHttp}t=s(e);this._proxyAgent=t}if(this._keepAlive&&!t){const e={keepAlive:this._keepAlive,maxSockets:l};t=u?new n.Agent(e):new s.Agent(e);this._agent=t}if(!t){t=u?n.globalAgent:s.globalAgent}if(u&&this._ignoreSslError){t.options=Object.assign(t.options||{},{rejectUnauthorized:false})}return t}_performExponentialBackoff(e){e=Math.min(f,e);const t=m*Math.pow(2,e);return new Promise(e=>setTimeout(()=>e(),t))}static dateTimeDeserializer(e,t){if(typeof t==="string"){let e=new Date(t);if(!isNaN(e.valueOf())){return e}}return t}async _processResponse(e,t){return new Promise(async(r,s)=>{const n=e.message.statusCode;const o={statusCode:n,result:null,headers:{}};if(n==a.NotFound){r(o)}let i;let c;try{c=await e.readBody();if(c&&c.length>0){if(t&&t.deserializeDates){i=JSON.parse(c,HttpClient.dateTimeDeserializer)}else{i=JSON.parse(c)}o.result=i}o.headers=e.message.headers}catch(e){}if(n>299){let e;if(i&&i.message){e=i.message}else if(c&&c.length>0){e=c}else{e="Failed request: ("+n+")"}let t=new HttpClientError(e,n);t.result=o.result;s(t)}else{r(o)}})}}t.HttpClient=HttpClient},6443:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});function getProxyUrl(e){let t=e.protocol==="https:";let r;if(checkBypass(e)){return r}let s;if(t){s=process.env["https_proxy"]||process.env["HTTPS_PROXY"]}else{s=process.env["http_proxy"]||process.env["HTTP_PROXY"]}if(s){r=new URL(s)}return r}t.getProxyUrl=getProxyUrl;function checkBypass(e){if(!e.hostname){return false}let t=process.env["no_proxy"]||process.env["NO_PROXY"]||"";if(!t){return false}let r;if(e.port){r=Number(e.port)}else if(e.protocol==="http:"){r=80}else if(e.protocol==="https:"){r=443}let s=[e.hostname.toUpperCase()];if(typeof r==="number"){s.push(`${s[0]}:${r}`)}for(let e of t.split(",").map(e=>e.trim().toUpperCase()).filter(e=>e)){if(s.some(t=>t===e)){return true}}return false}t.checkBypass=checkBypass},4751:(e,t,r)=>{"use strict";function __export(e){for(var r in e)if(!t.hasOwnProperty(r))t[r]=e[r]}Object.defineProperty(t,"__esModule",{value:true});__export(r(2825))},2825:function(e,t,r){"use strict";var s=this&&this.__importDefault||function(e){return e&&e.__esModule?e:{default:e}};Object.defineProperty(t,"__esModule",{value:true});const n=r(5747);const o=s(r(8231));const i=o.default("@kwsites/file-exists");function check(e,t,r){i(`checking %s`,e);try{const s=n.statSync(e);if(s.isFile()&&t){i(`[OK] path represents a file`);return true}if(s.isDirectory()&&r){i(`[OK] path represents a directory`);return true}i(`[FAIL] path represents something other than a file or directory`);return false}catch(e){if(e.code==="ENOENT"){i(`[FAIL] path is not accessible: %o`,e);return false}i(`[FATAL] %o`,e);throw e}}function exists(e,r=t.READABLE){return check(e,(r&t.FILE)>0,(r&t.FOLDER)>0)}t.exists=exists;t.FILE=1;t.FOLDER=2;t.READABLE=t.FILE+t.FOLDER},9819:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t.createDeferred=t.deferred=void 0;function deferred(){let e;let t;let r="pending";const s=new Promise((r,s)=>{e=r;t=s});return{promise:s,done(t){if(r==="pending"){r="resolved";e(t)}},fail(e){if(r==="pending"){r="rejected";t(e)}},get fulfilled(){return r!=="pending"},get status(){return r}}}t.deferred=deferred;t.createDeferred=deferred;t.default=deferred},334:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});async function auth(e){const t=e.split(/\./).length===3?"app":/^v\d+\./.test(e)?"installation":"oauth";return{type:"token",token:e,tokenType:t}}function withAuthorizationPrefix(e){if(e.split(/\./).length===3){return`bearer ${e}`}return`token ${e}`}async function hook(e,t,r,s){const n=t.endpoint.merge(r,s);n.headers.authorization=withAuthorizationPrefix(e);return t(n)}const r=function createTokenAuth(e){if(!e){throw new Error("[@octokit/auth-token] No token passed to createTokenAuth")}if(typeof e!=="string"){throw new Error("[@octokit/auth-token] Token passed to createTokenAuth is not a string")}e=e.replace(/^(token|bearer) +/i,"");return Object.assign(auth.bind(null,e),{hook:hook.bind(null,e)})};t.createTokenAuth=r},6762:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});var s=r(5030);var n=r(3682);var o=r(6234);var i=r(8467);var a=r(334);function _objectWithoutPropertiesLoose(e,t){if(e==null)return{};var r={};var s=Object.keys(e);var n,o;for(o=0;o<s.length;o++){n=s[o];if(t.indexOf(n)>=0)continue;r[n]=e[n]}return r}function _objectWithoutProperties(e,t){if(e==null)return{};var r=_objectWithoutPropertiesLoose(e,t);var s,n;if(Object.getOwnPropertySymbols){var o=Object.getOwnPropertySymbols(e);for(n=0;n<o.length;n++){s=o[n];if(t.indexOf(s)>=0)continue;if(!Object.prototype.propertyIsEnumerable.call(e,s))continue;r[s]=e[s]}}return r}const c="3.2.1";class Octokit{constructor(e={}){const t=new n.Collection;const r={baseUrl:o.request.endpoint.DEFAULTS.baseUrl,headers:{},request:Object.assign({},e.request,{hook:t.bind(null,"request")}),mediaType:{previews:[],format:""}};r.headers["user-agent"]=[e.userAgent,`octokit-core.js/${c} ${s.getUserAgent()}`].filter(Boolean).join(" ");if(e.baseUrl){r.baseUrl=e.baseUrl}if(e.previews){r.mediaType.previews=e.previews}if(e.timeZone){r.headers["time-zone"]=e.timeZone}this.request=o.request.defaults(r);this.graphql=i.withCustomRequest(this.request).defaults(r);this.log=Object.assign({debug:()=>{},info:()=>{},warn:console.warn.bind(console),error:console.error.bind(console)},e.log);this.hook=t;if(!e.authStrategy){if(!e.auth){this.auth=(async()=>({type:"unauthenticated"}))}else{const r=a.createTokenAuth(e.auth);t.wrap("request",r.hook);this.auth=r}}else{const{authStrategy:r}=e,s=_objectWithoutProperties(e,["authStrategy"]);const n=r(Object.assign({request:this.request,log:this.log,octokit:this,octokitOptions:s},e.auth));t.wrap("request",n.hook);this.auth=n}const u=this.constructor;u.plugins.forEach(t=>{Object.assign(this,t(this,e))})}static defaults(e){const t=class extends(this){constructor(...t){const r=t[0]||{};if(typeof e==="function"){super(e(r));return}super(Object.assign({},e,r,r.userAgent&&e.userAgent?{userAgent:`${r.userAgent} ${e.userAgent}`}:null))}};return t}static plugin(...e){var t;const r=this.plugins;const s=(t=class extends(this){},t.plugins=r.concat(e.filter(e=>!r.includes(e))),t);return s}}Octokit.VERSION=c;Octokit.plugins=[];t.Octokit=Octokit},9440:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});var s=r(558);var n=r(5030);function lowercaseKeys(e){if(!e){return{}}return Object.keys(e).reduce((t,r)=>{t[r.toLowerCase()]=e[r];return t},{})}function mergeDeep(e,t){const r=Object.assign({},e);Object.keys(t).forEach(n=>{if(s.isPlainObject(t[n])){if(!(n in e))Object.assign(r,{[n]:t[n]});else r[n]=mergeDeep(e[n],t[n])}else{Object.assign(r,{[n]:t[n]})}});return r}function removeUndefinedProperties(e){for(const t in e){if(e[t]===undefined){delete e[t]}}return e}function merge(e,t,r){if(typeof t==="string"){let[e,s]=t.split(" ");r=Object.assign(s?{method:e,url:s}:{url:e},r)}else{r=Object.assign({},t)}r.headers=lowercaseKeys(r.headers);removeUndefinedProperties(r);removeUndefinedProperties(r.headers);const s=mergeDeep(e||{},r);if(e&&e.mediaType.previews.length){s.mediaType.previews=e.mediaType.previews.filter(e=>!s.mediaType.previews.includes(e)).concat(s.mediaType.previews)}s.mediaType.previews=s.mediaType.previews.map(e=>e.replace(/-preview/,""));return s}function addQueryParameters(e,t){const r=/\?/.test(e)?"&":"?";const s=Object.keys(t);if(s.length===0){return e}return e+r+s.map(e=>{if(e==="q"){return"q="+t.q.split("+").map(encodeURIComponent).join("+")}return`${e}=${encodeURIComponent(t[e])}`}).join("&")}const o=/\{[^}]+\}/g;function removeNonChars(e){return e.replace(/^\W+|\W+$/g,"").split(/,/)}function extractUrlVariableNames(e){const t=e.match(o);if(!t){return[]}return t.map(removeNonChars).reduce((e,t)=>e.concat(t),[])}function omit(e,t){return Object.keys(e).filter(e=>!t.includes(e)).reduce((t,r)=>{t[r]=e[r];return t},{})}function encodeReserved(e){return e.split(/(%[0-9A-Fa-f]{2})/g).map(function(e){if(!/%[0-9A-Fa-f]/.test(e)){e=encodeURI(e).replace(/%5B/g,"[").replace(/%5D/g,"]")}return e}).join("")}function encodeUnreserved(e){return encodeURIComponent(e).replace(/[!'()*]/g,function(e){return"%"+e.charCodeAt(0).toString(16).toUpperCase()})}function encodeValue(e,t,r){t=e==="+"||e==="#"?encodeReserved(t):encodeUnreserved(t);if(r){return encodeUnreserved(r)+"="+t}else{return t}}function isDefined(e){return e!==undefined&&e!==null}function isKeyOperator(e){return e===";"||e==="&"||e==="?"}function getValues(e,t,r,s){var n=e[r],o=[];if(isDefined(n)&&n!==""){if(typeof n==="string"||typeof n==="number"||typeof n==="boolean"){n=n.toString();if(s&&s!=="*"){n=n.substring(0,parseInt(s,10))}o.push(encodeValue(t,n,isKeyOperator(t)?r:""))}else{if(s==="*"){if(Array.isArray(n)){n.filter(isDefined).forEach(function(e){o.push(encodeValue(t,e,isKeyOperator(t)?r:""))})}else{Object.keys(n).forEach(function(e){if(isDefined(n[e])){o.push(encodeValue(t,n[e],e))}})}}else{const e=[];if(Array.isArray(n)){n.filter(isDefined).forEach(function(r){e.push(encodeValue(t,r))})}else{Object.keys(n).forEach(function(r){if(isDefined(n[r])){e.push(encodeUnreserved(r));e.push(encodeValue(t,n[r].toString()))}})}if(isKeyOperator(t)){o.push(encodeUnreserved(r)+"="+e.join(","))}else if(e.length!==0){o.push(e.join(","))}}}}else{if(t===";"){if(isDefined(n)){o.push(encodeUnreserved(r))}}else if(n===""&&(t==="&"||t==="?")){o.push(encodeUnreserved(r)+"=")}else if(n===""){o.push("")}}return o}function parseUrl(e){return{expand:expand.bind(null,e)}}function expand(e,t){var r=["+","#",".","/",";","?","&"];return e.replace(/\{([^\{\}]+)\}|([^\{\}]+)/g,function(e,s,n){if(s){let e="";const n=[];if(r.indexOf(s.charAt(0))!==-1){e=s.charAt(0);s=s.substr(1)}s.split(/,/g).forEach(function(r){var s=/([^:\*]*)(?::(\d+)|(\*))?/.exec(r);n.push(getValues(t,e,s[1],s[2]||s[3]))});if(e&&e!=="+"){var o=",";if(e==="?"){o="&"}else if(e!=="#"){o=e}return(n.length!==0?e:"")+n.join(o)}else{return n.join(",")}}else{return encodeReserved(n)}})}function parse(e){let t=e.method.toUpperCase();let r=(e.url||"/").replace(/:([a-z]\w+)/g,"{$1}");let s=Object.assign({},e.headers);let n;let o=omit(e,["method","baseUrl","url","headers","request","mediaType"]);const i=extractUrlVariableNames(r);r=parseUrl(r).expand(o);if(!/^http/.test(r)){r=e.baseUrl+r}const a=Object.keys(e).filter(e=>i.includes(e)).concat("baseUrl");const c=omit(o,a);const u=/application\/octet-stream/i.test(s.accept);if(!u){if(e.mediaType.format){s.accept=s.accept.split(/,/).map(t=>t.replace(/application\/vnd(\.\w+)(\.v3)?(\.\w+)?(\+json)?$/,`application/vnd$1$2.${e.mediaType.format}`)).join(",")}if(e.mediaType.previews.length){const t=s.accept.match(/[\w-]+(?=-preview)/g)||[];s.accept=t.concat(e.mediaType.previews).map(t=>{const r=e.mediaType.format?`.${e.mediaType.format}`:"+json";return`application/vnd.github.${t}-preview${r}`}).join(",")}}if(["GET","HEAD"].includes(t)){r=addQueryParameters(r,c)}else{if("data"in c){n=c.data}else{if(Object.keys(c).length){n=c}else{s["content-length"]=0}}}if(!s["content-type"]&&typeof n!=="undefined"){s["content-type"]="application/json; charset=utf-8"}if(["PATCH","PUT"].includes(t)&&typeof n==="undefined"){n=""}return Object.assign({method:t,url:r,headers:s},typeof n!=="undefined"?{body:n}:null,e.request?{request:e.request}:null)}function endpointWithDefaults(e,t,r){return parse(merge(e,t,r))}function withDefaults(e,t){const r=merge(e,t);const s=endpointWithDefaults.bind(null,r);return Object.assign(s,{DEFAULTS:r,defaults:withDefaults.bind(null,r),merge:merge.bind(null,r),parse:parse})}const i="6.0.9";const a=`octokit-endpoint.js/${i} ${n.getUserAgent()}`;const c={method:"GET",baseUrl:"https://api.github.com",headers:{accept:"application/vnd.github.v3+json","user-agent":a},mediaType:{format:"",previews:[]}};const u=withDefaults(null,c);t.endpoint=u},558:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});function isObject(e){return Object.prototype.toString.call(e)==="[object Object]"}function isPlainObject(e){var t,r;if(isObject(e)===false)return false;t=e.constructor;if(t===undefined)return true;r=t.prototype;if(isObject(r)===false)return false;if(r.hasOwnProperty("isPrototypeOf")===false){return false}return true}t.isPlainObject=isPlainObject},8467:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});var s=r(6234);var n=r(5030);const o="4.5.7";class GraphqlError extends Error{constructor(e,t){const r=t.data.errors[0].message;super(r);Object.assign(this,t.data);Object.assign(this,{headers:t.headers});this.name="GraphqlError";this.request=e;if(Error.captureStackTrace){Error.captureStackTrace(this,this.constructor)}}}const i=["method","baseUrl","url","headers","request","query","mediaType"];const a=/\/api\/v3\/?$/;function graphql(e,t,r){if(typeof t==="string"&&r&&"query"in r){return Promise.reject(new Error(`[@octokit/graphql] "query" cannot be used as variable name`))}const s=typeof t==="string"?Object.assign({query:t},r):t;const n=Object.keys(s).reduce((e,t)=>{if(i.includes(t)){e[t]=s[t];return e}if(!e.variables){e.variables={}}e.variables[t]=s[t];return e},{});const o=s.baseUrl||e.endpoint.DEFAULTS.baseUrl;if(a.test(o)){n.url=o.replace(a,"/api/graphql")}return e(n).then(e=>{if(e.data.errors){const t={};for(const r of Object.keys(e.headers)){t[r]=e.headers[r]}throw new GraphqlError(n,{headers:t,data:e.data})}return e.data.data})}function withDefaults(e,t){const r=e.defaults(t);const n=(e,t)=>{return graphql(r,e,t)};return Object.assign(n,{defaults:withDefaults.bind(null,r),endpoint:s.request.endpoint})}const c=withDefaults(s.request,{headers:{"user-agent":`octokit-graphql.js/${o} ${n.getUserAgent()}`},method:"POST",url:"/graphql"});function withCustomRequest(e){return withDefaults(e,{method:"POST",url:"/graphql"})}t.graphql=c;t.withCustomRequest=withCustomRequest},4193:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const r="2.6.0";function normalizePaginatedListResponse(e){const t="total_count"in e.data&&!("url"in e.data);if(!t)return e;const r=e.data.incomplete_results;const s=e.data.repository_selection;const n=e.data.total_count;delete e.data.incomplete_results;delete e.data.repository_selection;delete e.data.total_count;const o=Object.keys(e.data)[0];const i=e.data[o];e.data=i;if(typeof r!=="undefined"){e.data.incomplete_results=r}if(typeof s!=="undefined"){e.data.repository_selection=s}e.data.total_count=n;return e}function iterator(e,t,r){const s=typeof t==="function"?t.endpoint(r):e.request.endpoint(t,r);const n=typeof t==="function"?t:e.request;const o=s.method;const i=s.headers;let a=s.url;return{[Symbol.asyncIterator]:()=>({async next(){if(!a)return{done:true};const e=await n({method:o,url:a,headers:i});const t=normalizePaginatedListResponse(e);a=((t.headers.link||"").match(/<([^>]+)>;\s*rel="next"/)||[])[1];return{value:t}}})}}function paginate(e,t,r,s){if(typeof r==="function"){s=r;r=undefined}return gather(e,[],iterator(e,t,r)[Symbol.asyncIterator](),s)}function gather(e,t,r,s){return r.next().then(n=>{if(n.done){return t}let o=false;function done(){o=true}t=t.concat(s?s(n.value,done):n.value.data);if(o){return t}return gather(e,t,r,s)})}const s=Object.assign(paginate,{iterator:iterator});function paginateRest(e){return{paginate:Object.assign(paginate.bind(null,e),{iterator:iterator.bind(null,e)})}}paginateRest.VERSION=r;t.composePaginateRest=s;t.paginateRest=paginateRest},3044:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const r={actions:{addSelectedRepoToOrgSecret:["PUT /orgs/{org}/actions/secrets/{secret_name}/repositories/{repository_id}"],cancelWorkflowRun:["POST /repos/{owner}/{repo}/actions/runs/{run_id}/cancel"],createOrUpdateOrgSecret:["PUT /orgs/{org}/actions/secrets/{secret_name}"],createOrUpdateRepoSecret:["PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}"],createRegistrationTokenForOrg:["POST /orgs/{org}/actions/runners/registration-token"],createRegistrationTokenForRepo:["POST /repos/{owner}/{repo}/actions/runners/registration-token"],createRemoveTokenForOrg:["POST /orgs/{org}/actions/runners/remove-token"],createRemoveTokenForRepo:["POST /repos/{owner}/{repo}/actions/runners/remove-token"],createWorkflowDispatch:["POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches"],deleteArtifact:["DELETE /repos/{owner}/{repo}/actions/artifacts/{artifact_id}"],deleteOrgSecret:["DELETE /orgs/{org}/actions/secrets/{secret_name}"],deleteRepoSecret:["DELETE /repos/{owner}/{repo}/actions/secrets/{secret_name}"],deleteSelfHostedRunnerFromOrg:["DELETE /orgs/{org}/actions/runners/{runner_id}"],deleteSelfHostedRunnerFromRepo:["DELETE /repos/{owner}/{repo}/actions/runners/{runner_id}"],deleteWorkflowRun:["DELETE /repos/{owner}/{repo}/actions/runs/{run_id}"],deleteWorkflowRunLogs:["DELETE /repos/{owner}/{repo}/actions/runs/{run_id}/logs"],downloadArtifact:["GET /repos/{owner}/{repo}/actions/artifacts/{artifact_id}/{archive_format}"],downloadJobLogsForWorkflowRun:["GET /repos/{owner}/{repo}/actions/jobs/{job_id}/logs"],downloadWorkflowRunLogs:["GET /repos/{owner}/{repo}/actions/runs/{run_id}/logs"],getArtifact:["GET /repos/{owner}/{repo}/actions/artifacts/{artifact_id}"],getJobForWorkflowRun:["GET /repos/{owner}/{repo}/actions/jobs/{job_id}"],getOrgPublicKey:["GET /orgs/{org}/actions/secrets/public-key"],getOrgSecret:["GET /orgs/{org}/actions/secrets/{secret_name}"],getRepoPublicKey:["GET /repos/{owner}/{repo}/actions/secrets/public-key"],getRepoSecret:["GET /repos/{owner}/{repo}/actions/secrets/{secret_name}"],getSelfHostedRunnerForOrg:["GET /orgs/{org}/actions/runners/{runner_id}"],getSelfHostedRunnerForRepo:["GET /repos/{owner}/{repo}/actions/runners/{runner_id}"],getWorkflow:["GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}"],getWorkflowRun:["GET /repos/{owner}/{repo}/actions/runs/{run_id}"],getWorkflowRunUsage:["GET /repos/{owner}/{repo}/actions/runs/{run_id}/timing"],getWorkflowUsage:["GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/timing"],listArtifactsForRepo:["GET /repos/{owner}/{repo}/actions/artifacts"],listJobsForWorkflowRun:["GET /repos/{owner}/{repo}/actions/runs/{run_id}/jobs"],listOrgSecrets:["GET /orgs/{org}/actions/secrets"],listRepoSecrets:["GET /repos/{owner}/{repo}/actions/secrets"],listRepoWorkflows:["GET /repos/{owner}/{repo}/actions/workflows"],listRunnerApplicationsForOrg:["GET /orgs/{org}/actions/runners/downloads"],listRunnerApplicationsForRepo:["GET /repos/{owner}/{repo}/actions/runners/downloads"],listSelectedReposForOrgSecret:["GET /orgs/{org}/actions/secrets/{secret_name}/repositories"],listSelfHostedRunnersForOrg:["GET /orgs/{org}/actions/runners"],listSelfHostedRunnersForRepo:["GET /repos/{owner}/{repo}/actions/runners"],listWorkflowRunArtifacts:["GET /repos/{owner}/{repo}/actions/runs/{run_id}/artifacts"],listWorkflowRuns:["GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs"],listWorkflowRunsForRepo:["GET /repos/{owner}/{repo}/actions/runs"],reRunWorkflow:["POST /repos/{owner}/{repo}/actions/runs/{run_id}/rerun"],removeSelectedRepoFromOrgSecret:["DELETE /orgs/{org}/actions/secrets/{secret_name}/repositories/{repository_id}"],setSelectedReposForOrgSecret:["PUT /orgs/{org}/actions/secrets/{secret_name}/repositories"]},activity:{checkRepoIsStarredByAuthenticatedUser:["GET /user/starred/{owner}/{repo}"],deleteRepoSubscription:["DELETE /repos/{owner}/{repo}/subscription"],deleteThreadSubscription:["DELETE /notifications/threads/{thread_id}/subscription"],getFeeds:["GET /feeds"],getRepoSubscription:["GET /repos/{owner}/{repo}/subscription"],getThread:["GET /notifications/threads/{thread_id}"],getThreadSubscriptionForAuthenticatedUser:["GET /notifications/threads/{thread_id}/subscription"],listEventsForAuthenticatedUser:["GET /users/{username}/events"],listNotificationsForAuthenticatedUser:["GET /notifications"],listOrgEventsForAuthenticatedUser:["GET /users/{username}/events/orgs/{org}"],listPublicEvents:["GET /events"],listPublicEventsForRepoNetwork:["GET /networks/{owner}/{repo}/events"],listPublicEventsForUser:["GET /users/{username}/events/public"],listPublicOrgEvents:["GET /orgs/{org}/events"],listReceivedEventsForUser:["GET /users/{username}/received_events"],listReceivedPublicEventsForUser:["GET /users/{username}/received_events/public"],listRepoEvents:["GET /repos/{owner}/{repo}/events"],listRepoNotificationsForAuthenticatedUser:["GET /repos/{owner}/{repo}/notifications"],listReposStarredByAuthenticatedUser:["GET /user/starred"],listReposStarredByUser:["GET /users/{username}/starred"],listReposWatchedByUser:["GET /users/{username}/subscriptions"],listStargazersForRepo:["GET /repos/{owner}/{repo}/stargazers"],listWatchedReposForAuthenticatedUser:["GET /user/subscriptions"],listWatchersForRepo:["GET /repos/{owner}/{repo}/subscribers"],markNotificationsAsRead:["PUT /notifications"],markRepoNotificationsAsRead:["PUT /repos/{owner}/{repo}/notifications"],markThreadAsRead:["PATCH /notifications/threads/{thread_id}"],setRepoSubscription:["PUT /repos/{owner}/{repo}/subscription"],setThreadSubscription:["PUT /notifications/threads/{thread_id}/subscription"],starRepoForAuthenticatedUser:["PUT /user/starred/{owner}/{repo}"],unstarRepoForAuthenticatedUser:["DELETE /user/starred/{owner}/{repo}"]},apps:{addRepoToInstallation:["PUT /user/installations/{installation_id}/repositories/{repository_id}"],checkToken:["POST /applications/{client_id}/token"],createContentAttachment:["POST /content_references/{content_reference_id}/attachments",{mediaType:{previews:["corsair"]}}],createFromManifest:["POST /app-manifests/{code}/conversions"],createInstallationAccessToken:["POST /app/installations/{installation_id}/access_tokens"],deleteAuthorization:["DELETE /applications/{client_id}/grant"],deleteInstallation:["DELETE /app/installations/{installation_id}"],deleteToken:["DELETE /applications/{client_id}/token"],getAuthenticated:["GET /app"],getBySlug:["GET /apps/{app_slug}"],getInstallation:["GET /app/installations/{installation_id}"],getOrgInstallation:["GET /orgs/{org}/installation"],getRepoInstallation:["GET /repos/{owner}/{repo}/installation"],getSubscriptionPlanForAccount:["GET /marketplace_listing/accounts/{account_id}"],getSubscriptionPlanForAccountStubbed:["GET /marketplace_listing/stubbed/accounts/{account_id}"],getUserInstallation:["GET /users/{username}/installation"],listAccountsForPlan:["GET /marketplace_listing/plans/{plan_id}/accounts"],listAccountsForPlanStubbed:["GET /marketplace_listing/stubbed/plans/{plan_id}/accounts"],listInstallationReposForAuthenticatedUser:["GET /user/installations/{installation_id}/repositories"],listInstallations:["GET /app/installations"],listInstallationsForAuthenticatedUser:["GET /user/installations"],listPlans:["GET /marketplace_listing/plans"],listPlansStubbed:["GET /marketplace_listing/stubbed/plans"],listReposAccessibleToInstallation:["GET /installation/repositories"],listSubscriptionsForAuthenticatedUser:["GET /user/marketplace_purchases"],listSubscriptionsForAuthenticatedUserStubbed:["GET /user/marketplace_purchases/stubbed"],removeRepoFromInstallation:["DELETE /user/installations/{installation_id}/repositories/{repository_id}"],resetToken:["PATCH /applications/{client_id}/token"],revokeInstallationAccessToken:["DELETE /installation/token"],suspendInstallation:["PUT /app/installations/{installation_id}/suspended"],unsuspendInstallation:["DELETE /app/installations/{installation_id}/suspended"]},billing:{getGithubActionsBillingOrg:["GET /orgs/{org}/settings/billing/actions"],getGithubActionsBillingUser:["GET /users/{username}/settings/billing/actions"],getGithubPackagesBillingOrg:["GET /orgs/{org}/settings/billing/packages"],getGithubPackagesBillingUser:["GET /users/{username}/settings/billing/packages"],getSharedStorageBillingOrg:["GET /orgs/{org}/settings/billing/shared-storage"],getSharedStorageBillingUser:["GET /users/{username}/settings/billing/shared-storage"]},checks:{create:["POST /repos/{owner}/{repo}/check-runs",{mediaType:{previews:["antiope"]}}],createSuite:["POST /repos/{owner}/{repo}/check-suites",{mediaType:{previews:["antiope"]}}],get:["GET /repos/{owner}/{repo}/check-runs/{check_run_id}",{mediaType:{previews:["antiope"]}}],getSuite:["GET /repos/{owner}/{repo}/check-suites/{check_suite_id}",{mediaType:{previews:["antiope"]}}],listAnnotations:["GET /repos/{owner}/{repo}/check-runs/{check_run_id}/annotations",{mediaType:{previews:["antiope"]}}],listForRef:["GET /repos/{owner}/{repo}/commits/{ref}/check-runs",{mediaType:{previews:["antiope"]}}],listForSuite:["GET /repos/{owner}/{repo}/check-suites/{check_suite_id}/check-runs",{mediaType:{previews:["antiope"]}}],listSuitesForRef:["GET /repos/{owner}/{repo}/commits/{ref}/check-suites",{mediaType:{previews:["antiope"]}}],rerequestSuite:["POST /repos/{owner}/{repo}/check-suites/{check_suite_id}/rerequest",{mediaType:{previews:["antiope"]}}],setSuitesPreferences:["PATCH /repos/{owner}/{repo}/check-suites/preferences",{mediaType:{previews:["antiope"]}}],update:["PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}",{mediaType:{previews:["antiope"]}}]},codeScanning:{getAlert:["GET /repos/{owner}/{repo}/code-scanning/alerts/{alert_number}",{},{renamedParameters:{alert_id:"alert_number"}}],listAlertsForRepo:["GET /repos/{owner}/{repo}/code-scanning/alerts"],listRecentAnalyses:["GET /repos/{owner}/{repo}/code-scanning/analyses"],updateAlert:["PATCH /repos/{owner}/{repo}/code-scanning/alerts/{alert_number}"],uploadSarif:["POST /repos/{owner}/{repo}/code-scanning/sarifs"]},codesOfConduct:{getAllCodesOfConduct:["GET /codes_of_conduct",{mediaType:{previews:["scarlet-witch"]}}],getConductCode:["GET /codes_of_conduct/{key}",{mediaType:{previews:["scarlet-witch"]}}],getForRepo:["GET /repos/{owner}/{repo}/community/code_of_conduct",{mediaType:{previews:["scarlet-witch"]}}]},emojis:{get:["GET /emojis"]},gists:{checkIsStarred:["GET /gists/{gist_id}/star"],create:["POST /gists"],createComment:["POST /gists/{gist_id}/comments"],delete:["DELETE /gists/{gist_id}"],deleteComment:["DELETE /gists/{gist_id}/comments/{comment_id}"],fork:["POST /gists/{gist_id}/forks"],get:["GET /gists/{gist_id}"],getComment:["GET /gists/{gist_id}/comments/{comment_id}"],getRevision:["GET /gists/{gist_id}/{sha}"],list:["GET /gists"],listComments:["GET /gists/{gist_id}/comments"],listCommits:["GET /gists/{gist_id}/commits"],listForUser:["GET /users/{username}/gists"],listForks:["GET /gists/{gist_id}/forks"],listPublic:["GET /gists/public"],listStarred:["GET /gists/starred"],star:["PUT /gists/{gist_id}/star"],unstar:["DELETE /gists/{gist_id}/star"],update:["PATCH /gists/{gist_id}"],updateComment:["PATCH /gists/{gist_id}/comments/{comment_id}"]},git:{createBlob:["POST /repos/{owner}/{repo}/git/blobs"],createCommit:["POST /repos/{owner}/{repo}/git/commits"],createRef:["POST /repos/{owner}/{repo}/git/refs"],createTag:["POST /repos/{owner}/{repo}/git/tags"],createTree:["POST /repos/{owner}/{repo}/git/trees"],deleteRef:["DELETE /repos/{owner}/{repo}/git/refs/{ref}"],getBlob:["GET /repos/{owner}/{repo}/git/blobs/{file_sha}"],getCommit:["GET /repos/{owner}/{repo}/git/commits/{commit_sha}"],getRef:["GET /repos/{owner}/{repo}/git/ref/{ref}"],getTag:["GET /repos/{owner}/{repo}/git/tags/{tag_sha}"],getTree:["GET /repos/{owner}/{repo}/git/trees/{tree_sha}"],listMatchingRefs:["GET /repos/{owner}/{repo}/git/matching-refs/{ref}"],updateRef:["PATCH /repos/{owner}/{repo}/git/refs/{ref}"]},gitignore:{getAllTemplates:["GET /gitignore/templates"],getTemplate:["GET /gitignore/templates/{name}"]},interactions:{getRestrictionsForOrg:["GET /orgs/{org}/interaction-limits",{mediaType:{previews:["sombra"]}}],getRestrictionsForRepo:["GET /repos/{owner}/{repo}/interaction-limits",{mediaType:{previews:["sombra"]}}],removeRestrictionsForOrg:["DELETE /orgs/{org}/interaction-limits",{mediaType:{previews:["sombra"]}}],removeRestrictionsForRepo:["DELETE /repos/{owner}/{repo}/interaction-limits",{mediaType:{previews:["sombra"]}}],setRestrictionsForOrg:["PUT /orgs/{org}/interaction-limits",{mediaType:{previews:["sombra"]}}],setRestrictionsForRepo:["PUT /repos/{owner}/{repo}/interaction-limits",{mediaType:{previews:["sombra"]}}]},issues:{addAssignees:["POST /repos/{owner}/{repo}/issues/{issue_number}/assignees"],addLabels:["POST /repos/{owner}/{repo}/issues/{issue_number}/labels"],checkUserCanBeAssigned:["GET /repos/{owner}/{repo}/assignees/{assignee}"],create:["POST /repos/{owner}/{repo}/issues"],createComment:["POST /repos/{owner}/{repo}/issues/{issue_number}/comments"],createLabel:["POST /repos/{owner}/{repo}/labels"],createMilestone:["POST /repos/{owner}/{repo}/milestones"],deleteComment:["DELETE /repos/{owner}/{repo}/issues/comments/{comment_id}"],deleteLabel:["DELETE /repos/{owner}/{repo}/labels/{name}"],deleteMilestone:["DELETE /repos/{owner}/{repo}/milestones/{milestone_number}"],get:["GET /repos/{owner}/{repo}/issues/{issue_number}"],getComment:["GET /repos/{owner}/{repo}/issues/comments/{comment_id}"],getEvent:["GET /repos/{owner}/{repo}/issues/events/{event_id}"],getLabel:["GET /repos/{owner}/{repo}/labels/{name}"],getMilestone:["GET /repos/{owner}/{repo}/milestones/{milestone_number}"],list:["GET /issues"],listAssignees:["GET /repos/{owner}/{repo}/assignees"],listComments:["GET /repos/{owner}/{repo}/issues/{issue_number}/comments"],listCommentsForRepo:["GET /repos/{owner}/{repo}/issues/comments"],listEvents:["GET /repos/{owner}/{repo}/issues/{issue_number}/events"],listEventsForRepo:["GET /repos/{owner}/{repo}/issues/events"],listEventsForTimeline:["GET /repos/{owner}/{repo}/issues/{issue_number}/timeline",{mediaType:{previews:["mockingbird"]}}],listForAuthenticatedUser:["GET /user/issues"],listForOrg:["GET /orgs/{org}/issues"],listForRepo:["GET /repos/{owner}/{repo}/issues"],listLabelsForMilestone:["GET /repos/{owner}/{repo}/milestones/{milestone_number}/labels"],listLabelsForRepo:["GET /repos/{owner}/{repo}/labels"],listLabelsOnIssue:["GET /repos/{owner}/{repo}/issues/{issue_number}/labels"],listMilestones:["GET /repos/{owner}/{repo}/milestones"],lock:["PUT /repos/{owner}/{repo}/issues/{issue_number}/lock"],removeAllLabels:["DELETE /repos/{owner}/{repo}/issues/{issue_number}/labels"],removeAssignees:["DELETE /repos/{owner}/{repo}/issues/{issue_number}/assignees"],removeLabel:["DELETE /repos/{owner}/{repo}/issues/{issue_number}/labels/{name}"],setLabels:["PUT /repos/{owner}/{repo}/issues/{issue_number}/labels"],unlock:["DELETE /repos/{owner}/{repo}/issues/{issue_number}/lock"],update:["PATCH /repos/{owner}/{repo}/issues/{issue_number}"],updateComment:["PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}"],updateLabel:["PATCH /repos/{owner}/{repo}/labels/{name}"],updateMilestone:["PATCH /repos/{owner}/{repo}/milestones/{milestone_number}"]},licenses:{get:["GET /licenses/{license}"],getAllCommonlyUsed:["GET /licenses"],getForRepo:["GET /repos/{owner}/{repo}/license"]},markdown:{render:["POST /markdown"],renderRaw:["POST /markdown/raw",{headers:{"content-type":"text/plain; charset=utf-8"}}]},meta:{get:["GET /meta"]},migrations:{cancelImport:["DELETE /repos/{owner}/{repo}/import"],deleteArchiveForAuthenticatedUser:["DELETE /user/migrations/{migration_id}/archive",{mediaType:{previews:["wyandotte"]}}],deleteArchiveForOrg:["DELETE /orgs/{org}/migrations/{migration_id}/archive",{mediaType:{previews:["wyandotte"]}}],downloadArchiveForOrg:["GET /orgs/{org}/migrations/{migration_id}/archive",{mediaType:{previews:["wyandotte"]}}],getArchiveForAuthenticatedUser:["GET /user/migrations/{migration_id}/archive",{mediaType:{previews:["wyandotte"]}}],getCommitAuthors:["GET /repos/{owner}/{repo}/import/authors"],getImportStatus:["GET /repos/{owner}/{repo}/import"],getLargeFiles:["GET /repos/{owner}/{repo}/import/large_files"],getStatusForAuthenticatedUser:["GET /user/migrations/{migration_id}",{mediaType:{previews:["wyandotte"]}}],getStatusForOrg:["GET /orgs/{org}/migrations/{migration_id}",{mediaType:{previews:["wyandotte"]}}],listForAuthenticatedUser:["GET /user/migrations",{mediaType:{previews:["wyandotte"]}}],listForOrg:["GET /orgs/{org}/migrations",{mediaType:{previews:["wyandotte"]}}],listReposForOrg:["GET /orgs/{org}/migrations/{migration_id}/repositories",{mediaType:{previews:["wyandotte"]}}],listReposForUser:["GET /user/migrations/{migration_id}/repositories",{mediaType:{previews:["wyandotte"]}}],mapCommitAuthor:["PATCH /repos/{owner}/{repo}/import/authors/{author_id}"],setLfsPreference:["PATCH /repos/{owner}/{repo}/import/lfs"],startForAuthenticatedUser:["POST /user/migrations"],startForOrg:["POST /orgs/{org}/migrations"],startImport:["PUT /repos/{owner}/{repo}/import"],unlockRepoForAuthenticatedUser:["DELETE /user/migrations/{migration_id}/repos/{repo_name}/lock",{mediaType:{previews:["wyandotte"]}}],unlockRepoForOrg:["DELETE /orgs/{org}/migrations/{migration_id}/repos/{repo_name}/lock",{mediaType:{previews:["wyandotte"]}}],updateImport:["PATCH /repos/{owner}/{repo}/import"]},orgs:{blockUser:["PUT /orgs/{org}/blocks/{username}"],checkBlockedUser:["GET /orgs/{org}/blocks/{username}"],checkMembershipForUser:["GET /orgs/{org}/members/{username}"],checkPublicMembershipForUser:["GET /orgs/{org}/public_members/{username}"],convertMemberToOutsideCollaborator:["PUT /orgs/{org}/outside_collaborators/{username}"],createInvitation:["POST /orgs/{org}/invitations"],createWebhook:["POST /orgs/{org}/hooks"],deleteWebhook:["DELETE /orgs/{org}/hooks/{hook_id}"],get:["GET /orgs/{org}"],getMembershipForAuthenticatedUser:["GET /user/memberships/orgs/{org}"],getMembershipForUser:["GET /orgs/{org}/memberships/{username}"],getWebhook:["GET /orgs/{org}/hooks/{hook_id}"],list:["GET /organizations"],listAppInstallations:["GET /orgs/{org}/installations"],listBlockedUsers:["GET /orgs/{org}/blocks"],listForAuthenticatedUser:["GET /user/orgs"],listForUser:["GET /users/{username}/orgs"],listInvitationTeams:["GET /orgs/{org}/invitations/{invitation_id}/teams"],listMembers:["GET /orgs/{org}/members"],listMembershipsForAuthenticatedUser:["GET /user/memberships/orgs"],listOutsideCollaborators:["GET /orgs/{org}/outside_collaborators"],listPendingInvitations:["GET /orgs/{org}/invitations"],listPublicMembers:["GET /orgs/{org}/public_members"],listWebhooks:["GET /orgs/{org}/hooks"],pingWebhook:["POST /orgs/{org}/hooks/{hook_id}/pings"],removeMember:["DELETE /orgs/{org}/members/{username}"],removeMembershipForUser:["DELETE /orgs/{org}/memberships/{username}"],removeOutsideCollaborator:["DELETE /orgs/{org}/outside_collaborators/{username}"],removePublicMembershipForAuthenticatedUser:["DELETE /orgs/{org}/public_members/{username}"],setMembershipForUser:["PUT /orgs/{org}/memberships/{username}"],setPublicMembershipForAuthenticatedUser:["PUT /orgs/{org}/public_members/{username}"],unblockUser:["DELETE /orgs/{org}/blocks/{username}"],update:["PATCH /orgs/{org}"],updateMembershipForAuthenticatedUser:["PATCH /user/memberships/orgs/{org}"],updateWebhook:["PATCH /orgs/{org}/hooks/{hook_id}"]},projects:{addCollaborator:["PUT /projects/{project_id}/collaborators/{username}",{mediaType:{previews:["inertia"]}}],createCard:["POST /projects/columns/{column_id}/cards",{mediaType:{previews:["inertia"]}}],createColumn:["POST /projects/{project_id}/columns",{mediaType:{previews:["inertia"]}}],createForAuthenticatedUser:["POST /user/projects",{mediaType:{previews:["inertia"]}}],createForOrg:["POST /orgs/{org}/projects",{mediaType:{previews:["inertia"]}}],createForRepo:["POST /repos/{owner}/{repo}/projects",{mediaType:{previews:["inertia"]}}],delete:["DELETE /projects/{project_id}",{mediaType:{previews:["inertia"]}}],deleteCard:["DELETE /projects/columns/cards/{card_id}",{mediaType:{previews:["inertia"]}}],deleteColumn:["DELETE /projects/columns/{column_id}",{mediaType:{previews:["inertia"]}}],get:["GET /projects/{project_id}",{mediaType:{previews:["inertia"]}}],getCard:["GET /projects/columns/cards/{card_id}",{mediaType:{previews:["inertia"]}}],getColumn:["GET /projects/columns/{column_id}",{mediaType:{previews:["inertia"]}}],getPermissionForUser:["GET /projects/{project_id}/collaborators/{username}/permission",{mediaType:{previews:["inertia"]}}],listCards:["GET /projects/columns/{column_id}/cards",{mediaType:{previews:["inertia"]}}],listCollaborators:["GET /projects/{project_id}/collaborators",{mediaType:{previews:["inertia"]}}],listColumns:["GET /projects/{project_id}/columns",{mediaType:{previews:["inertia"]}}],listForOrg:["GET /orgs/{org}/projects",{mediaType:{previews:["inertia"]}}],listForRepo:["GET /repos/{owner}/{repo}/projects",{mediaType:{previews:["inertia"]}}],listForUser:["GET /users/{username}/projects",{mediaType:{previews:["inertia"]}}],moveCard:["POST /projects/columns/cards/{card_id}/moves",{mediaType:{previews:["inertia"]}}],moveColumn:["POST /projects/columns/{column_id}/moves",{mediaType:{previews:["inertia"]}}],removeCollaborator:["DELETE /projects/{project_id}/collaborators/{username}",{mediaType:{previews:["inertia"]}}],update:["PATCH /projects/{project_id}",{mediaType:{previews:["inertia"]}}],updateCard:["PATCH /projects/columns/cards/{card_id}",{mediaType:{previews:["inertia"]}}],updateColumn:["PATCH /projects/columns/{column_id}",{mediaType:{previews:["inertia"]}}]},pulls:{checkIfMerged:["GET /repos/{owner}/{repo}/pulls/{pull_number}/merge"],create:["POST /repos/{owner}/{repo}/pulls"],createReplyForReviewComment:["POST /repos/{owner}/{repo}/pulls/{pull_number}/comments/{comment_id}/replies"],createReview:["POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews"],createReviewComment:["POST /repos/{owner}/{repo}/pulls/{pull_number}/comments"],deletePendingReview:["DELETE /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}"],deleteReviewComment:["DELETE /repos/{owner}/{repo}/pulls/comments/{comment_id}"],dismissReview:["PUT /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}/dismissals"],get:["GET /repos/{owner}/{repo}/pulls/{pull_number}"],getReview:["GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}"],getReviewComment:["GET /repos/{owner}/{repo}/pulls/comments/{comment_id}"],list:["GET /repos/{owner}/{repo}/pulls"],listCommentsForReview:["GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}/comments"],listCommits:["GET /repos/{owner}/{repo}/pulls/{pull_number}/commits"],listFiles:["GET /repos/{owner}/{repo}/pulls/{pull_number}/files"],listRequestedReviewers:["GET /repos/{owner}/{repo}/pulls/{pull_number}/requested_reviewers"],listReviewComments:["GET /repos/{owner}/{repo}/pulls/{pull_number}/comments"],listReviewCommentsForRepo:["GET /repos/{owner}/{repo}/pulls/comments"],listReviews:["GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews"],merge:["PUT /repos/{owner}/{repo}/pulls/{pull_number}/merge"],removeRequestedReviewers:["DELETE /repos/{owner}/{repo}/pulls/{pull_number}/requested_reviewers"],requestReviewers:["POST /repos/{owner}/{repo}/pulls/{pull_number}/requested_reviewers"],submitReview:["POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}/events"],update:["PATCH /repos/{owner}/{repo}/pulls/{pull_number}"],updateBranch:["PUT /repos/{owner}/{repo}/pulls/{pull_number}/update-branch",{mediaType:{previews:["lydian"]}}],updateReview:["PUT /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}"],updateReviewComment:["PATCH /repos/{owner}/{repo}/pulls/comments/{comment_id}"]},rateLimit:{get:["GET /rate_limit"]},reactions:{createForCommitComment:["POST /repos/{owner}/{repo}/comments/{comment_id}/reactions",{mediaType:{previews:["squirrel-girl"]}}],createForIssue:["POST /repos/{owner}/{repo}/issues/{issue_number}/reactions",{mediaType:{previews:["squirrel-girl"]}}],createForIssueComment:["POST /repos/{owner}/{repo}/issues/comments/{comment_id}/reactions",{mediaType:{previews:["squirrel-girl"]}}],createForPullRequestReviewComment:["POST /repos/{owner}/{repo}/pulls/comments/{comment_id}/reactions",{mediaType:{previews:["squirrel-girl"]}}],createForTeamDiscussionCommentInOrg:["POST /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}/reactions",{mediaType:{previews:["squirrel-girl"]}}],createForTeamDiscussionInOrg:["POST /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/reactions",{mediaType:{previews:["squirrel-girl"]}}],deleteForCommitComment:["DELETE /repos/{owner}/{repo}/comments/{comment_id}/reactions/{reaction_id}",{mediaType:{previews:["squirrel-girl"]}}],deleteForIssue:["DELETE /repos/{owner}/{repo}/issues/{issue_number}/reactions/{reaction_id}",{mediaType:{previews:["squirrel-girl"]}}],deleteForIssueComment:["DELETE /repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/{reaction_id}",{mediaType:{previews:["squirrel-girl"]}}],deleteForPullRequestComment:["DELETE /repos/{owner}/{repo}/pulls/comments/{comment_id}/reactions/{reaction_id}",{mediaType:{previews:["squirrel-girl"]}}],deleteForTeamDiscussion:["DELETE /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/reactions/{reaction_id}",{mediaType:{previews:["squirrel-girl"]}}],deleteForTeamDiscussionComment:["DELETE /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}/reactions/{reaction_id}",{mediaType:{previews:["squirrel-girl"]}}],deleteLegacy:["DELETE /reactions/{reaction_id}",{mediaType:{previews:["squirrel-girl"]}},{deprecated:"octokit.reactions.deleteLegacy() is deprecated, see https://developer.github.com/v3/reactions/#delete-a-reaction-legacy"}],listForCommitComment:["GET /repos/{owner}/{repo}/comments/{comment_id}/reactions",{mediaType:{previews:["squirrel-girl"]}}],listForIssue:["GET /repos/{owner}/{repo}/issues/{issue_number}/reactions",{mediaType:{previews:["squirrel-girl"]}}],listForIssueComment:["GET /repos/{owner}/{repo}/issues/comments/{comment_id}/reactions",{mediaType:{previews:["squirrel-girl"]}}],listForPullRequestReviewComment:["GET /repos/{owner}/{repo}/pulls/comments/{comment_id}/reactions",{mediaType:{previews:["squirrel-girl"]}}],listForTeamDiscussionCommentInOrg:["GET /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}/reactions",{mediaType:{previews:["squirrel-girl"]}}],listForTeamDiscussionInOrg:["GET /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/reactions",{mediaType:{previews:["squirrel-girl"]}}]},repos:{acceptInvitation:["PATCH /user/repository_invitations/{invitation_id}"],addAppAccessRestrictions:["POST /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/apps",{},{mapToData:"apps"}],addCollaborator:["PUT /repos/{owner}/{repo}/collaborators/{username}"],addStatusCheckContexts:["POST /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks/contexts",{},{mapToData:"contexts"}],addTeamAccessRestrictions:["POST /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/teams",{},{mapToData:"teams"}],addUserAccessRestrictions:["POST /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/users",{},{mapToData:"users"}],checkCollaborator:["GET /repos/{owner}/{repo}/collaborators/{username}"],checkVulnerabilityAlerts:["GET /repos/{owner}/{repo}/vulnerability-alerts",{mediaType:{previews:["dorian"]}}],compareCommits:["GET /repos/{owner}/{repo}/compare/{base}...{head}"],createCommitComment:["POST /repos/{owner}/{repo}/commits/{commit_sha}/comments"],createCommitSignatureProtection:["POST /repos/{owner}/{repo}/branches/{branch}/protection/required_signatures",{mediaType:{previews:["zzzax"]}}],createCommitStatus:["POST /repos/{owner}/{repo}/statuses/{sha}"],createDeployKey:["POST /repos/{owner}/{repo}/keys"],createDeployment:["POST /repos/{owner}/{repo}/deployments"],createDeploymentStatus:["POST /repos/{owner}/{repo}/deployments/{deployment_id}/statuses"],createDispatchEvent:["POST /repos/{owner}/{repo}/dispatches"],createForAuthenticatedUser:["POST /user/repos"],createFork:["POST /repos/{owner}/{repo}/forks"],createInOrg:["POST /orgs/{org}/repos"],createOrUpdateFileContents:["PUT /repos/{owner}/{repo}/contents/{path}"],createPagesSite:["POST /repos/{owner}/{repo}/pages",{mediaType:{previews:["switcheroo"]}}],createRelease:["POST /repos/{owner}/{repo}/releases"],createUsingTemplate:["POST /repos/{template_owner}/{template_repo}/generate",{mediaType:{previews:["baptiste"]}}],createWebhook:["POST /repos/{owner}/{repo}/hooks"],declineInvitation:["DELETE /user/repository_invitations/{invitation_id}"],delete:["DELETE /repos/{owner}/{repo}"],deleteAccessRestrictions:["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/restrictions"],deleteAdminBranchProtection:["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/enforce_admins"],deleteBranchProtection:["DELETE /repos/{owner}/{repo}/branches/{branch}/protection"],deleteCommitComment:["DELETE /repos/{owner}/{repo}/comments/{comment_id}"],deleteCommitSignatureProtection:["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/required_signatures",{mediaType:{previews:["zzzax"]}}],deleteDeployKey:["DELETE /repos/{owner}/{repo}/keys/{key_id}"],deleteDeployment:["DELETE /repos/{owner}/{repo}/deployments/{deployment_id}"],deleteFile:["DELETE /repos/{owner}/{repo}/contents/{path}"],deleteInvitation:["DELETE /repos/{owner}/{repo}/invitations/{invitation_id}"],deletePagesSite:["DELETE /repos/{owner}/{repo}/pages",{mediaType:{previews:["switcheroo"]}}],deletePullRequestReviewProtection:["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/required_pull_request_reviews"],deleteRelease:["DELETE /repos/{owner}/{repo}/releases/{release_id}"],deleteReleaseAsset:["DELETE /repos/{owner}/{repo}/releases/assets/{asset_id}"],deleteWebhook:["DELETE /repos/{owner}/{repo}/hooks/{hook_id}"],disableAutomatedSecurityFixes:["DELETE /repos/{owner}/{repo}/automated-security-fixes",{mediaType:{previews:["london"]}}],disableVulnerabilityAlerts:["DELETE /repos/{owner}/{repo}/vulnerability-alerts",{mediaType:{previews:["dorian"]}}],downloadArchive:["GET /repos/{owner}/{repo}/{archive_format}/{ref}"],enableAutomatedSecurityFixes:["PUT /repos/{owner}/{repo}/automated-security-fixes",{mediaType:{previews:["london"]}}],enableVulnerabilityAlerts:["PUT /repos/{owner}/{repo}/vulnerability-alerts",{mediaType:{previews:["dorian"]}}],get:["GET /repos/{owner}/{repo}"],getAccessRestrictions:["GET /repos/{owner}/{repo}/branches/{branch}/protection/restrictions"],getAdminBranchProtection:["GET /repos/{owner}/{repo}/branches/{branch}/protection/enforce_admins"],getAllStatusCheckContexts:["GET /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks/contexts"],getAllTopics:["GET /repos/{owner}/{repo}/topics",{mediaType:{previews:["mercy"]}}],getAppsWithAccessToProtectedBranch:["GET /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/apps"],getBranch:["GET /repos/{owner}/{repo}/branches/{branch}"],getBranchProtection:["GET /repos/{owner}/{repo}/branches/{branch}/protection"],getClones:["GET /repos/{owner}/{repo}/traffic/clones"],getCodeFrequencyStats:["GET /repos/{owner}/{repo}/stats/code_frequency"],getCollaboratorPermissionLevel:["GET /repos/{owner}/{repo}/collaborators/{username}/permission"],getCombinedStatusForRef:["GET /repos/{owner}/{repo}/commits/{ref}/status"],getCommit:["GET /repos/{owner}/{repo}/commits/{ref}"],getCommitActivityStats:["GET /repos/{owner}/{repo}/stats/commit_activity"],getCommitComment:["GET /repos/{owner}/{repo}/comments/{comment_id}"],getCommitSignatureProtection:["GET /repos/{owner}/{repo}/branches/{branch}/protection/required_signatures",{mediaType:{previews:["zzzax"]}}],getCommunityProfileMetrics:["GET /repos/{owner}/{repo}/community/profile",{mediaType:{previews:["black-panther"]}}],getContent:["GET /repos/{owner}/{repo}/contents/{path}"],getContributorsStats:["GET /repos/{owner}/{repo}/stats/contributors"],getDeployKey:["GET /repos/{owner}/{repo}/keys/{key_id}"],getDeployment:["GET /repos/{owner}/{repo}/deployments/{deployment_id}"],getDeploymentStatus:["GET /repos/{owner}/{repo}/deployments/{deployment_id}/statuses/{status_id}"],getLatestPagesBuild:["GET /repos/{owner}/{repo}/pages/builds/latest"],getLatestRelease:["GET /repos/{owner}/{repo}/releases/latest"],getPages:["GET /repos/{owner}/{repo}/pages"],getPagesBuild:["GET /repos/{owner}/{repo}/pages/builds/{build_id}"],getParticipationStats:["GET /repos/{owner}/{repo}/stats/participation"],getPullRequestReviewProtection:["GET /repos/{owner}/{repo}/branches/{branch}/protection/required_pull_request_reviews"],getPunchCardStats:["GET /repos/{owner}/{repo}/stats/punch_card"],getReadme:["GET /repos/{owner}/{repo}/readme"],getRelease:["GET /repos/{owner}/{repo}/releases/{release_id}"],getReleaseAsset:["GET /repos/{owner}/{repo}/releases/assets/{asset_id}"],getReleaseByTag:["GET /repos/{owner}/{repo}/releases/tags/{tag}"],getStatusChecksProtection:["GET /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks"],getTeamsWithAccessToProtectedBranch:["GET /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/teams"],getTopPaths:["GET /repos/{owner}/{repo}/traffic/popular/paths"],getTopReferrers:["GET /repos/{owner}/{repo}/traffic/popular/referrers"],getUsersWithAccessToProtectedBranch:["GET /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/users"],getViews:["GET /repos/{owner}/{repo}/traffic/views"],getWebhook:["GET /repos/{owner}/{repo}/hooks/{hook_id}"],listBranches:["GET /repos/{owner}/{repo}/branches"],listBranchesForHeadCommit:["GET /repos/{owner}/{repo}/commits/{commit_sha}/branches-where-head",{mediaType:{previews:["groot"]}}],listCollaborators:["GET /repos/{owner}/{repo}/collaborators"],listCommentsForCommit:["GET /repos/{owner}/{repo}/commits/{commit_sha}/comments"],listCommitCommentsForRepo:["GET /repos/{owner}/{repo}/comments"],listCommitStatusesForRef:["GET /repos/{owner}/{repo}/commits/{ref}/statuses"],listCommits:["GET /repos/{owner}/{repo}/commits"],listContributors:["GET /repos/{owner}/{repo}/contributors"],listDeployKeys:["GET /repos/{owner}/{repo}/keys"],listDeploymentStatuses:["GET /repos/{owner}/{repo}/deployments/{deployment_id}/statuses"],listDeployments:["GET /repos/{owner}/{repo}/deployments"],listForAuthenticatedUser:["GET /user/repos"],listForOrg:["GET /orgs/{org}/repos"],listForUser:["GET /users/{username}/repos"],listForks:["GET /repos/{owner}/{repo}/forks"],listInvitations:["GET /repos/{owner}/{repo}/invitations"],listInvitationsForAuthenticatedUser:["GET /user/repository_invitations"],listLanguages:["GET /repos/{owner}/{repo}/languages"],listPagesBuilds:["GET /repos/{owner}/{repo}/pages/builds"],listPublic:["GET /repositories"],listPullRequestsAssociatedWithCommit:["GET /repos/{owner}/{repo}/commits/{commit_sha}/pulls",{mediaType:{previews:["groot"]}}],listReleaseAssets:["GET /repos/{owner}/{repo}/releases/{release_id}/assets"],listReleases:["GET /repos/{owner}/{repo}/releases"],listTags:["GET /repos/{owner}/{repo}/tags"],listTeams:["GET /repos/{owner}/{repo}/teams"],listWebhooks:["GET /repos/{owner}/{repo}/hooks"],merge:["POST /repos/{owner}/{repo}/merges"],pingWebhook:["POST /repos/{owner}/{repo}/hooks/{hook_id}/pings"],removeAppAccessRestrictions:["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/apps",{},{mapToData:"apps"}],removeCollaborator:["DELETE /repos/{owner}/{repo}/collaborators/{username}"],removeStatusCheckContexts:["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks/contexts",{},{mapToData:"contexts"}],removeStatusCheckProtection:["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks"],removeTeamAccessRestrictions:["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/teams",{},{mapToData:"teams"}],removeUserAccessRestrictions:["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/users",{},{mapToData:"users"}],replaceAllTopics:["PUT /repos/{owner}/{repo}/topics",{mediaType:{previews:["mercy"]}}],requestPagesBuild:["POST /repos/{owner}/{repo}/pages/builds"],setAdminBranchProtection:["POST /repos/{owner}/{repo}/branches/{branch}/protection/enforce_admins"],setAppAccessRestrictions:["PUT /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/apps",{},{mapToData:"apps"}],setStatusCheckContexts:["PUT /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks/contexts",{},{mapToData:"contexts"}],setTeamAccessRestrictions:["PUT /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/teams",{},{mapToData:"teams"}],setUserAccessRestrictions:["PUT /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/users",{},{mapToData:"users"}],testPushWebhook:["POST /repos/{owner}/{repo}/hooks/{hook_id}/tests"],transfer:["POST /repos/{owner}/{repo}/transfer"],update:["PATCH /repos/{owner}/{repo}"],updateBranchProtection:["PUT /repos/{owner}/{repo}/branches/{branch}/protection"],updateCommitComment:["PATCH /repos/{owner}/{repo}/comments/{comment_id}"],updateInformationAboutPagesSite:["PUT /repos/{owner}/{repo}/pages"],updateInvitation:["PATCH /repos/{owner}/{repo}/invitations/{invitation_id}"],updatePullRequestReviewProtection:["PATCH /repos/{owner}/{repo}/branches/{branch}/protection/required_pull_request_reviews"],updateRelease:["PATCH /repos/{owner}/{repo}/releases/{release_id}"],updateReleaseAsset:["PATCH /repos/{owner}/{repo}/releases/assets/{asset_id}"],updateStatusCheckPotection:["PATCH /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks"],updateWebhook:["PATCH /repos/{owner}/{repo}/hooks/{hook_id}"],uploadReleaseAsset:["POST /repos/{owner}/{repo}/releases/{release_id}/assets{?name,label}",{baseUrl:"https://uploads.github.com"}]},search:{code:["GET /search/code"],commits:["GET /search/commits",{mediaType:{previews:["cloak"]}}],issuesAndPullRequests:["GET /search/issues"],labels:["GET /search/labels"],repos:["GET /search/repositories"],topics:["GET /search/topics",{mediaType:{previews:["mercy"]}}],users:["GET /search/users"]},teams:{addOrUpdateMembershipForUserInOrg:["PUT /orgs/{org}/teams/{team_slug}/memberships/{username}"],addOrUpdateProjectPermissionsInOrg:["PUT /orgs/{org}/teams/{team_slug}/projects/{project_id}",{mediaType:{previews:["inertia"]}}],addOrUpdateRepoPermissionsInOrg:["PUT /orgs/{org}/teams/{team_slug}/repos/{owner}/{repo}"],checkPermissionsForProjectInOrg:["GET /orgs/{org}/teams/{team_slug}/projects/{project_id}",{mediaType:{previews:["inertia"]}}],checkPermissionsForRepoInOrg:["GET /orgs/{org}/teams/{team_slug}/repos/{owner}/{repo}"],create:["POST /orgs/{org}/teams"],createDiscussionCommentInOrg:["POST /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments"],createDiscussionInOrg:["POST /orgs/{org}/teams/{team_slug}/discussions"],deleteDiscussionCommentInOrg:["DELETE /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}"],deleteDiscussionInOrg:["DELETE /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}"],deleteInOrg:["DELETE /orgs/{org}/teams/{team_slug}"],getByName:["GET /orgs/{org}/teams/{team_slug}"],getDiscussionCommentInOrg:["GET /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}"],getDiscussionInOrg:["GET /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}"],getMembershipForUserInOrg:["GET /orgs/{org}/teams/{team_slug}/memberships/{username}"],list:["GET /orgs/{org}/teams"],listChildInOrg:["GET /orgs/{org}/teams/{team_slug}/teams"],listDiscussionCommentsInOrg:["GET /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments"],listDiscussionsInOrg:["GET /orgs/{org}/teams/{team_slug}/discussions"],listForAuthenticatedUser:["GET /user/teams"],listMembersInOrg:["GET /orgs/{org}/teams/{team_slug}/members"],listPendingInvitationsInOrg:["GET /orgs/{org}/teams/{team_slug}/invitations"],listProjectsInOrg:["GET /orgs/{org}/teams/{team_slug}/projects",{mediaType:{previews:["inertia"]}}],listReposInOrg:["GET /orgs/{org}/teams/{team_slug}/repos"],removeMembershipForUserInOrg:["DELETE /orgs/{org}/teams/{team_slug}/memberships/{username}"],removeProjectInOrg:["DELETE /orgs/{org}/teams/{team_slug}/projects/{project_id}"],removeRepoInOrg:["DELETE /orgs/{org}/teams/{team_slug}/repos/{owner}/{repo}"],updateDiscussionCommentInOrg:["PATCH /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}"],updateDiscussionInOrg:["PATCH /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}"],updateInOrg:["PATCH /orgs/{org}/teams/{team_slug}"]},users:{addEmailForAuthenticated:["POST /user/emails"],block:["PUT /user/blocks/{username}"],checkBlocked:["GET /user/blocks/{username}"],checkFollowingForUser:["GET /users/{username}/following/{target_user}"],checkPersonIsFollowedByAuthenticated:["GET /user/following/{username}"],createGpgKeyForAuthenticated:["POST /user/gpg_keys"],createPublicSshKeyForAuthenticated:["POST /user/keys"],deleteEmailForAuthenticated:["DELETE /user/emails"],deleteGpgKeyForAuthenticated:["DELETE /user/gpg_keys/{gpg_key_id}"],deletePublicSshKeyForAuthenticated:["DELETE /user/keys/{key_id}"],follow:["PUT /user/following/{username}"],getAuthenticated:["GET /user"],getByUsername:["GET /users/{username}"],getContextForUser:["GET /users/{username}/hovercard"],getGpgKeyForAuthenticated:["GET /user/gpg_keys/{gpg_key_id}"],getPublicSshKeyForAuthenticated:["GET /user/keys/{key_id}"],list:["GET /users"],listBlockedByAuthenticated:["GET /user/blocks"],listEmailsForAuthenticated:["GET /user/emails"],listFollowedByAuthenticated:["GET /user/following"],listFollowersForAuthenticatedUser:["GET /user/followers"],listFollowersForUser:["GET /users/{username}/followers"],listFollowingForUser:["GET /users/{username}/following"],listGpgKeysForAuthenticated:["GET /user/gpg_keys"],listGpgKeysForUser:["GET /users/{username}/gpg_keys"],listPublicEmailsForAuthenticated:["GET /user/public_emails"],listPublicKeysForUser:["GET /users/{username}/keys"],listPublicSshKeysForAuthenticated:["GET /user/keys"],setPrimaryEmailVisibilityForAuthenticated:["PATCH /user/email/visibility"],unblock:["DELETE /user/blocks/{username}"],unfollow:["DELETE /user/following/{username}"],updateAuthenticated:["PATCH /user"]}};const s="4.2.1";function endpointsToMethods(e,t){const r={};for(const[s,n]of Object.entries(t)){for(const[t,o]of Object.entries(n)){const[n,i,a]=o;const[c,u]=n.split(/ /);const l=Object.assign({method:c,url:u},i);if(!r[s]){r[s]={}}const p=r[s];if(a){p[t]=decorate(e,s,t,l,a);continue}p[t]=e.request.defaults(l)}}return r}function decorate(e,t,r,s,n){const o=e.request.defaults(s);function withDecorations(...s){let i=o.endpoint.merge(...s);if(n.mapToData){i=Object.assign({},i,{data:i[n.mapToData],[n.mapToData]:undefined});return o(i)}if(n.renamed){const[s,o]=n.renamed;e.log.warn(`octokit.${t}.${r}() has been renamed to octokit.${s}.${o}()`)}if(n.deprecated){e.log.warn(n.deprecated)}if(n.renamedParameters){const i=o.endpoint.merge(...s);for(const[s,o]of Object.entries(n.renamedParameters)){if(s in i){e.log.warn(`"${s}" parameter is deprecated for "octokit.${t}.${r}()". Use "${o}" instead`);if(!(o in i)){i[o]=i[s]}delete i[s]}}return o(i)}return o(...s)}return Object.assign(withDecorations,o)}function restEndpointMethods(e){return endpointsToMethods(e,r)}restEndpointMethods.VERSION=s;t.restEndpointMethods=restEndpointMethods},537:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});function _interopDefault(e){return e&&typeof e==="object"&&"default"in e?e["default"]:e}var s=r(8932);var n=_interopDefault(r(1223));const o=n(e=>console.warn(e));class RequestError extends Error{constructor(e,t,r){super(e);if(Error.captureStackTrace){Error.captureStackTrace(this,this.constructor)}this.name="HttpError";this.status=t;Object.defineProperty(this,"code",{get(){o(new s.Deprecation("[@octokit/request-error] `error.code` is deprecated, use `error.status`."));return t}});this.headers=r.headers||{};const n=Object.assign({},r.request);if(r.request.headers.authorization){n.headers=Object.assign({},r.request.headers,{authorization:r.request.headers.authorization.replace(/ .*$/," [REDACTED]")})}n.url=n.url.replace(/\bclient_secret=\w+/g,"client_secret=[REDACTED]").replace(/\baccess_token=\w+/g,"access_token=[REDACTED]");this.request=n}}t.RequestError=RequestError},6234:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});function _interopDefault(e){return e&&typeof e==="object"&&"default"in e?e["default"]:e}var s=r(9440);var n=r(5030);var o=r(9062);var i=_interopDefault(r(467));var a=r(537);const c="5.4.10";function getBufferResponse(e){return e.arrayBuffer()}function fetchWrapper(e){if(o.isPlainObject(e.body)||Array.isArray(e.body)){e.body=JSON.stringify(e.body)}let t={};let r;let s;const n=e.request&&e.request.fetch||i;return n(e.url,Object.assign({method:e.method,body:e.body,headers:e.headers,redirect:e.redirect},e.request)).then(n=>{s=n.url;r=n.status;for(const e of n.headers){t[e[0]]=e[1]}if(r===204||r===205){return}if(e.method==="HEAD"){if(r<400){return}throw new a.RequestError(n.statusText,r,{headers:t,request:e})}if(r===304){throw new a.RequestError("Not modified",r,{headers:t,request:e})}if(r>=400){return n.text().then(s=>{const n=new a.RequestError(s,r,{headers:t,request:e});try{let e=JSON.parse(n.message);Object.assign(n,e);let t=e.errors;n.message=n.message+": "+t.map(JSON.stringify).join(", ")}catch(e){}throw n})}const o=n.headers.get("content-type");if(/application\/json/.test(o)){return n.json()}if(!o||/^text\/|charset=utf-8$/.test(o)){return n.text()}return getBufferResponse(n)}).then(e=>{return{status:r,url:s,headers:t,data:e}}).catch(r=>{if(r instanceof a.RequestError){throw r}throw new a.RequestError(r.message,500,{headers:t,request:e})})}function withDefaults(e,t){const r=e.defaults(t);const s=function(e,t){const s=r.merge(e,t);if(!s.request||!s.request.hook){return fetchWrapper(r.parse(s))}const n=(e,t)=>{return fetchWrapper(r.parse(r.merge(e,t)))};Object.assign(n,{endpoint:r,defaults:withDefaults.bind(null,r)});return s.request.hook(n,s)};return Object.assign(s,{endpoint:r,defaults:withDefaults.bind(null,r)})}const u=withDefaults(s.endpoint,{headers:{"user-agent":`octokit-request.js/${c} ${n.getUserAgent()}`}});t.request=u},9062:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});function isObject(e){return Object.prototype.toString.call(e)==="[object Object]"}function isPlainObject(e){var t,r;if(isObject(e)===false)return false;t=e.constructor;if(t===undefined)return true;r=t.prototype;if(isObject(r)===false)return false;if(r.hasOwnProperty("isPrototypeOf")===false){return false}return true}t.isPlainObject=isPlainObject},3682:(e,t,r)=>{var s=r(4670);var n=r(5549);var o=r(6819);var i=Function.bind;var a=i.bind(i);function bindApi(e,t,r){var s=a(o,null).apply(null,r?[t,r]:[t]);e.api={remove:s};e.remove=s;["before","error","after","wrap"].forEach(function(s){var o=r?[t,s,r]:[t,s];e[s]=e.api[s]=a(n,null).apply(null,o)})}function HookSingular(){var e="h";var t={registry:{}};var r=s.bind(null,t,e);bindApi(r,t,e);return r}function HookCollection(){var e={registry:{}};var t=s.bind(null,e);bindApi(t,e);return t}var c=false;function Hook(){if(!c){console.warn('[before-after-hook]: "Hook()" repurposing warning, use "Hook.Collection()". Read more: https://git.io/upgrade-before-after-hook-to-1.4');c=true}return HookCollection()}Hook.Singular=HookSingular.bind();Hook.Collection=HookCollection.bind();e.exports=Hook;e.exports.Hook=Hook;e.exports.Singular=Hook.Singular;e.exports.Collection=Hook.Collection},5549:e=>{e.exports=addHook;function addHook(e,t,r,s){var n=s;if(!e.registry[r]){e.registry[r]=[]}if(t==="before"){s=function(e,t){return Promise.resolve().then(n.bind(null,t)).then(e.bind(null,t))}}if(t==="after"){s=function(e,t){var r;return Promise.resolve().then(e.bind(null,t)).then(function(e){r=e;return n(r,t)}).then(function(){return r})}}if(t==="error"){s=function(e,t){return Promise.resolve().then(e.bind(null,t)).catch(function(e){return n(e,t)})}}e.registry[r].push({hook:s,orig:n})}},4670:e=>{e.exports=register;function register(e,t,r,s){if(typeof r!=="function"){throw new Error("method for before hook must be a function")}if(!s){s={}}if(Array.isArray(t)){return t.reverse().reduce(function(t,r){return register.bind(null,e,r,t,s)},r)()}return Promise.resolve().then(function(){if(!e.registry[t]){return r(s)}return e.registry[t].reduce(function(e,t){return t.hook.bind(null,e,s)},r)()})}},6819:e=>{e.exports=removeHook;function removeHook(e,t,r){if(!e.registry[t]){return}var s=e.registry[t].map(function(e){return e.orig}).indexOf(r);if(s===-1){return}e.registry[t].splice(s,1)}},8222:(e,t,r)=>{t.log=log;t.formatArgs=formatArgs;t.save=save;t.load=load;t.useColors=useColors;t.storage=localstorage();t.colors=["#0000CC","#0000FF","#0033CC","#0033FF","#0066CC","#0066FF","#0099CC","#0099FF","#00CC00","#00CC33","#00CC66","#00CC99","#00CCCC","#00CCFF","#3300CC","#3300FF","#3333CC","#3333FF","#3366CC","#3366FF","#3399CC","#3399FF","#33CC00","#33CC33","#33CC66","#33CC99","#33CCCC","#33CCFF","#6600CC","#6600FF","#6633CC","#6633FF","#66CC00","#66CC33","#9900CC","#9900FF","#9933CC","#9933FF","#99CC00","#99CC33","#CC0000","#CC0033","#CC0066","#CC0099","#CC00CC","#CC00FF","#CC3300","#CC3333","#CC3366","#CC3399","#CC33CC","#CC33FF","#CC6600","#CC6633","#CC9900","#CC9933","#CCCC00","#CCCC33","#FF0000","#FF0033","#FF0066","#FF0099","#FF00CC","#FF00FF","#FF3300","#FF3333","#FF3366","#FF3399","#FF33CC","#FF33FF","#FF6600","#FF6633","#FF9900","#FF9933","#FFCC00","#FFCC33"];function useColors(){if(typeof window!=="undefined"&&window.process&&(window.process.type==="renderer"||window.process.__nwjs)){return true}if(typeof navigator!=="undefined"&&navigator.userAgent&&navigator.userAgent.toLowerCase().match(/(edge|trident)\/(\d+)/)){return false}return typeof document!=="undefined"&&document.documentElement&&document.documentElement.style&&document.documentElement.style.WebkitAppearance||typeof window!=="undefined"&&window.console&&(window.console.firebug||window.console.exception&&window.console.table)||typeof navigator!=="undefined"&&navigator.userAgent&&navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/)&&parseInt(RegExp.$1,10)>=31||typeof navigator!=="undefined"&&navigator.userAgent&&navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/)}function formatArgs(t){t[0]=(this.useColors?"%c":"")+this.namespace+(this.useColors?" %c":" ")+t[0]+(this.useColors?"%c ":" ")+"+"+e.exports.humanize(this.diff);if(!this.useColors){return}const r="color: "+this.color;t.splice(1,0,r,"color: inherit");let s=0;let n=0;t[0].replace(/%[a-zA-Z%]/g,e=>{if(e==="%%"){return}s++;if(e==="%c"){n=s}});t.splice(n,0,r)}function log(...e){return typeof console==="object"&&console.log&&console.log(...e)}function save(e){try{if(e){t.storage.setItem("debug",e)}else{t.storage.removeItem("debug")}}catch(e){}}function load(){let e;try{e=t.storage.getItem("debug")}catch(e){}if(!e&&typeof process!=="undefined"&&"env"in process){e=process.env.DEBUG}return e}function localstorage(){try{return localStorage}catch(e){}}e.exports=r(6243)(t);const{formatters:s}=e.exports;s.j=function(e){try{return JSON.stringify(e)}catch(e){return"[UnexpectedJSONParseError]: "+e.message}}},6243:(e,t,r)=>{function setup(e){createDebug.debug=createDebug;createDebug.default=createDebug;createDebug.coerce=coerce;createDebug.disable=disable;createDebug.enable=enable;createDebug.enabled=enabled;createDebug.humanize=r(900);Object.keys(e).forEach(t=>{createDebug[t]=e[t]});createDebug.instances=[];createDebug.names=[];createDebug.skips=[];createDebug.formatters={};function selectColor(e){let t=0;for(let r=0;r<e.length;r++){t=(t<<5)-t+e.charCodeAt(r);t|=0}return createDebug.colors[Math.abs(t)%createDebug.colors.length]}createDebug.selectColor=selectColor;function createDebug(e){let t;function debug(...e){if(!debug.enabled){return}const r=debug;const s=Number(new Date);const n=s-(t||s);r.diff=n;r.prev=t;r.curr=s;t=s;e[0]=createDebug.coerce(e[0]);if(typeof e[0]!=="string"){e.unshift("%O")}let o=0;e[0]=e[0].replace(/%([a-zA-Z%])/g,(t,s)=>{if(t==="%%"){return t}o++;const n=createDebug.formatters[s];if(typeof n==="function"){const s=e[o];t=n.call(r,s);e.splice(o,1);o--}return t});createDebug.formatArgs.call(r,e);const i=r.log||createDebug.log;i.apply(r,e)}debug.namespace=e;debug.enabled=createDebug.enabled(e);debug.useColors=createDebug.useColors();debug.color=selectColor(e);debug.destroy=destroy;debug.extend=extend;if(typeof createDebug.init==="function"){createDebug.init(debug)}createDebug.instances.push(debug);return debug}function destroy(){const e=createDebug.instances.indexOf(this);if(e!==-1){createDebug.instances.splice(e,1);return true}return false}function extend(e,t){const r=createDebug(this.namespace+(typeof t==="undefined"?":":t)+e);r.log=this.log;return r}function enable(e){createDebug.save(e);createDebug.names=[];createDebug.skips=[];let t;const r=(typeof e==="string"?e:"").split(/[\s,]+/);const s=r.length;for(t=0;t<s;t++){if(!r[t]){continue}e=r[t].replace(/\*/g,".*?");if(e[0]==="-"){createDebug.skips.push(new RegExp("^"+e.substr(1)+"$"))}else{createDebug.names.push(new RegExp("^"+e+"$"))}}for(t=0;t<createDebug.instances.length;t++){const e=createDebug.instances[t];e.enabled=createDebug.enabled(e.namespace)}}function disable(){const e=[...createDebug.names.map(toNamespace),...createDebug.skips.map(toNamespace).map(e=>"-"+e)].join(",");createDebug.enable("");return e}function enabled(e){if(e[e.length-1]==="*"){return true}let t;let r;for(t=0,r=createDebug.skips.length;t<r;t++){if(createDebug.skips[t].test(e)){return false}}for(t=0,r=createDebug.names.length;t<r;t++){if(createDebug.names[t].test(e)){return true}}return false}function toNamespace(e){return e.toString().substring(2,e.toString().length-2).replace(/\.\*\?$/,"*")}function coerce(e){if(e instanceof Error){return e.stack||e.message}return e}createDebug.enable(createDebug.load());return createDebug}e.exports=setup},8231:(e,t,r)=>{if(typeof process==="undefined"||process.type==="renderer"||process.browser===true||process.__nwjs){e.exports=r(8222)}else{e.exports=r(5332)}},5332:(e,t,r)=>{const s=r(3867);const n=r(1669);t.init=init;t.log=log;t.formatArgs=formatArgs;t.save=save;t.load=load;t.useColors=useColors;t.colors=[6,2,3,4,5,1];try{const e=r(9318);if(e&&(e.stderr||e).level>=2){t.colors=[20,21,26,27,32,33,38,39,40,41,42,43,44,45,56,57,62,63,68,69,74,75,76,77,78,79,80,81,92,93,98,99,112,113,128,129,134,135,148,149,160,161,162,163,164,165,166,167,168,169,170,171,172,173,178,179,184,185,196,197,198,199,200,201,202,203,204,205,206,207,208,209,214,215,220,221]}}catch(e){}t.inspectOpts=Object.keys(process.env).filter(e=>{return/^debug_/i.test(e)}).reduce((e,t)=>{const r=t.substring(6).toLowerCase().replace(/_([a-z])/g,(e,t)=>{return t.toUpperCase()});let s=process.env[t];if(/^(yes|on|true|enabled)$/i.test(s)){s=true}else if(/^(no|off|false|disabled)$/i.test(s)){s=false}else if(s==="null"){s=null}else{s=Number(s)}e[r]=s;return e},{});function useColors(){return"colors"in t.inspectOpts?Boolean(t.inspectOpts.colors):s.isatty(process.stderr.fd)}function formatArgs(t){const{namespace:r,useColors:s}=this;if(s){const s=this.color;const n="[3"+(s<8?s:"8;5;"+s);const o=`  ${n};1m${r} [0m`;t[0]=o+t[0].split("\n").join("\n"+o);t.push(n+"m+"+e.exports.humanize(this.diff)+"[0m")}else{t[0]=getDate()+r+" "+t[0]}}function getDate(){if(t.inspectOpts.hideDate){return""}return(new Date).toISOString()+" "}function log(...e){return process.stderr.write(n.format(...e)+"\n")}function save(e){if(e){process.env.DEBUG=e}else{delete process.env.DEBUG}}function load(){return process.env.DEBUG}function init(e){e.inspectOpts={};const r=Object.keys(t.inspectOpts);for(let s=0;s<r.length;s++){e.inspectOpts[r[s]]=t.inspectOpts[r[s]]}}e.exports=r(6243)(t);const{formatters:o}=e.exports;o.o=function(e){this.inspectOpts.colors=this.useColors;return n.inspect(e,this.inspectOpts).replace(/\s*\n\s*/g," ")};o.O=function(e){this.inspectOpts.colors=this.useColors;return n.inspect(e,this.inspectOpts)}},8932:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});class Deprecation extends Error{constructor(e){super(e);if(Error.captureStackTrace){Error.captureStackTrace(this,this.constructor)}this.name="Deprecation"}}t.Deprecation=Deprecation},1621:e=>{"use strict";e.exports=((e,t)=>{t=t||process.argv;const r=e.startsWith("-")?"":e.length===1?"-":"--";const s=t.indexOf(r+e);const n=t.indexOf("--");return s!==-1&&(n===-1?true:s<n)})},900:e=>{var t=1e3;var r=t*60;var s=r*60;var n=s*24;var o=n*7;var i=n*365.25;e.exports=function(e,t){t=t||{};var r=typeof e;if(r==="string"&&e.length>0){return parse(e)}else if(r==="number"&&isFinite(e)){return t.long?fmtLong(e):fmtShort(e)}throw new Error("val is not a non-empty string or a valid number. val="+JSON.stringify(e))};function parse(e){e=String(e);if(e.length>100){return}var a=/^(-?(?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)?$/i.exec(e);if(!a){return}var c=parseFloat(a[1]);var u=(a[2]||"ms").toLowerCase();switch(u){case"years":case"year":case"yrs":case"yr":case"y":return c*i;case"weeks":case"week":case"w":return c*o;case"days":case"day":case"d":return c*n;case"hours":case"hour":case"hrs":case"hr":case"h":return c*s;case"minutes":case"minute":case"mins":case"min":case"m":return c*r;case"seconds":case"second":case"secs":case"sec":case"s":return c*t;case"milliseconds":case"millisecond":case"msecs":case"msec":case"ms":return c;default:return undefined}}function fmtShort(e){var o=Math.abs(e);if(o>=n){return Math.round(e/n)+"d"}if(o>=s){return Math.round(e/s)+"h"}if(o>=r){return Math.round(e/r)+"m"}if(o>=t){return Math.round(e/t)+"s"}return e+"ms"}function fmtLong(e){var o=Math.abs(e);if(o>=n){return plural(e,o,n,"day")}if(o>=s){return plural(e,o,s,"hour")}if(o>=r){return plural(e,o,r,"minute")}if(o>=t){return plural(e,o,t,"second")}return e+" ms"}function plural(e,t,r,s){var n=t>=r*1.5;return Math.round(e/r)+" "+s+(n?"s":"")}},467:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});function _interopDefault(e){return e&&typeof e==="object"&&"default"in e?e["default"]:e}var s=_interopDefault(r(2413));var n=_interopDefault(r(8605));var o=_interopDefault(r(8835));var i=_interopDefault(r(7211));var a=_interopDefault(r(8761));const c=s.Readable;const u=Symbol("buffer");const l=Symbol("type");class Blob{constructor(){this[l]="";const e=arguments[0];const t=arguments[1];const r=[];let s=0;if(e){const t=e;const n=Number(t.length);for(let e=0;e<n;e++){const n=t[e];let o;if(n instanceof Buffer){o=n}else if(ArrayBuffer.isView(n)){o=Buffer.from(n.buffer,n.byteOffset,n.byteLength)}else if(n instanceof ArrayBuffer){o=Buffer.from(n)}else if(n instanceof Blob){o=n[u]}else{o=Buffer.from(typeof n==="string"?n:String(n))}s+=o.length;r.push(o)}}this[u]=Buffer.concat(r);let n=t&&t.type!==undefined&&String(t.type).toLowerCase();if(n&&!/[^\u0020-\u007E]/.test(n)){this[l]=n}}get size(){return this[u].length}get type(){return this[l]}text(){return Promise.resolve(this[u].toString())}arrayBuffer(){const e=this[u];const t=e.buffer.slice(e.byteOffset,e.byteOffset+e.byteLength);return Promise.resolve(t)}stream(){const e=new c;e._read=function(){};e.push(this[u]);e.push(null);return e}toString(){return"[object Blob]"}slice(){const e=this.size;const t=arguments[0];const r=arguments[1];let s,n;if(t===undefined){s=0}else if(t<0){s=Math.max(e+t,0)}else{s=Math.min(t,e)}if(r===undefined){n=e}else if(r<0){n=Math.max(e+r,0)}else{n=Math.min(r,e)}const o=Math.max(n-s,0);const i=this[u];const a=i.slice(s,s+o);const c=new Blob([],{type:arguments[2]});c[u]=a;return c}}Object.defineProperties(Blob.prototype,{size:{enumerable:true},type:{enumerable:true},slice:{enumerable:true}});Object.defineProperty(Blob.prototype,Symbol.toStringTag,{value:"Blob",writable:false,enumerable:false,configurable:true});function FetchError(e,t,r){Error.call(this,e);this.message=e;this.type=t;if(r){this.code=this.errno=r.code}Error.captureStackTrace(this,this.constructor)}FetchError.prototype=Object.create(Error.prototype);FetchError.prototype.constructor=FetchError;FetchError.prototype.name="FetchError";let p;try{p=r(2877).convert}catch(e){}const d=Symbol("Body internals");const f=s.PassThrough;function Body(e){var t=this;var r=arguments.length>1&&arguments[1]!==undefined?arguments[1]:{},n=r.size;let o=n===undefined?0:n;var i=r.timeout;let a=i===undefined?0:i;if(e==null){e=null}else if(isURLSearchParams(e)){e=Buffer.from(e.toString())}else if(isBlob(e))   ;else if(Buffer.isBuffer(e))   ;else if(Object.prototype.toString.call(e)==="[object ArrayBuffer]"){e=Buffer.from(e)}else if(ArrayBuffer.isView(e)){e=Buffer.from(e.buffer,e.byteOffset,e.byteLength)}else if(e instanceof s)   ;else{e=Buffer.from(String(e))}this[d]={body:e,disturbed:false,error:null};this.size=o;this.timeout=a;if(e instanceof s){e.on("error",function(e){const r=e.name==="AbortError"?e:new FetchError(`Invalid response body while trying to fetch ${t.url}: ${e.message}`,"system",e);t[d].error=r})}}Body.prototype={get body(){return this[d].body},get bodyUsed(){return this[d].disturbed},arrayBuffer(){return consumeBody.call(this).then(function(e){return e.buffer.slice(e.byteOffset,e.byteOffset+e.byteLength)})},blob(){let e=this.headers&&this.headers.get("content-type")||"";return consumeBody.call(this).then(function(t){return Object.assign(new Blob([],{type:e.toLowerCase()}),{[u]:t})})},json(){var e=this;return consumeBody.call(this).then(function(t){try{return JSON.parse(t.toString())}catch(t){return Body.Promise.reject(new FetchError(`invalid json response body at ${e.url} reason: ${t.message}`,"invalid-json"))}})},text(){return consumeBody.call(this).then(function(e){return e.toString()})},buffer(){return consumeBody.call(this)},textConverted(){var e=this;return consumeBody.call(this).then(function(t){return convertBody(t,e.headers)})}};Object.defineProperties(Body.prototype,{body:{enumerable:true},bodyUsed:{enumerable:true},arrayBuffer:{enumerable:true},blob:{enumerable:true},json:{enumerable:true},text:{enumerable:true}});Body.mixIn=function(e){for(const t of Object.getOwnPropertyNames(Body.prototype)){if(!(t in e)){const r=Object.getOwnPropertyDescriptor(Body.prototype,t);Object.defineProperty(e,t,r)}}};function consumeBody(){var e=this;if(this[d].disturbed){return Body.Promise.reject(new TypeError(`body used already for: ${this.url}`))}this[d].disturbed=true;if(this[d].error){return Body.Promise.reject(this[d].error)}let t=this.body;if(t===null){return Body.Promise.resolve(Buffer.alloc(0))}if(isBlob(t)){t=t.stream()}if(Buffer.isBuffer(t)){return Body.Promise.resolve(t)}if(!(t instanceof s)){return Body.Promise.resolve(Buffer.alloc(0))}let r=[];let n=0;let o=false;return new Body.Promise(function(s,i){let a;if(e.timeout){a=setTimeout(function(){o=true;i(new FetchError(`Response timeout while trying to fetch ${e.url} (over ${e.timeout}ms)`,"body-timeout"))},e.timeout)}t.on("error",function(t){if(t.name==="AbortError"){o=true;i(t)}else{i(new FetchError(`Invalid response body while trying to fetch ${e.url}: ${t.message}`,"system",t))}});t.on("data",function(t){if(o||t===null){return}if(e.size&&n+t.length>e.size){o=true;i(new FetchError(`content size at ${e.url} over limit: ${e.size}`,"max-size"));return}n+=t.length;r.push(t)});t.on("end",function(){if(o){return}clearTimeout(a);try{s(Buffer.concat(r,n))}catch(t){i(new FetchError(`Could not create Buffer from response body for ${e.url}: ${t.message}`,"system",t))}})})}function convertBody(e,t){if(typeof p!=="function"){throw new Error("The package `encoding` must be installed to use the textConverted() function")}const r=t.get("content-type");let s="utf-8";let n,o;if(r){n=/charset=([^;]*)/i.exec(r)}o=e.slice(0,1024).toString();if(!n&&o){n=/<meta.+?charset=(['"])(.+?)\1/i.exec(o)}if(!n&&o){n=/<meta[\s]+?http-equiv=(['"])content-type\1[\s]+?content=(['"])(.+?)\2/i.exec(o);if(!n){n=/<meta[\s]+?content=(['"])(.+?)\1[\s]+?http-equiv=(['"])content-type\3/i.exec(o);if(n){n.pop()}}if(n){n=/charset=(.*)/i.exec(n.pop())}}if(!n&&o){n=/<\?xml.+?encoding=(['"])(.+?)\1/i.exec(o)}if(n){s=n.pop();if(s==="gb2312"||s==="gbk"){s="gb18030"}}return p(e,"UTF-8",s).toString()}function isURLSearchParams(e){if(typeof e!=="object"||typeof e.append!=="function"||typeof e.delete!=="function"||typeof e.get!=="function"||typeof e.getAll!=="function"||typeof e.has!=="function"||typeof e.set!=="function"){return false}return e.constructor.name==="URLSearchParams"||Object.prototype.toString.call(e)==="[object URLSearchParams]"||typeof e.sort==="function"}function isBlob(e){return typeof e==="object"&&typeof e.arrayBuffer==="function"&&typeof e.type==="string"&&typeof e.stream==="function"&&typeof e.constructor==="function"&&typeof e.constructor.name==="string"&&/^(Blob|File)$/.test(e.constructor.name)&&/^(Blob|File)$/.test(e[Symbol.toStringTag])}function clone(e){let t,r;let n=e.body;if(e.bodyUsed){throw new Error("cannot clone body after it is used")}if(n instanceof s&&typeof n.getBoundary!=="function"){t=new f;r=new f;n.pipe(t);n.pipe(r);e[d].body=t;n=r}return n}function extractContentType(e){if(e===null){return null}else if(typeof e==="string"){return"text/plain;charset=UTF-8"}else if(isURLSearchParams(e)){return"application/x-www-form-urlencoded;charset=UTF-8"}else if(isBlob(e)){return e.type||null}else if(Buffer.isBuffer(e)){return null}else if(Object.prototype.toString.call(e)==="[object ArrayBuffer]"){return null}else if(ArrayBuffer.isView(e)){return null}else if(typeof e.getBoundary==="function"){return`multipart/form-data;boundary=${e.getBoundary()}`}else if(e instanceof s){return null}else{return"text/plain;charset=UTF-8"}}function getTotalBytes(e){const t=e.body;if(t===null){return 0}else if(isBlob(t)){return t.size}else if(Buffer.isBuffer(t)){return t.length}else if(t&&typeof t.getLengthSync==="function"){if(t._lengthRetrievers&&t._lengthRetrievers.length==0||t.hasKnownLength&&t.hasKnownLength()){return t.getLengthSync()}return null}else{return null}}function writeToStream(e,t){const r=t.body;if(r===null){e.end()}else if(isBlob(r)){r.stream().pipe(e)}else if(Buffer.isBuffer(r)){e.write(r);e.end()}else{r.pipe(e)}}Body.Promise=global.Promise;const m=/[^\^_`a-zA-Z\-0-9!#$%&'*+.|~]/;const h=/[^\t\x20-\x7e\x80-\xff]/;function validateName(e){e=`${e}`;if(m.test(e)||e===""){throw new TypeError(`${e} is not a legal HTTP header name`)}}function validateValue(e){e=`${e}`;if(h.test(e)){throw new TypeError(`${e} is not a legal HTTP header value`)}}function find(e,t){t=t.toLowerCase();for(const r in e){if(r.toLowerCase()===t){return r}}return undefined}const g=Symbol("map");class Headers{constructor(){let e=arguments.length>0&&arguments[0]!==undefined?arguments[0]:undefined;this[g]=Object.create(null);if(e instanceof Headers){const t=e.raw();const r=Object.keys(t);for(const e of r){for(const r of t[e]){this.append(e,r)}}return}if(e==null)   ;else if(typeof e==="object"){const t=e[Symbol.iterator];if(t!=null){if(typeof t!=="function"){throw new TypeError("Header pairs must be iterable")}const r=[];for(const t of e){if(typeof t!=="object"||typeof t[Symbol.iterator]!=="function"){throw new TypeError("Each header pair must be iterable")}r.push(Array.from(t))}for(const e of r){if(e.length!==2){throw new TypeError("Each header pair must be a name/value tuple")}this.append(e[0],e[1])}}else{for(const t of Object.keys(e)){const r=e[t];this.append(t,r)}}}else{throw new TypeError("Provided initializer must be an object")}}get(e){e=`${e}`;validateName(e);const t=find(this[g],e);if(t===undefined){return null}return this[g][t].join(", ")}forEach(e){let t=arguments.length>1&&arguments[1]!==undefined?arguments[1]:undefined;let r=getHeaders(this);let s=0;while(s<r.length){var n=r[s];const o=n[0],i=n[1];e.call(t,i,o,this);r=getHeaders(this);s++}}set(e,t){e=`${e}`;t=`${t}`;validateName(e);validateValue(t);const r=find(this[g],e);this[g][r!==undefined?r:e]=[t]}append(e,t){e=`${e}`;t=`${t}`;validateName(e);validateValue(t);const r=find(this[g],e);if(r!==undefined){this[g][r].push(t)}else{this[g][e]=[t]}}has(e){e=`${e}`;validateName(e);return find(this[g],e)!==undefined}delete(e){e=`${e}`;validateName(e);const t=find(this[g],e);if(t!==undefined){delete this[g][t]}}raw(){return this[g]}keys(){return createHeadersIterator(this,"key")}values(){return createHeadersIterator(this,"value")}[Symbol.iterator](){return createHeadersIterator(this,"key+value")}}Headers.prototype.entries=Headers.prototype[Symbol.iterator];Object.defineProperty(Headers.prototype,Symbol.toStringTag,{value:"Headers",writable:false,enumerable:false,configurable:true});Object.defineProperties(Headers.prototype,{get:{enumerable:true},forEach:{enumerable:true},set:{enumerable:true},append:{enumerable:true},has:{enumerable:true},delete:{enumerable:true},keys:{enumerable:true},values:{enumerable:true},entries:{enumerable:true}});function getHeaders(e){let t=arguments.length>1&&arguments[1]!==undefined?arguments[1]:"key+value";const r=Object.keys(e[g]).sort();return r.map(t==="key"?function(e){return e.toLowerCase()}:t==="value"?function(t){return e[g][t].join(", ")}:function(t){return[t.toLowerCase(),e[g][t].join(", ")]})}const T=Symbol("internal");function createHeadersIterator(e,t){const r=Object.create(b);r[T]={target:e,kind:t,index:0};return r}const b=Object.setPrototypeOf({next(){if(!this||Object.getPrototypeOf(this)!==b){throw new TypeError("Value of `this` is not a HeadersIterator")}var e=this[T];const t=e.target,r=e.kind,s=e.index;const n=getHeaders(t,r);const o=n.length;if(s>=o){return{value:undefined,done:true}}this[T].index=s+1;return{value:n[s],done:false}}},Object.getPrototypeOf(Object.getPrototypeOf([][Symbol.iterator]())));Object.defineProperty(b,Symbol.toStringTag,{value:"HeadersIterator",writable:false,enumerable:false,configurable:true});function exportNodeCompatibleHeaders(e){const t=Object.assign({__proto__:null},e[g]);const r=find(e[g],"Host");if(r!==undefined){t[r]=t[r][0]}return t}function createHeadersLenient(e){const t=new Headers;for(const r of Object.keys(e)){if(m.test(r)){continue}if(Array.isArray(e[r])){for(const s of e[r]){if(h.test(s)){continue}if(t[g][r]===undefined){t[g][r]=[s]}else{t[g][r].push(s)}}}else if(!h.test(e[r])){t[g][r]=[e[r]]}}return t}const y=Symbol("Response internals");const w=n.STATUS_CODES;class Response{constructor(){let e=arguments.length>0&&arguments[0]!==undefined?arguments[0]:null;let t=arguments.length>1&&arguments[1]!==undefined?arguments[1]:{};Body.call(this,e,t);const r=t.status||200;const s=new Headers(t.headers);if(e!=null&&!s.has("Content-Type")){const t=extractContentType(e);if(t){s.append("Content-Type",t)}}this[y]={url:t.url,status:r,statusText:t.statusText||w[r],headers:s,counter:t.counter}}get url(){return this[y].url||""}get status(){return this[y].status}get ok(){return this[y].status>=200&&this[y].status<300}get redirected(){return this[y].counter>0}get statusText(){return this[y].statusText}get headers(){return this[y].headers}clone(){return new Response(clone(this),{url:this.url,status:this.status,statusText:this.statusText,headers:this.headers,ok:this.ok,redirected:this.redirected})}}Body.mixIn(Response.prototype);Object.defineProperties(Response.prototype,{url:{enumerable:true},status:{enumerable:true},ok:{enumerable:true},redirected:{enumerable:true},statusText:{enumerable:true},headers:{enumerable:true},clone:{enumerable:true}});Object.defineProperty(Response.prototype,Symbol.toStringTag,{value:"Response",writable:false,enumerable:false,configurable:true});const E=Symbol("Request internals");const _=o.parse;const O=o.format;const v="destroy"in s.Readable.prototype;function isRequest(e){return typeof e==="object"&&typeof e[E]==="object"}function isAbortSignal(e){const t=e&&typeof e==="object"&&Object.getPrototypeOf(e);return!!(t&&t.constructor.name==="AbortSignal")}class Request{constructor(e){let t=arguments.length>1&&arguments[1]!==undefined?arguments[1]:{};let r;if(!isRequest(e)){if(e&&e.href){r=_(e.href)}else{r=_(`${e}`)}e={}}else{r=_(e.url)}let s=t.method||e.method||"GET";s=s.toUpperCase();if((t.body!=null||isRequest(e)&&e.body!==null)&&(s==="GET"||s==="HEAD")){throw new TypeError("Request with GET/HEAD method cannot have body")}let n=t.body!=null?t.body:isRequest(e)&&e.body!==null?clone(e):null;Body.call(this,n,{timeout:t.timeout||e.timeout||0,size:t.size||e.size||0});const o=new Headers(t.headers||e.headers||{});if(n!=null&&!o.has("Content-Type")){const e=extractContentType(n);if(e){o.append("Content-Type",e)}}let i=isRequest(e)?e.signal:null;if("signal"in t)i=t.signal;if(i!=null&&!isAbortSignal(i)){throw new TypeError("Expected signal to be an instanceof AbortSignal")}this[E]={method:s,redirect:t.redirect||e.redirect||"follow",headers:o,parsedURL:r,signal:i};this.follow=t.follow!==undefined?t.follow:e.follow!==undefined?e.follow:20;this.compress=t.compress!==undefined?t.compress:e.compress!==undefined?e.compress:true;this.counter=t.counter||e.counter||0;this.agent=t.agent||e.agent}get method(){return this[E].method}get url(){return O(this[E].parsedURL)}get headers(){return this[E].headers}get redirect(){return this[E].redirect}get signal(){return this[E].signal}clone(){return new Request(this)}}Body.mixIn(Request.prototype);Object.defineProperty(Request.prototype,Symbol.toStringTag,{value:"Request",writable:false,enumerable:false,configurable:true});Object.defineProperties(Request.prototype,{method:{enumerable:true},url:{enumerable:true},headers:{enumerable:true},redirect:{enumerable:true},clone:{enumerable:true},signal:{enumerable:true}});function getNodeRequestOptions(e){const t=e[E].parsedURL;const r=new Headers(e[E].headers);if(!r.has("Accept")){r.set("Accept","*/*")}if(!t.protocol||!t.hostname){throw new TypeError("Only absolute URLs are supported")}if(!/^https?:$/.test(t.protocol)){throw new TypeError("Only HTTP(S) protocols are supported")}if(e.signal&&e.body instanceof s.Readable&&!v){throw new Error("Cancellation of streamed requests with AbortSignal is not supported in node < 8")}let n=null;if(e.body==null&&/^(POST|PUT)$/i.test(e.method)){n="0"}if(e.body!=null){const t=getTotalBytes(e);if(typeof t==="number"){n=String(t)}}if(n){r.set("Content-Length",n)}if(!r.has("User-Agent")){r.set("User-Agent","node-fetch/1.0 (+https://github.com/bitinn/node-fetch)")}if(e.compress&&!r.has("Accept-Encoding")){r.set("Accept-Encoding","gzip,deflate")}let o=e.agent;if(typeof o==="function"){o=o(t)}if(!r.has("Connection")&&!o){r.set("Connection","close")}return Object.assign({},t,{method:e.method,headers:exportNodeCompatibleHeaders(r),agent:o})}function AbortError(e){Error.call(this,e);this.type="aborted";this.message=e;Error.captureStackTrace(this,this.constructor)}AbortError.prototype=Object.create(Error.prototype);AbortError.prototype.constructor=AbortError;AbortError.prototype.name="AbortError";const S=s.PassThrough;const k=o.resolve;function fetch(e,t){if(!fetch.Promise){throw new Error("native promise missing, set fetch.Promise to your favorite alternative")}Body.Promise=fetch.Promise;return new fetch.Promise(function(r,o){const c=new Request(e,t);const u=getNodeRequestOptions(c);const l=(u.protocol==="https:"?i:n).request;const p=c.signal;let d=null;const f=function abort(){let e=new AbortError("The user aborted a request.");o(e);if(c.body&&c.body instanceof s.Readable){c.body.destroy(e)}if(!d||!d.body)return;d.body.emit("error",e)};if(p&&p.aborted){f();return}const m=function abortAndFinalize(){f();finalize()};const h=l(u);let g;if(p){p.addEventListener("abort",m)}function finalize(){h.abort();if(p)p.removeEventListener("abort",m);clearTimeout(g)}if(c.timeout){h.once("socket",function(e){g=setTimeout(function(){o(new FetchError(`network timeout at: ${c.url}`,"request-timeout"));finalize()},c.timeout)})}h.on("error",function(e){o(new FetchError(`request to ${c.url} failed, reason: ${e.message}`,"system",e));finalize()});h.on("response",function(e){clearTimeout(g);const t=createHeadersLenient(e.headers);if(fetch.isRedirect(e.statusCode)){const s=t.get("Location");const n=s===null?null:k(c.url,s);switch(c.redirect){case"error":o(new FetchError(`uri requested responds with a redirect, redirect mode is set to error: ${c.url}`,"no-redirect"));finalize();return;case"manual":if(n!==null){try{t.set("Location",n)}catch(e){o(e)}}break;case"follow":if(n===null){break}if(c.counter>=c.follow){o(new FetchError(`maximum redirect reached at: ${c.url}`,"max-redirect"));finalize();return}const s={headers:new Headers(c.headers),follow:c.follow,counter:c.counter+1,agent:c.agent,compress:c.compress,method:c.method,body:c.body,signal:c.signal,timeout:c.timeout,size:c.size};if(e.statusCode!==303&&c.body&&getTotalBytes(c)===null){o(new FetchError("Cannot follow redirect with body being a readable stream","unsupported-redirect"));finalize();return}if(e.statusCode===303||(e.statusCode===301||e.statusCode===302)&&c.method==="POST"){s.method="GET";s.body=undefined;s.headers.delete("content-length")}r(fetch(new Request(n,s)));finalize();return}}e.once("end",function(){if(p)p.removeEventListener("abort",m)});let s=e.pipe(new S);const n={url:c.url,status:e.statusCode,statusText:e.statusMessage,headers:t,size:c.size,timeout:c.timeout,counter:c.counter};const i=t.get("Content-Encoding");if(!c.compress||c.method==="HEAD"||i===null||e.statusCode===204||e.statusCode===304){d=new Response(s,n);r(d);return}const u={flush:a.Z_SYNC_FLUSH,finishFlush:a.Z_SYNC_FLUSH};if(i=="gzip"||i=="x-gzip"){s=s.pipe(a.createGunzip(u));d=new Response(s,n);r(d);return}if(i=="deflate"||i=="x-deflate"){const t=e.pipe(new S);t.once("data",function(e){if((e[0]&15)===8){s=s.pipe(a.createInflate())}else{s=s.pipe(a.createInflateRaw())}d=new Response(s,n);r(d)});return}if(i=="br"&&typeof a.createBrotliDecompress==="function"){s=s.pipe(a.createBrotliDecompress());d=new Response(s,n);r(d);return}d=new Response(s,n);r(d)});writeToStream(h,c)})}fetch.isRedirect=function(e){return e===301||e===302||e===303||e===307||e===308};fetch.Promise=global.Promise;e.exports=t=fetch;Object.defineProperty(t,"__esModule",{value:true});t.default=t;t.Headers=Headers;t.Request=Request;t.Response=Response;t.FetchError=FetchError},1223:(e,t,r)=>{var s=r(2940);e.exports=s(once);e.exports.strict=s(onceStrict);once.proto=once(function(){Object.defineProperty(Function.prototype,"once",{value:function(){return once(this)},configurable:true});Object.defineProperty(Function.prototype,"onceStrict",{value:function(){return onceStrict(this)},configurable:true})});function once(e){var t=function(){if(t.called)return t.value;t.called=true;return t.value=e.apply(this,arguments)};t.called=false;return t}function onceStrict(e){var t=function(){if(t.called)throw new Error(t.onceError);t.called=true;return t.value=e.apply(this,arguments)};var r=e.name||"Function wrapped with `once`";t.onceError=r+" shouldn't be called more than once";t.called=false;return t}},8577:(e,t,r)=>{const{esModuleFactory:s,gitExportFactory:n}=r(1949);const{gitP:o}=r(941);e.exports=s(n(o))},1949:(e,t,r)=>{const s=r(4966);const{GitConstructError:n}=r(4732);const{createInstanceConfig:o,folderExists:i}=r(847);const a=Object.create(null);for(let e=r(4732),t=Object.keys(e),s=0;s<t.length;s++){const r=t[s];if(/^[A-Z]/.test(r)){a[r]=e[r]}}e.exports.esModuleFactory=function esModuleFactory(e){return Object.defineProperties(e,{__esModule:{value:true},default:{value:e}})};e.exports.gitExportFactory=function gitExportFactory(e,t){return Object.assign(function(){return e.apply(null,arguments)},a,t||{})};e.exports.gitInstanceFactory=function gitInstanceFactory(e,t){const r=o(e&&(typeof e==="string"?{baseDir:e}:e),t);if(!i(r.baseDir)){throw new n(r,`Cannot use simple-git on a directory that does not exist`)}return new s(r)}},4966:(e,t,r)=>{const s=r(5301);const{GitExecutor:n}=r(4701);const{Scheduler:o}=r(3421);const{GitLogger:i}=r(7178);const{adhocExecTask:a,configurationErrorTask:c}=r(2815);const{NOOP:u,appendTaskOptions:l,asArray:p,filterArray:d,filterPrimitives:f,filterString:m,filterType:h,folderExists:g,getTrailingOptions:T,trailingFunctionArgument:b,trailingOptionsArgument:y}=r(847);const{branchTask:w,branchLocalTask:E,deleteBranchesTask:_,deleteBranchTask:O}=r(17);const{taskCallback:v}=r(8850);const{checkIsRepoTask:S}=r(221);const{cloneTask:k,cloneMirrorTask:P}=r(3173);const{addConfigTask:C,listConfigTask:R}=r(7597);const{cleanWithOptionsTask:G,isCleanOptionsArray:A}=r(4386);const{initTask:D}=r(6016);const{hashObjectTask:F}=r(8199);const{mergeTask:j}=r(8829);const{moveTask:L}=r(6520);const{pullTask:x}=r(4636);const{pushTagsTask:U,pushTask:M}=r(1435);const{addRemoteTask:B,getRemotesTask:q,listRemotesTask:I,remoteTask:H,removeRemoteTask:N}=r(9866);const{getResetMode:$,resetTask:z}=r(2377);const{statusTask:W}=r(9197);const{addSubModuleTask:V,initSubModuleTask:K,subModuleTask:J,updateSubModuleTask:Y}=r(8772);const{addAnnotatedTagTask:Q,addTagTask:Z,tagListTask:X}=r(8540);const{straightThroughStringTask:ee}=r(2815);const{parseCheckIgnore:te}=r(9926);const re=Symbol("ChainedExecutor");function Git(e){this._executor=new n(e.binary,e.baseDir,new o(e.maxConcurrentProcesses));this._logger=new i}Git.prototype._executor=null;Git.prototype._logger=null;Git.prototype.customBinary=function(e){this._executor.binary=e;return this};Git.prototype.env=function(e,t){if(arguments.length===1&&typeof e==="object"){this._executor.env=e}else{(this._executor.env=this._executor.env||{})[e]=t}return this};Git.prototype.cwd=function(e,t){const r=typeof e!=="string"?c("Git.cwd: workingDirectory must be supplied as a string"):a(()=>{if(!g(e)){throw new Error(`Git.cwd: cannot change to non-directory "${e}"`)}return this._executor.cwd=e});return this._runTask(r,b(arguments)||u)};Git.prototype.outputHandler=function(e){this._executor.outputHandler=e;return this};Git.prototype.init=function(e,t){return this._runTask(D(e===true,this._executor.cwd,T(arguments)),b(arguments))};Git.prototype.status=function(){return this._runTask(W(T(arguments)),b(arguments))};Git.prototype.stashList=function(e,t){var r=b(arguments);var s=(r===t?e:null)||{};var n=s.splitter||requireResponseHandler("ListLogSummary").SPLITTER;var o=["stash","list","--pretty=format:"+requireResponseHandler("ListLogSummary").START_BOUNDARY+"%H %ai %s%d %aN %ae".replace(/\s+/g,n)+requireResponseHandler("ListLogSummary").COMMIT_BOUNDARY];if(Array.isArray(s)){o=o.concat(s)}return this._run(o,r,{parser:Git.responseParser("ListLogSummary",n)})};Git.prototype.stash=function(e,t){return this._run(["stash"].concat(T(arguments)),b(arguments))};function createCloneTask(e,t,r,s){if(typeof r!=="string"){return c(`git.${e}() requires a string 'repoPath'`)}return t(r,h(s,m),T(arguments))}Git.prototype.clone=function(){return this._runTask(createCloneTask("clone",k,...arguments),b(arguments))};Git.prototype.mirror=function(){return this._runTask(createCloneTask("mirror",P,...arguments),b(arguments))};Git.prototype.mv=function(e,t){return this._runTask(L(e,t),b(arguments))};Git.prototype.checkoutLatestTag=function(e){var t=this;return this.pull(function(){t.tags(function(r,s){t.checkout(s.latest,e)})})};Git.prototype.add=function(e){return this._run(["add"].concat(e),b(arguments))};Git.prototype.commit=function(e,t,r,s){var n=["commit"];p(e).forEach(function(e){n.push("-m",e)});p(typeof t==="string"||Array.isArray(t)?t:[]).forEach(e=>n.push(e));n.push(...T(arguments,0,true));return this._run(n,b(arguments),{parser:Git.responseParser("CommitSummary")})};Git.prototype.pull=function(e,t,r,s){return this._runTask(x(h(e,m),h(t,m),T(arguments)),b(arguments))};Git.prototype.fetch=function(e,t,r){const s=["fetch"].concat(T(arguments));if(typeof e==="string"&&typeof t==="string"){s.push(e,t)}return this._run(s,b(arguments),{concatStdErr:true,parser:Git.responseParser("FetchSummary")})};Git.prototype.silent=function(e){this._logger.silent(!!e);return this};Git.prototype.tags=function(e,t){return this._runTask(X(T(arguments)),b(arguments))};Git.prototype.rebase=function(e,t){return this._run(["rebase"].concat(T(arguments)),b(arguments))};Git.prototype.reset=function(e,t){return this._runTask(z($(e),T(arguments)),b(arguments))};Git.prototype.revert=function(e,t,r){const s=b(arguments);if(typeof e!=="string"){return this._runTask(c("Commit must be a string"),s)}return this._run(["revert",...T(arguments,0,true),e],s)};Git.prototype.addTag=function(e,t){const r=typeof e==="string"?Z(e):c("Git.addTag requires a tag name");return this._runTask(r,b(arguments))};Git.prototype.addAnnotatedTag=function(e,t,r){return this._runTask(Q(e,t),b(arguments))};Git.prototype.checkout=function(e,t){const r=["checkout",...T(arguments,true)];return this._runTask(ee(r),b(arguments))};Git.prototype.checkoutBranch=function(e,t,r){return this.checkout(["-b",e,t],b(arguments))};Git.prototype.checkoutLocalBranch=function(e,t){return this.checkout(["-b",e],b(arguments))};Git.prototype.deleteLocalBranch=function(e,t,r){return this._runTask(O(e,typeof t==="boolean"?t:false),b(arguments))};Git.prototype.deleteLocalBranches=function(e,t,r){return this._runTask(_(e,typeof t==="boolean"?t:false),b(arguments))};Git.prototype.branch=function(e,t){return this._runTask(w(T(arguments)),b(arguments))};Git.prototype.branchLocal=function(e){return this._runTask(E(),b(arguments))};Git.prototype.addConfig=function(e,t,r,s){return this._runTask(C(e,t,typeof r==="boolean"?r:false),b(arguments))};Git.prototype.listConfig=function(){return this._runTask(R(),b(arguments))};Git.prototype.raw=function(e){const t=!Array.isArray(e);const r=[].slice.call(t?arguments:e,0);for(let e=0;e<r.length&&t;e++){if(!f(r[e])){r.splice(e,r.length-e);break}}r.push(...T(arguments,0,true));var s=b(arguments);if(!r.length){return this._runTask(c("Raw: must supply one or more command to execute"),s)}return this._run(r,s)};Git.prototype.submoduleAdd=function(e,t,r){return this._runTask(V(e,t),b(arguments))};Git.prototype.submoduleUpdate=function(e,t){return this._runTask(Y(T(arguments,true)),b(arguments))};Git.prototype.submoduleInit=function(e,t){return this._runTask(K(T(arguments,true)),b(arguments))};Git.prototype.subModule=function(e,t){return this._runTask(J(T(arguments)),b(arguments))};Git.prototype.listRemote=function(){return this._runTask(I(T(arguments)),b(arguments))};Git.prototype.addRemote=function(e,t,r){return this._runTask(B(e,t,T(arguments)),b(arguments))};Git.prototype.removeRemote=function(e,t){return this._runTask(N(e),b(arguments))};Git.prototype.getRemotes=function(e,t){return this._runTask(q(e===true),b(arguments))};Git.prototype.hashObject=function(e,t){return this._runTask(F(e,t===true),b(arguments))};Git.prototype.remote=function(e,t){return this._runTask(H(T(arguments)),b(arguments))};Git.prototype.mergeFromTo=function(e,t){if(!(m(e)&&m(t))){return this._runTask(c(`Git.mergeFromTo requires that the 'from' and 'to' arguments are supplied as strings`))}return this._runTask(j([e,t,...T(arguments)]),b(arguments,false))};Git.prototype.merge=function(){return this._runTask(j(T(arguments)),b(arguments))};Git.prototype.tag=function(e,t){const r=T(arguments);if(r[0]!=="tag"){r.unshift("tag")}return this._run(r,b(arguments))};Git.prototype.updateServerInfo=function(e){return this._run(["update-server-info"],b(arguments))};Git.prototype.push=function(e,t,r){const s=M({remote:h(e,m),branch:h(t,m)},T(arguments));return this._runTask(s,b(arguments))};Git.prototype.pushTags=function(e,t){const r=U({remote:h(e,m)},T(arguments));return this._runTask(r,b(arguments))};Git.prototype.rm=function(e,t){return this._rm(e,"-f",t)};Git.prototype.rmKeepLocal=function(e,t){return this._rm(e,"--cached",t)};Git.prototype.catFile=function(e,t){return this._catFile("utf-8",arguments)};Git.prototype.binaryCatFile=function(e,t){return this._catFile("buffer",arguments)};Git.prototype._catFile=function(e,t){var r=b(t);var s=["cat-file"];var n=t[0];if(typeof n==="string"){return this._runTask(c("Git#catFile: options must be supplied as an array of strings"),r)}if(Array.isArray(n)){s.push.apply(s,n)}return this._run(s,r,{format:e})};Git.prototype.diff=function(e,t){const r=["diff",...T(arguments)];if(typeof e==="string"){r.splice(1,0,e);this._logger.warn("Git#diff: supplying options as a single string is now deprecated, switch to an array of strings")}return this._runTask(ee(r),b(arguments))};Git.prototype.diffSummary=function(){return this._run(["diff","--stat=4096",...T(arguments,true)],b(arguments),{parser:Git.responseParser("DiffSummary")})};Git.prototype.revparse=function(e,t){const r=["rev-parse",...T(arguments,true)];return this._runTask(ee(r,true),b(arguments))};Git.prototype.show=function(e,t){var r=b(arguments)||u;var s=["show"];if(typeof e==="string"||Array.isArray(e)){s=s.concat(e)}return this._run(s,function(e,t){e?r(e):r(null,t)})};Git.prototype.clean=function(e,t,r){const s=A(e);const n=s&&e.join("")||h(e,m)||"";const o=T([].slice.call(arguments,s?1:0));return this._runTask(G(n,o),b(arguments))};Git.prototype.exec=function(e){const t={commands:[],format:"utf-8",parser(){if(typeof e==="function"){e()}}};return this._runTask(t)};Git.prototype.log=function(e,t){var r=b(arguments);var s=y(arguments)||{};var n=s.splitter||requireResponseHandler("ListLogSummary").SPLITTER;var o=s.format||{hash:"%H",date:s.strictDate===false?"%ai":"%aI",message:"%s",refs:"%D",body:s.multiLine?"%B":"%b",author_name:"%aN",author_email:"%ae"};var i=s.symmetric!==false?"...":"..";var a=Object.keys(o);var c=a.map(function(e){return o[e]}).join(n);var u=[];var p=["log","--pretty=format:"+requireResponseHandler("ListLogSummary").START_BOUNDARY+c+requireResponseHandler("ListLogSummary").COMMIT_BOUNDARY];if(d(e)){p=p.concat(e);s={}}else if(typeof arguments[0]==="string"||typeof arguments[1]==="string"){this._logger.warn("Git#log: supplying to or from as strings is now deprecated, switch to an options configuration object");s={from:arguments[0],to:arguments[1]}}if(s.n||s["max-count"]){p.push("--max-count="+(s.n||s["max-count"]))}if(s.from&&s.to){p.push(s.from+i+s.to)}if(s.file){u.push("--follow",e.file)}"splitter n max-count file from to --pretty format symmetric multiLine strictDate".split(" ").forEach(function(e){delete s[e]});l(s,p);return this._run(p.concat(u),r,{parser:Git.responseParser("ListLogSummary",[n,a])})};Git.prototype.clearQueue=function(){return this};Git.prototype.checkIgnore=function(e,t){var r=b(arguments);var s=["check-ignore"];if(r!==e){s=s.concat(e)}return this._run(s,function(e,t){r&&r(e,!e&&te(t))})};Git.prototype.checkIsRepo=function(e,t){return this._runTask(S(h(e,m)),b(arguments))};Git.prototype._rm=function(e,t,r){var s=[].concat(e);var n=["rm",t];n.push.apply(n,s);return this._run(n,b(arguments))};Git.prototype._run=function(e,t,r){const s=Object.assign({concatStdErr:false,onError:undefined,format:"utf-8",parser(e){return e}},r||{},{commands:e});return this._runTask(s,t)};Git.prototype._runTask=function(e,t){const r=this[re]||this._executor.chain();const s=r.push(e);v(e,s,t);return Object.create(this,{then:{value:s.then.bind(s)},catch:{value:s.catch.bind(s)},[re]:{value:r}})};Git.fail=function(e,t,r){e._logger.error(t);e.clearQueue();if(typeof r==="function"){r.call(e,t,null)}};Git.responseParser=function(e,t){const r=requireResponseHandler(e);return function(e){return r.parse.apply(r,[e].concat(t===undefined?[]:t))}};Git.exception=function(e,t,r){const s=t instanceof Error?t:new Error(t);if(typeof r==="function"){r(s)}throw s};e.exports=Git;function requireResponseHandler(e){return s[e]}},4732:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});var s=r(4386);t.CleanOptions=s.CleanOptions;var n=r(221);t.CheckRepoActions=n.CheckRepoActions;var o=r(2377);t.ResetMode=o.ResetMode;var i=r(1876);t.GitConstructError=i.GitConstructError;var a=r(5757);t.GitError=a.GitError;var c=r(5131);t.GitResponseError=c.GitResponseError;var u=r(740);t.TaskConfigurationError=u.TaskConfigurationError},1876:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(5757);class GitConstructError extends s.GitError{constructor(e,t){super(undefined,t);this.config=e}}t.GitConstructError=GitConstructError},5757:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});class GitError extends Error{constructor(e,t){super(t);this.task=e;Object.setPrototypeOf(this,new.target.prototype)}}t.GitError=GitError},5131:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(5757);class GitResponseError extends s.GitError{constructor(e,t){super(undefined,t||String(e));this.git=e}}t.GitResponseError=GitResponseError},740:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(5757);class TaskConfigurationError extends s.GitError{constructor(e){super(undefined,e)}}t.TaskConfigurationError=TaskConfigurationError},7178:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(8231);const n=r(847);s.default.formatters.L=(e=>String(n.filterHasLength(e)?e.length:"-"));s.default.formatters.B=(e=>{if(Buffer.isBuffer(e)){return e.toString("utf8")}return n.objectToString(e)});t.log=s.default("simple-git");function prefixedLogger(e,t,r){if(!t||!String(t).replace(/\s*/,"")){return!r?e:(t,...s)=>{e(t,...s);r(t,...s)}}return(s,...n)=>{e(`%s ${s}`,t,...n);if(r){r(s,...n)}}}function childLoggerName(e,t,{namespace:r}){if(typeof e==="string"){return e}const s=t&&t.namespace||"";if(s.startsWith(r)){return s.substr(r.length+1)}return s||r}function createLogger(e,r,s,o=t.log){const i=e&&`[${e}]`||"";const a=[];const c=typeof r==="string"?o.extend(r):r;const u=childLoggerName(n.filterType(r,n.filterString),c,o);const l=((c===null||c===void 0?void 0:c.destroy)||n.NOOP).bind(c);return step(s);function destroy(){l();a.forEach(e=>e.destroy());a.length=0}function child(t){return n.append(a,createLogger(e,c&&c.extend(t)||t))}function sibling(t,r){return n.append(a,createLogger(e,u.replace(/^[^:]+/,t),r,o))}function step(t){const r=t&&`[${t}]`||"";const s=c&&prefixedLogger(c,r)||n.NOOP;const a=prefixedLogger(o,`${i} ${r}`,s);return Object.assign(c?s:a,{key:u,label:e,child:child,sibling:sibling,debug:s,info:a,step:step,destroy:destroy})}}t.createLogger=createLogger;class GitLogger{constructor(e=t.log){this._out=e;this.error=prefixedLogger(e,"[ERROR]");this.warn=prefixedLogger(e,"[WARN]")}silent(e=false){if(e!==this._out.enabled){return}const{namespace:t}=this._out;const r=(process.env.DEBUG||"").split(",").filter(e=>!!e);const o=r.includes(t);const i=r.includes(`-${t}`);if(!e){if(i){n.remove(r,`-${t}`)}else{r.push(t)}}else{if(o){n.remove(r,t)}else{r.push(`-${t}`)}}s.default.enable(r.join(","))}}t.GitLogger=GitLogger},6086:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(3755);const n=r(847);const o=/(\S+)\s+\(\S+\s([^)]+)\)/;const i=/^error[^']+'([^']+)'/m;const a=[new n.LineParser(o,(e,[t,r])=>{const n=s.branchDeletionSuccess(t,r);e.all.push(n);e.branches[t]=n}),new n.LineParser(i,(e,[t])=>{const r=s.branchDeletionFailure(t);e.errors.push(r);e.all.push(r);e.branches[t]=r})];t.parseBranchDeletions=(e=>{return n.parseStringResponse(new s.BranchDeletionBatch,a,e)});function hasBranchDeletionError(e,t){return t===n.ExitCodes.ERROR&&i.test(e)}t.hasBranchDeletionError=hasBranchDeletionError},9264:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(4446);const n=r(847);const o=[new n.LineParser(/^(\*\s)?\((?:HEAD )?detached (?:from|at) (\S+)\)\s+([a-z0-9]+)\s(.*)$/,(e,[t,r,s,n])=>{e.push(!!t,true,r,s,n)}),new n.LineParser(/^(\*\s)?(\S+)\s+([a-z0-9]+)\s(.*)$/,(e,[t,r,s,n])=>{e.push(!!t,false,r,s,n)})];t.parseBranchSummary=function(e){return n.parseStringResponse(new s.BranchSummaryResult,o,e)}},6412:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(1651);const n=r(847);const o=r(5658);const i=[new n.LineParser(/^Auto-merging\s+(.+)$/,(e,[t])=>{e.merges.push(t)}),new n.LineParser(/^CONFLICT\s+\((.+)\): Merge conflict in (.+)$/,(e,[t,r])=>{e.conflicts.push(new s.MergeSummaryConflict(t,r))}),new n.LineParser(/^CONFLICT\s+\((.+\/delete)\): (.+) deleted in (.+) and/,(e,[t,r,n])=>{e.conflicts.push(new s.MergeSummaryConflict(t,r,{deleteRef:n}))}),new n.LineParser(/^CONFLICT\s+\((.+)\):/,(e,[t])=>{e.conflicts.push(new s.MergeSummaryConflict(t,null))}),new n.LineParser(/^Automatic merge failed;\s+(.+)$/,(e,[t])=>{e.result=t})];t.parseMergeResult=((e,r)=>{return Object.assign(t.parseMergeDetail(e,r),o.parsePullResult(e,r))});t.parseMergeDetail=(e=>{return n.parseStringResponse(new s.MergeSummaryDetail,i,e)})},7444:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(847);const n=[new s.LineParser(/^Renaming (.+) to (.+)$/,(e,[t,r])=>{e.moves.push({from:t,to:r})})];t.parseMoveResult=function(e){return s.parseStringResponse({moves:[]},n,e)}},5658:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(3567);const n=r(847);const o=r(2661);const i=/^\s*(.+?)\s+\|\s+\d+\s*(\+*)(-*)/;const a=/(\d+)\D+((\d+)\D+\(\+\))?(\D+(\d+)\D+\(-\))?/;const c=/^(create|delete) mode \d+ (.+)/;const u=[new n.LineParser(i,(e,[t,r,s])=>{e.files.push(t);if(r){e.insertions[t]=r.length}if(s){e.deletions[t]=s.length}}),new n.LineParser(a,(e,[t,,r,,s])=>{if(r!==undefined||s!==undefined){e.summary.changes=+t||0;e.summary.insertions=+r||0;e.summary.deletions=+s||0;return true}return false}),new n.LineParser(c,(e,[t,r])=>{n.append(e.files,r);n.append(t==="create"?e.created:e.deleted,r)})];t.parsePullDetail=((e,t)=>{return n.parseStringResponse(new s.PullSummary,u,`${e}\n${t}`)});t.parsePullResult=((e,r)=>{return Object.assign(new s.PullSummary,t.parsePullDetail(e,r),o.parseRemoteMessages(e,r))})},8530:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(847);const n=r(2661);function pushResultPushedItem(e,t,r){const s=r.includes("deleted");const n=r.includes("tag")||/^refs\/tags/.test(e);const o=!r.includes("new");return{deleted:s,tag:n,branch:!n,new:!o,alreadyUpdated:o,local:e,remote:t}}const o=[new s.LineParser(/^Pushing to (.+)$/,(e,[t])=>{e.repo=t}),new s.LineParser(/^updating local tracking ref '(.+)'/,(e,[t])=>{e.ref=Object.assign(Object.assign({},e.ref||{}),{local:t})}),new s.LineParser(/^[*-=]\s+([^:]+):(\S+)\s+\[(.+)]$/,(e,[t,r,s])=>{e.pushed.push(pushResultPushedItem(t,r,s))}),new s.LineParser(/^Branch '([^']+)' set up to track remote branch '([^']+)' from '([^']+)'/,(e,[t,r,s])=>{e.branch=Object.assign(Object.assign({},e.branch||{}),{local:t,remote:r,remoteName:s})}),new s.LineParser(/^([^:]+):(\S+)\s+([a-z0-9]+)\.\.([a-z0-9]+)$/,(e,[t,r,s,n])=>{e.update={head:{local:t,remote:r},hash:{from:s,to:n}}})];t.parsePushResult=((e,r)=>{const s=t.parsePushDetail(e,r);const o=n.parseRemoteMessages(e,r);return Object.assign(Object.assign({},s),o)});t.parsePushDetail=((e,t)=>{return s.parseStringResponse({pushed:[]},o,`${e}\n${t}`)})},2661:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(847);const n=r(3565);const o=[new s.RemoteLineParser(/^remote:\s*(.+)$/,(e,[t])=>{e.remoteMessages.all.push(t.trim());return false}),...n.remoteMessagesObjectParsers,new s.RemoteLineParser([/create a (?:pull|merge) request/i,/\s(https?:\/\/\S+)$/],(e,[t])=>{e.remoteMessages.pullRequestUrl=t}),new s.RemoteLineParser([/found (\d+) vulnerabilities.+\(([^)]+)\)/i,/\s(https?:\/\/\S+)$/],(e,[t,r,n])=>{e.remoteMessages.vulnerabilities={count:s.asNumber(t),summary:r,url:n}})];function parseRemoteMessages(e,t){return s.parseStringResponse({remoteMessages:new RemoteMessageSummary},o,t)}t.parseRemoteMessages=parseRemoteMessages;class RemoteMessageSummary{constructor(){this.all=[]}}t.RemoteMessageSummary=RemoteMessageSummary},3565:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(847);function objectEnumerationResult(e){return e.objects=e.objects||{compressing:0,counting:0,enumerating:0,packReused:0,reused:{count:0,delta:0},total:{count:0,delta:0}}}function asObjectCount(e){const t=/^\s*(\d+)/.exec(e);const r=/delta (\d+)/i.exec(e);return{count:s.asNumber(t&&t[1]||"0"),delta:s.asNumber(r&&r[1]||"0")}}t.remoteMessagesObjectParsers=[new s.RemoteLineParser(/^remote:\s*(enumerating|counting|compressing) objects: (\d+),/i,(e,[t,r])=>{const n=t.toLowerCase();const o=objectEnumerationResult(e.remoteMessages);Object.assign(o,{[n]:s.asNumber(r)})}),new s.RemoteLineParser(/^remote:\s*(enumerating|counting|compressing) objects: \d+% \(\d+\/(\d+)\),/i,(e,[t,r])=>{const n=t.toLowerCase();const o=objectEnumerationResult(e.remoteMessages);Object.assign(o,{[n]:s.asNumber(r)})}),new s.RemoteLineParser(/total ([^,]+), reused ([^,]+), pack-reused (\d+)/i,(e,[t,r,n])=>{const o=objectEnumerationResult(e.remoteMessages);o.total=asObjectCount(t);o.reused=asObjectCount(r);o.packReused=s.asNumber(n)})]},3755:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});class BranchDeletionBatch{constructor(){this.all=[];this.branches={};this.errors=[]}get success(){return!this.errors.length}}t.BranchDeletionBatch=BranchDeletionBatch;function branchDeletionSuccess(e,t){return{branch:e,hash:t,success:true}}t.branchDeletionSuccess=branchDeletionSuccess;function branchDeletionFailure(e){return{branch:e,hash:null,success:false}}t.branchDeletionFailure=branchDeletionFailure;function isSingleBranchDeleteFailure(e){return e.success}t.isSingleBranchDeleteFailure=isSingleBranchDeleteFailure},4446:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});class BranchSummaryResult{constructor(){this.all=[];this.branches={};this.current="";this.detached=false}push(e,t,r,s,n){if(e){this.detached=t;this.current=r}this.all.push(r);this.branches[r]={current:e,name:r,commit:s,label:n}}}t.BranchSummaryResult=BranchSummaryResult},9926:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t.parseCheckIgnore=(e=>{return e.split(/\n/g).map(e=>e.trim()).filter(e=>!!e)})},5689:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(847);class CleanResponse{constructor(e){this.dryRun=e;this.paths=[];this.files=[];this.folders=[]}}t.CleanResponse=CleanResponse;const n=/^[a-z]+\s*/i;const o=/^[a-z]+\s+[a-z]+\s*/i;const i=/\/$/;function cleanSummaryParser(e,t){const r=new CleanResponse(e);const a=e?o:n;s.toLinesWithContent(t).forEach(e=>{const t=e.replace(a,"");r.paths.push(t);(i.test(t)?r.folders:r.files).push(t)});return r}t.cleanSummaryParser=cleanSummaryParser},7219:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(847);class ConfigList{constructor(){this.files=[];this.values=Object.create(null)}get all(){if(!this._all){this._all=this.files.reduce((e,t)=>{return Object.assign(e,this.values[t])},{})}return this._all}addFile(e){if(!(e in this.values)){const t=s.last(this.files);this.values[e]=t?Object.create(this.values[t]):{};this.files.push(e)}return this.values[e]}addValue(e,t,r){const s=this.addFile(e);if(!s.hasOwnProperty(t)){s[t]=r}else if(Array.isArray(s[t])){s[t].push(r)}else{s[t]=[s[t],r]}this._all=undefined}}t.ConfigList=ConfigList;function configListParser(e){const t=new ConfigList;const r=e.split("\0");for(let e=0,n=r.length-1;e<n;){const n=configFilePath(r[e++]);const[o,i]=s.splitOn(r[e++],"\n");t.addValue(n,o,i)}return t}t.configListParser=configListParser;function configFilePath(e){return e.replace(/^(file):/,"")}},860:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t.fromPathRegex=/^(.+) -> (.+)$/;class FileStatusSummary{constructor(e,r,s){this.path=e;this.index=r;this.working_dir=s;if("R"===r+s){const r=t.fromPathRegex.exec(e)||[null,e,e];this.from=r[1]||"";this.path=r[2]||""}}}t.FileStatusSummary=FileStatusSummary},9999:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(847);function parseGetRemotes(e){const t={};forEach(e,([e])=>t[e]={name:e});return Object.values(t)}t.parseGetRemotes=parseGetRemotes;function parseGetRemotesVerbose(e){const t={};forEach(e,([e,r,s])=>{if(!t.hasOwnProperty(e)){t[e]={name:e,refs:{fetch:"",push:""}}}if(s&&r){t[e].refs[s.replace(/[^a-z]/g,"")]=r}});return Object.values(t)}t.parseGetRemotesVerbose=parseGetRemotesVerbose;function forEach(e,t){s.forEachLineWithContent(e,e=>t(e.split(/\s+/)))}},8690:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});class InitSummary{constructor(e,t,r,s){this.bare=e;this.path=t;this.existing=r;this.gitDir=s}}t.InitSummary=InitSummary;const r=/^Init.+ repository in (.+)$/;const s=/^Rein.+ in (.+)$/;function parseInit(e,t,n){const o=String(n).trim();let i;if(i=r.exec(o)){return new InitSummary(e,t,false,i[1])}if(i=s.exec(o)){return new InitSummary(e,t,true,i[1])}let a="";const c=o.split(" ");while(c.length){const e=c.shift();if(e==="in"){a=c.join(" ");break}}return new InitSummary(e,t,/^re/i.test(o),a)}t.parseInit=parseInit},1651:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});class MergeSummaryConflict{constructor(e,t=null,r){this.reason=e;this.file=t;this.meta=r}toString(){return`${this.file}:${this.reason}`}}t.MergeSummaryConflict=MergeSummaryConflict;class MergeSummaryDetail{constructor(){this.conflicts=[];this.merges=[];this.result="success"}get failed(){return this.conflicts.length>0}get reason(){return this.result}toString(){if(this.conflicts.length){return`CONFLICTS: ${this.conflicts.join(", ")}`}return"OK"}}t.MergeSummaryDetail=MergeSummaryDetail},3567:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});class PullSummary{constructor(){this.remoteMessages={all:[]};this.created=[];this.deleted=[];this.files=[];this.deletions={};this.insertions={};this.summary={changes:0,deletions:0,insertions:0}}}t.PullSummary=PullSummary},6790:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(860);class StatusSummary{constructor(){this.not_added=[];this.conflicted=[];this.created=[];this.deleted=[];this.modified=[];this.renamed=[];this.files=[];this.staged=[];this.ahead=0;this.behind=0;this.current=null;this.tracking=null}isClean(){return!this.files.length}}t.StatusSummary=StatusSummary;t.StatusSummaryParsers={"##":function(e,t){const r=/ahead (\d+)/;const s=/behind (\d+)/;const n=/^(.+?(?=(?:\.{3}|\s|$)))/;const o=/\.{3}(\S*)/;const i=/\son\s([\S]+)$/;let a;a=r.exec(e);t.ahead=a&&+a[1]||0;a=s.exec(e);t.behind=a&&+a[1]||0;a=n.exec(e);t.current=a&&a[1];a=o.exec(e);t.tracking=a&&a[1];a=i.exec(e);t.current=a&&a[1]||t.current},"??":function(e,t){t.not_added.push(e)},A:function(e,t){t.created.push(e)},AM:function(e,t){t.created.push(e)},D:function(e,t){t.deleted.push(e)},M:function(e,t,r){t.modified.push(e);if(r==="M"){t.staged.push(e)}},R:function(e,t){const r=/^(.+) -> (.+)$/.exec(e)||[null,e,e];t.renamed.push({from:String(r[1]),to:String(r[2])})},UU:function(e,t){t.conflicted.push(e)}};t.StatusSummaryParsers.MM=t.StatusSummaryParsers.M;t.StatusSummaryParsers.AA=t.StatusSummaryParsers.UU;t.StatusSummaryParsers.UD=t.StatusSummaryParsers.UU;t.StatusSummaryParsers.DU=t.StatusSummaryParsers.UU;t.StatusSummaryParsers.DD=t.StatusSummaryParsers.UU;t.StatusSummaryParsers.AU=t.StatusSummaryParsers.UU;t.StatusSummaryParsers.UA=t.StatusSummaryParsers.UU;t.parseStatusSummary=function(e){let t;const r=e.trim().split("\n");const n=new StatusSummary;for(let e=0,o=r.length;e<o;e++){t=splitLine(r[e]);if(!t){continue}if(t.handler){t.handler(t.path,n,t.index,t.workingDir)}if(t.code!=="##"){n.files.push(new s.FileStatusSummary(t.path,t.index,t.workingDir))}}return n};function splitLine(e){let r=e.trim().match(/(..?)(\s+)(.*)/);if(!r||!r[1].trim()){r=e.trim().match(/(..?)\s+(.*)/)}if(!r){return}let s=r[1];if(r[2].length>1){s+=" "}if(s.length===1&&r[2].length===1){s=" "+s}return{raw:s,code:s.trim(),index:s.charAt(0),workingDir:s.charAt(1),handler:t.StatusSummaryParsers[s.trim()],path:r[3]}}},4539:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});class TagList{constructor(e,t){this.all=e;this.latest=t}}t.TagList=TagList;t.parseTagList=function(e,t=false){const r=e.split("\n").map(trimmed).filter(Boolean);if(!t){r.sort(function(e,t){const r=e.split(".");const s=t.split(".");if(r.length===1||s.length===1){return singleSorted(toNumber(r[0]),toNumber(s[0]))}for(let e=0,t=Math.max(r.length,s.length);e<t;e++){const t=sorted(toNumber(r[e]),toNumber(s[e]));if(t){return t}}return 0})}const s=t?r[0]:[...r].reverse().find(e=>e.indexOf(".")>=0);return new TagList(r,s)};function singleSorted(e,t){const r=isNaN(e);const s=isNaN(t);if(r!==s){return r?1:-1}return r?sorted(e,t):0}function sorted(e,t){return e===t?0:e>t?1:-1}function trimmed(e){return e.trim()}function toNumber(e){if(typeof e==="string"){return parseInt(e.replace(/^\D+/g,""),10)||0}return 0}},8543:function(e,t,r){"use strict";var s=this&&this.__awaiter||function(e,t,r,s){function adopt(e){return e instanceof r?e:new r(function(t){t(e)})}return new(r||(r=Promise))(function(r,n){function fulfilled(e){try{step(s.next(e))}catch(e){n(e)}}function rejected(e){try{step(s["throw"](e))}catch(e){n(e)}}function step(e){e.done?r(e.value):adopt(e.value).then(fulfilled,rejected)}step((s=s.apply(e,t||[])).next())})};Object.defineProperty(t,"__esModule",{value:true});const n=r(3129);const o=r(4732);const i=r(2815);const a=r(6676);const c=r(847);class GitExecutorChain{constructor(e,t){this._executor=e;this._scheduler=t;this._chain=Promise.resolve();this._queue=new a.TasksPendingQueue}get binary(){return this._executor.binary}get outputHandler(){return this._executor.outputHandler}get cwd(){return this._executor.cwd}get env(){return this._executor.env}push(e){this._queue.push(e);return this._chain=this._chain.then(()=>this.attemptTask(e))}attemptTask(e){return s(this,void 0,void 0,function*(){const t=yield this._scheduler.next();const r=()=>this._queue.complete(e);try{const{logger:s}=this._queue.attempt(e);return yield i.isEmptyTask(e)?this.attemptEmptyTask(e,s):this.attemptRemoteTask(e,s)}catch(t){throw this.onFatalException(e,t)}finally{r();t()}})}onFatalException(e,t){const r=t instanceof o.GitError?Object.assign(t,{task:e}):new o.GitError(e,t&&String(t));this._chain=Promise.resolve();this._queue.fatal(r);return r}attemptRemoteTask(e,t){return s(this,void 0,void 0,function*(){const r=yield this.gitResponse(this.binary,e.commands,this.outputHandler,t.step("SPAWN"));const s=yield this.handleTaskData(e,r,t.step("HANDLE"));t(`passing response to task's parser as a %s`,e.format);if(i.isBufferTask(e)){return c.callTaskParser(e.parser,s)}return c.callTaskParser(e.parser,s.asStrings())})}attemptEmptyTask(e,t){return s(this,void 0,void 0,function*(){t(`empty task bypassing child process to call to task's parser`);return e.parser()})}handleTaskData({onError:e,concatStdErr:t},{exitCode:r,stdOut:s,stdErr:n},o){return new Promise((i,a)=>{o(`Preparing to handle process response exitCode=%d stdOut=`,r);if(r&&n.length&&e){o.info(`exitCode=%s handling with custom error handler`);o(`concatenate stdErr to stdOut: %j`,t);return e(r,Buffer.concat([...t?s:[],...n]).toString("utf-8"),e=>{o.info(`custom error handler treated as success`);o(`custom error returned a %s`,c.objectToString(e));i(new c.GitOutputStreams(Buffer.isBuffer(e)?e:Buffer.from(String(e)),Buffer.concat(n)))},a)}if(r&&n.length){o.info(`exitCode=%s treated as error when then child process has written to stdErr`);return a(Buffer.concat(n).toString("utf-8"))}if(t){o(`concatenating stdErr onto stdOut before processing`);o(`stdErr: $O`,n);s.push(...n)}o.info(`retrieving task output complete`);i(new c.GitOutputStreams(Buffer.concat(s),Buffer.concat(n)))})}gitResponse(e,t,r,o){return s(this,void 0,void 0,function*(){const s=o.sibling("output");const i={cwd:this.cwd,env:this.env,windowsHide:true};return new Promise(a=>{const c=[];const u=[];let l=false;function attemptClose(e,t="retry"){if(l||u.length||c.length){o.info(`exitCode=%s event=%s`,e,t);a({stdOut:c,stdErr:u,exitCode:e});l=true;s.destroy()}if(!l){l=true;setTimeout(()=>attemptClose(e,"deferred"),50);o("received %s event before content on stdOut/stdErr",t)}}o.info(`%s %o`,e,t);o("%O",i);const p=n.spawn(e,t,i);p.stdout.on("data",onDataReceived(c,"stdOut",o,s.step("stdOut")));p.stderr.on("data",onDataReceived(u,"stdErr",o,s.step("stdErr")));p.on("error",onErrorReceived(u,o));p.on("close",e=>attemptClose(e,"close"));p.on("exit",e=>attemptClose(e,"exit"));if(r){o(`Passing child process stdOut/stdErr to custom outputHandler`);r(e,p.stdout,p.stderr,[...t])}})})}}t.GitExecutorChain=GitExecutorChain;function onErrorReceived(e,t){return r=>{t(`[ERROR] child process exception %o`,r);e.push(Buffer.from(String(r.stack),"ascii"))}}function onDataReceived(e,t,r,s){return n=>{r(`%s received %L bytes`,t,n);s(`%B`,n);e.push(n)}}},4701:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(8543);class GitExecutor{constructor(e="git",t,r){this.binary=e;this.cwd=t;this._scheduler=r;this._chain=new s.GitExecutorChain(this,this._scheduler)}chain(){return new s.GitExecutorChain(this,this._scheduler)}push(e){return this._chain.push(e)}}t.GitExecutor=GitExecutor},941:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(5131);const n=["customBinary","env","outputHandler","silent"];const o=["add","addAnnotatedTag","addConfig","addRemote","addTag","binaryCatFile","branch","branchLocal","catFile","checkIgnore","checkIsRepo","checkout","checkoutBranch","checkoutLatestTag","checkoutLocalBranch","clean","clone","commit","cwd","deleteLocalBranch","deleteLocalBranches","diff","diffSummary","exec","fetch","getRemotes","init","listConfig","listRemote","log","merge","mergeFromTo","mirror","mv","pull","push","pushTags","raw","rebase","remote","removeRemote","reset","revert","revparse","rm","rmKeepLocal","show","stash","stashList","status","subModule","submoduleAdd","submoduleInit","submoduleUpdate","tag","tags","updateServerInfo"];const{gitInstanceFactory:i}=r(1949);function gitP(...e){let t;let r=Promise.resolve();try{t=i(...e)}catch(e){r=Promise.reject(e)}function builderReturn(){return s}function chainReturn(){return r}const s=[...n,...o].reduce((e,r)=>{const s=o.includes(r);const n=s?asyncWrapper(r,t):syncWrapper(r,t,e);const i=s?chainReturn:builderReturn;Object.defineProperty(e,r,{enumerable:false,configurable:false,value:t?n:i});return e},{});return s;function asyncWrapper(e,t){return function(...s){if(typeof s[s.length]==="function"){throw new TypeError("Promise interface requires that handlers are not supplied inline, "+"trailing function not allowed in call to "+e)}return r.then(function(){return new Promise(function(r,n){const o=(e,t)=>{if(e){return n(toError(e))}r(t)};s.push(o);t[e].apply(t,s)})})}}function syncWrapper(e,t,r){return(...s)=>{t[e](...s);return r}}}t.gitP=gitP;function toError(e){if(e instanceof Error){return e}if(typeof e==="string"){return new Error(e)}return new s.GitResponseError(e)}},3421:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(847);const n=r(9819);const o=r(7178);const i=o.createLogger("","scheduler");const a=(()=>{let e=0;return()=>{e++;const{promise:t,done:r}=n.createDeferred();return{promise:t,done:r,id:e}}})();class Scheduler{constructor(e=2){this.concurrency=e;this.pending=[];this.running=[];i(`Constructed, concurrency=%s`,e)}schedule(){if(!this.pending.length||this.running.length>=this.concurrency){i(`Schedule attempt ignored, pending=%s running=%s concurrency=%s`,this.pending.length,this.running.length,this.concurrency);return}const e=s.append(this.running,this.pending.shift());i(`Attempting id=%s`,e.id);e.done(()=>{i(`Completing id=`,e.id);s.remove(this.running,e);this.schedule()})}next(){const{promise:e,id:t}=s.append(this.pending,a());i(`Scheduling id=%s`,t);this.schedule();return e}}t.Scheduler=Scheduler},6676:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(7178);const n=r(4732);class TasksPendingQueue{constructor(e="GitExecutor"){this.logLabel=e;this._queue=new Map}withProgress(e){return this._queue.get(e)}createProgress(e){const t=TasksPendingQueue.getName(e.commands[0]);const r=s.createLogger(this.logLabel,t);return{task:e,logger:r,name:t}}push(e){const t=this.createProgress(e);t.logger("Adding task to the queue, commands = %o",e.commands);this._queue.set(e,t);return t}fatal(e){for(const[t,{logger:r}]of Array.from(this._queue.entries())){if(t===e.task){r.info(`Failed %o`,e);r(`Fatal exception, any as-yet un-started tasks run through this executor will not be attempted`)}else{r.info(`A fatal exception occurred in a previous task, the queue has been purged: %o`,e.message)}this.complete(t)}if(this._queue.size!==0){throw new Error(`Queue size should be zero after fatal: ${this._queue.size}`)}}complete(e){const t=this.withProgress(e);if(t){t.logger.destroy();this._queue.delete(e)}}attempt(e){const t=this.withProgress(e);if(!t){throw new n.GitError(undefined,"TasksPendingQueue: attempt called for an unknown task")}t.logger("Starting task");return t}static getName(e="empty"){return`task:${e}:${++TasksPendingQueue.counter}`}}t.TasksPendingQueue=TasksPendingQueue;TasksPendingQueue.counter=0},8850:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(4732);const n=r(847);function taskCallback(e,t,r=n.NOOP){const o=e=>{r(null,e)};const i=t=>{if((t===null||t===void 0?void 0:t.task)===e){if(t instanceof s.GitResponseError){return r(addDeprecationNoticeToError(t))}r(t)}};t.then(o,i)}t.taskCallback=taskCallback;function addDeprecationNoticeToError(e){let t=e=>{console.warn(`simple-git deprecation notice: accessing GitResponseError.${e} should be GitResponseError.git.${e}`);t=n.NOOP};return Object.create(e,Object.getOwnPropertyNames(e.git).reduce(descriptorReducer,{}));function descriptorReducer(r,s){if(s in e){return r}r[s]={enumerable:false,configurable:false,get(){t(s);return e.git[s]}};return r}}},17:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(5131);const n=r(6086);const o=r(9264);function containsDeleteBranchCommand(e){const t=["-d","-D","--delete"];return e.some(e=>t.includes(e))}t.containsDeleteBranchCommand=containsDeleteBranchCommand;function branchTask(e){const t=containsDeleteBranchCommand(e);const r=["branch",...e];if(r.length===1){r.push("-a")}if(!r.includes("-v")){r.splice(1,0,"-v")}return{format:"utf-8",commands:r,parser(e,r){if(t){return n.parseBranchDeletions(e,r).all[0]}return o.parseBranchSummary(e,r)}}}t.branchTask=branchTask;function branchLocalTask(){return{format:"utf-8",commands:["branch","-v"],parser(e,t){return o.parseBranchSummary(e,t)}}}t.branchLocalTask=branchLocalTask;function deleteBranchesTask(e,t=false){return{format:"utf-8",commands:["branch","-v",t?"-D":"-d",...e],parser(e,t){return n.parseBranchDeletions(e,t)},onError(e,t,r,s){if(!n.hasBranchDeletionError(t,e)){return s(t)}r(t)},concatStdErr:true}}t.deleteBranchesTask=deleteBranchesTask;function deleteBranchTask(e,t=false){const r={format:"utf-8",commands:["branch","-v",t?"-D":"-d",e],parser(t,r){return n.parseBranchDeletions(t,r).branches[e]},onError(e,t,o,i){if(!n.hasBranchDeletionError(t,e)){return i(t)}throw new s.GitResponseError(r.parser(t,""),t)},concatStdErr:true};return r}t.deleteBranchTask=deleteBranchTask},221:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(847);var n;(function(e){e["BARE"]="bare";e["IN_TREE"]="tree";e["IS_REPO_ROOT"]="root"})(n=t.CheckRepoActions||(t.CheckRepoActions={}));const o=(e,t,r,n)=>{if(e===s.ExitCodes.UNCLEAN&&isNotRepoMessage(t)){return r("false")}n(t)};const i=e=>{return e.trim()==="true"};function checkIsRepoTask(e){switch(e){case n.BARE:return checkIsBareRepoTask();case n.IS_REPO_ROOT:return checkIsRepoRootTask()}const t=["rev-parse","--is-inside-work-tree"];return{commands:t,format:"utf-8",onError:o,parser:i}}t.checkIsRepoTask=checkIsRepoTask;function checkIsRepoRootTask(){const e=["rev-parse","--git-dir"];return{commands:e,format:"utf-8",onError:o,parser(e){return/^\.(git)?$/.test(e.trim())}}}t.checkIsRepoRootTask=checkIsRepoRootTask;function checkIsBareRepoTask(){const e=["rev-parse","--is-bare-repository"];return{commands:e,format:"utf-8",onError:o,parser:i}}t.checkIsBareRepoTask=checkIsBareRepoTask;function isNotRepoMessage(e){return/(Not a git repository|Kein Git-Repository)/i.test(e)}},4386:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(5689);const n=r(847);const o=r(2815);t.CONFIG_ERROR_INTERACTIVE_MODE="Git clean interactive mode is not supported";t.CONFIG_ERROR_MODE_REQUIRED='Git clean mode parameter ("n" or "f") is required';t.CONFIG_ERROR_UNKNOWN_OPTION="Git clean unknown option found in: ";var i;(function(e){e["DRY_RUN"]="n";e["FORCE"]="f";e["IGNORED_INCLUDED"]="x";e["IGNORED_ONLY"]="X";e["EXCLUDING"]="e";e["QUIET"]="q";e["RECURSIVE"]="d"})(i=t.CleanOptions||(t.CleanOptions={}));const a=new Set(["i",...n.asStringArray(Object.values(i))]);function cleanWithOptionsTask(e,r){const{cleanMode:s,options:n,valid:i}=getCleanOptions(e);if(!s){return o.configurationErrorTask(t.CONFIG_ERROR_MODE_REQUIRED)}if(!i.options){return o.configurationErrorTask(t.CONFIG_ERROR_UNKNOWN_OPTION+JSON.stringify(e))}n.push(...r);if(n.some(isInteractiveMode)){return o.configurationErrorTask(t.CONFIG_ERROR_INTERACTIVE_MODE)}return cleanTask(s,n)}t.cleanWithOptionsTask=cleanWithOptionsTask;function cleanTask(e,t){const r=["clean",`-${e}`,...t];return{commands:r,format:"utf-8",parser(t){return s.cleanSummaryParser(e===i.DRY_RUN,t)}}}t.cleanTask=cleanTask;function isCleanOptionsArray(e){return Array.isArray(e)&&e.every(e=>a.has(e))}t.isCleanOptionsArray=isCleanOptionsArray;function getCleanOptions(e){let t;let r=[];let s={cleanMode:false,options:true};e.replace(/[^a-z]i/g,"").split("").forEach(e=>{if(isCleanMode(e)){t=e;s.cleanMode=true}else{s.options=s.options&&isKnownOption(r[r.length]=`-${e}`)}});return{cleanMode:t,options:r,valid:s}}function isCleanMode(e){return e===i.FORCE||e===i.DRY_RUN}function isKnownOption(e){return/^-[a-z]$/i.test(e)&&a.has(e.charAt(1))}function isInteractiveMode(e){if(/^-[^\-]/.test(e)){return e.indexOf("i")>0}return e==="--interactive"}},3173:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(2815);const n=r(847);function cloneTask(e,t,r){const n=["clone",...r];if(typeof e==="string"){n.push(e)}if(typeof t==="string"){n.push(t)}return s.straightThroughStringTask(n)}t.cloneTask=cloneTask;function cloneMirrorTask(e,t,r){n.append(r,"--mirror");return cloneTask(e,t,r)}t.cloneMirrorTask=cloneMirrorTask},7597:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(7219);function addConfigTask(e,t,r=false){const s=["config","--local"];if(r){s.push("--add")}s.push(e,t);return{commands:s,format:"utf-8",parser(e){return e}}}t.addConfigTask=addConfigTask;function listConfigTask(){return{commands:["config","--list","--show-origin","--null"],format:"utf-8",parser(e){return s.configListParser(e)}}}t.listConfigTask=listConfigTask},8199:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(2815);function hashObjectTask(e,t){const r=["hash-object",e];if(t){r.push("-w")}return s.straightThroughStringTask(r,true)}t.hashObjectTask=hashObjectTask},6016:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(8690);const n="--bare";function hasBareCommand(e){return e.includes(n)}function initTask(e=false,t,r){const o=["init",...r];if(e&&!hasBareCommand(o)){o.splice(1,0,n)}return{commands:o,concatStdErr:false,format:"utf-8",parser(e){return s.parseInit(o.includes("--bare"),t,e)}}}t.initTask=initTask},8829:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(4732);const n=r(6412);const o=r(2815);function mergeTask(e){if(!e.length){return o.configurationErrorTask("Git.merge requires at least one option")}return{commands:["merge",...e],format:"utf-8",parser(e,t){const r=n.parseMergeResult(e,t);if(r.failed){throw new s.GitResponseError(r)}return r}}}t.mergeTask=mergeTask},6520:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(7444);const n=r(847);function moveTask(e,t){return{commands:["mv","-v",...n.asArray(e),t],format:"utf-8",parser(e,t){return s.parseMoveResult(e,t)}}}t.moveTask=moveTask},4636:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(5658);function pullTask(e,t,r){const n=["pull",...r];if(e&&t){n.splice(1,0,e,t)}return{commands:n,format:"utf-8",parser(e,t){return s.parsePullResult(e,t)}}}t.pullTask=pullTask},1435:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(8530);const n=r(847);function pushTagsTask(e={},t){n.append(t,"--tags");return pushTask(e,t)}t.pushTagsTask=pushTagsTask;function pushTask(e={},t){const r=["push",...t];if(e.branch){r.splice(1,0,e.branch)}if(e.remote){r.splice(1,0,e.remote)}n.remove(r,"-v");n.append(r,"--verbose");n.append(r,"--porcelain");return{commands:r,format:"utf-8",parser:s.parsePushResult}}t.pushTask=pushTask},9866:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(2815);const n=r(9999);function addRemoteTask(e,t,r=[]){return s.straightThroughStringTask(["remote","add",...r,e,t])}t.addRemoteTask=addRemoteTask;function getRemotesTask(e){const t=["remote"];if(e){t.push("-v")}return{commands:t,format:"utf-8",parser:e?n.parseGetRemotesVerbose:n.parseGetRemotes}}t.getRemotesTask=getRemotesTask;function listRemotesTask(e=[]){const t=[...e];if(t[0]!=="ls-remote"){t.unshift("ls-remote")}return s.straightThroughStringTask(t)}t.listRemotesTask=listRemotesTask;function remoteTask(e=[]){const t=[...e];if(t[0]!=="remote"){t.unshift("remote")}return s.straightThroughStringTask(t)}t.remoteTask=remoteTask;function removeRemoteTask(e){return s.straightThroughStringTask(["remote","remove",e])}t.removeRemoteTask=removeRemoteTask},2377:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(2815);var n;(function(e){e["MIXED"]="mixed";e["SOFT"]="soft";e["HARD"]="hard";e["MERGE"]="merge";e["KEEP"]="keep"})(n=t.ResetMode||(t.ResetMode={}));const o=Array.from(Object.values(n));function resetTask(e,t){const r=["reset"];if(isValidResetMode(e)){r.push(`--${e}`)}r.push(...t);return s.straightThroughStringTask(r)}t.resetTask=resetTask;function getResetMode(e){if(isValidResetMode(e)){return e}switch(typeof e){case"string":case"undefined":return n.SOFT}return}t.getResetMode=getResetMode;function isValidResetMode(e){return o.includes(e)}},9197:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(6790);function statusTask(e){return{format:"utf-8",commands:["status","--porcelain","-b","-u",...e],parser(e){return s.parseStatusSummary(e)}}}t.statusTask=statusTask},8772:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(2815);function addSubModuleTask(e,t){return subModuleTask(["add",e,t])}t.addSubModuleTask=addSubModuleTask;function initSubModuleTask(e){return subModuleTask(["init",...e])}t.initSubModuleTask=initSubModuleTask;function subModuleTask(e){const t=[...e];if(t[0]!=="submodule"){t.unshift("submodule")}return s.straightThroughStringTask(t)}t.subModuleTask=subModuleTask;function updateSubModuleTask(e){return subModuleTask(["update",...e])}t.updateSubModuleTask=updateSubModuleTask},8540:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(4539);function tagListTask(e=[]){const t=e.some(e=>/^--sort=/.test(e));return{format:"utf-8",commands:["tag","-l",...e],parser(e){return s.parseTagList(e,t)}}}t.tagListTask=tagListTask;function addTagTask(e){return{format:"utf-8",commands:["tag",e],parser(){return{name:e}}}}t.addTagTask=addTagTask;function addAnnotatedTagTask(e,t){return{format:"utf-8",commands:["tag","-a","-m",t,e],parser(){return{name:e}}}}t.addAnnotatedTagTask=addAnnotatedTagTask},2815:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(740);t.EMPTY_COMMANDS=[];function adhocExecTask(e){return{commands:t.EMPTY_COMMANDS,format:"utf-8",parser:e}}t.adhocExecTask=adhocExecTask;function configurationErrorTask(e){return{commands:t.EMPTY_COMMANDS,format:"utf-8",parser(){throw typeof e==="string"?new s.TaskConfigurationError(e):e}}}t.configurationErrorTask=configurationErrorTask;function straightThroughStringTask(e,t=false){return{commands:e,format:"utf-8",parser(e){return t?String(e).trim():e}}}t.straightThroughStringTask=straightThroughStringTask;function isBufferTask(e){return e.format==="buffer"}t.isBufferTask=isBufferTask;function isEmptyTask(e){return!e.commands.length}t.isEmptyTask=isEmptyTask},7366:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(8237);function filterType(e,t,r){if(t(e)){return e}return arguments.length>2?r:undefined}t.filterType=filterType;t.filterArray=(e=>{return Array.isArray(e)});function filterPrimitives(e,t){return/number|string|boolean/.test(typeof e)&&(!t||!t.includes(typeof e))}t.filterPrimitives=filterPrimitives;t.filterString=(e=>{return typeof e==="string"});function filterPlainObject(e){return!!e&&s.objectToString(e)==="[object Object]"}t.filterPlainObject=filterPlainObject;function filterFunction(e){return typeof e==="function"}t.filterFunction=filterFunction;t.filterHasLength=(e=>{if(e==null||"number|boolean|function".includes(typeof e)){return false}return Array.isArray(e)||typeof e==="string"||typeof e.length==="number"})},2185:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});var r;(function(e){e[e["SUCCESS"]=0]="SUCCESS";e[e["ERROR"]=1]="ERROR";e[e["UNCLEAN"]=128]="UNCLEAN"})(r=t.ExitCodes||(t.ExitCodes={}))},6578:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});class GitOutputStreams{constructor(e,t){this.stdOut=e;this.stdErr=t}asStrings(){return new GitOutputStreams(this.stdOut.toString("utf8"),this.stdErr.toString("utf8"))}}t.GitOutputStreams=GitOutputStreams},847:(e,t,r)=>{"use strict";function __export(e){for(var r in e)if(!t.hasOwnProperty(r))t[r]=e[r]}Object.defineProperty(t,"__esModule",{value:true});__export(r(7366));__export(r(2185));__export(r(6578));__export(r(9536));__export(r(5218));__export(r(3546));__export(r(1351));__export(r(8237))},9536:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});class LineParser{constructor(e,t){this.matches=[];this.parse=((e,t)=>{this.resetMatches();if(!this._regExp.every((t,r)=>this.addMatch(t,r,e(r)))){return false}return this.useMatches(t,this.prepareMatches())!==false});this._regExp=Array.isArray(e)?e:[e];if(t){this.useMatches=t}}useMatches(e,t){throw new Error(`LineParser:useMatches not implemented`)}resetMatches(){this.matches.length=0}prepareMatches(){return this.matches}addMatch(e,t,r){const s=r&&e.exec(r);if(s){this.pushMatch(t,s)}return!!s}pushMatch(e,t){this.matches.push(...t.slice(1))}}t.LineParser=LineParser;class RemoteLineParser extends LineParser{addMatch(e,t,r){return/^remote:\s/.test(String(r))&&super.addMatch(e,t,r)}pushMatch(e,t){if(e>0||t.length>1){super.pushMatch(e,t)}}}t.RemoteLineParser=RemoteLineParser},5218:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const r={binary:"git",maxConcurrentProcesses:5};function createInstanceConfig(...e){const t=process.cwd();const s=Object.assign(Object.assign({baseDir:t},r),...e.filter(e=>typeof e==="object"&&e));s.baseDir=s.baseDir||t;return s}t.createInstanceConfig=createInstanceConfig},3546:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(7366);const n=r(8237);function appendTaskOptions(e,t=[]){if(!s.filterPlainObject(e)){return t}return Object.keys(e).reduce((t,r)=>{const n=e[r];if(s.filterPrimitives(n,["boolean"])){t.push(r+"="+n)}else{t.push(r)}return t},t)}t.appendTaskOptions=appendTaskOptions;function getTrailingOptions(e,t=0,r=false){const s=[];for(let r=0,n=t<0?e.length:t;r<n;r++){if("string|number".includes(typeof e[r])){s.push(String(e[r]))}}appendTaskOptions(trailingOptionsArgument(e),s);if(!r){s.push(...trailingArrayArgument(e))}return s}t.getTrailingOptions=getTrailingOptions;function trailingArrayArgument(e){const t=typeof n.last(e)==="function";return s.filterType(n.last(e,t?1:0),s.filterArray,[])}function trailingOptionsArgument(e){const t=s.filterFunction(n.last(e));return s.filterType(n.last(e,t?1:0),s.filterPlainObject)}t.trailingOptionsArgument=trailingOptionsArgument;function trailingFunctionArgument(e,t=true){const r=n.asFunction(n.last(e));return t||n.isUserFunction(r)?r:undefined}t.trailingFunctionArgument=trailingFunctionArgument},1351:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(8237);function callTaskParser(e,t){return e(t.stdOut,t.stdErr)}t.callTaskParser=callTaskParser;function parseStringResponse(e,t,r){for(let n=s.toLinesWithContent(r),o=0,i=n.length;o<i;o++){const r=(e=0)=>{if(o+e>=i){return}return n[o+e]};t.some(({parse:t})=>t(r,e))}return e}t.parseStringResponse=parseStringResponse},8237:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});const s=r(4751);t.NOOP=(()=>{});function asFunction(e){return typeof e==="function"?e:t.NOOP}t.asFunction=asFunction;function isUserFunction(e){return typeof e==="function"&&e!==t.NOOP}t.isUserFunction=isUserFunction;function splitOn(e,t){const r=e.indexOf(t);if(r<=0){return[e,""]}return[e.substr(0,r),e.substr(r+1)]}t.splitOn=splitOn;function first(e,t=0){return isArrayLike(e)&&e.length>t?e[t]:undefined}t.first=first;function last(e,t=0){if(isArrayLike(e)&&e.length>t){return e[e.length-1-t]}}t.last=last;function isArrayLike(e){return!!(e&&typeof e.length==="number")}function toLinesWithContent(e,t=true){return e.split("\n").reduce((e,r)=>{const s=t?r.trim():r;if(s){e.push(s)}return e},[])}t.toLinesWithContent=toLinesWithContent;function forEachLineWithContent(e,t){return toLinesWithContent(e,true).map(e=>t(e))}t.forEachLineWithContent=forEachLineWithContent;function folderExists(e){return s.exists(e,s.FOLDER)}t.folderExists=folderExists;function append(e,t){if(Array.isArray(e)){if(!e.includes(t)){e.push(t)}}else{e.add(t)}return t}t.append=append;function remove(e,t){if(Array.isArray(e)){const r=e.indexOf(t);if(r>=0){e.splice(r,1)}}else{e.delete(t)}return t}t.remove=remove;t.objectToString=Object.prototype.toString.call.bind(Object.prototype.toString);function asArray(e){return Array.isArray(e)?e:[e]}t.asArray=asArray;function asStringArray(e){return asArray(e).map(String)}t.asStringArray=asStringArray;function asNumber(e,t=0){if(e==null){return t}const r=parseInt(e,10);return isNaN(r)?t:r}t.asNumber=asNumber},921:e=>{e.exports=CommitSummary;function CommitSummary(){this.branch="";this.commit="";this.summary={changes:0,insertions:0,deletions:0};this.author=null}var t=/\[([^\s]+) ([^\]]+)/;var r=/\s*Author:\s(.+)/i;function setBranchFromCommit(e,t){if(t){e.branch=t[1];e.commit=t[2]}}function setSummaryFromCommit(e,t){if(e.branch&&t){e.summary.changes=parseInt(t[1],10)||0;e.summary.insertions=parseInt(t[2],10)||0;e.summary.deletions=parseInt(t[3],10)||0}}function setAuthorFromCommit(e,t){var r=t[1].split("<");var s=r.pop();if(s.indexOf("@")<=0){return}e.author={email:s.substr(0,s.length-1),name:r.join("<").trim()}}CommitSummary.parse=function(e){var s=e.trim().split("\n");var n=new CommitSummary;setBranchFromCommit(n,t.exec(s.shift()));if(r.test(s[0])){setAuthorFromCommit(n,r.exec(s.shift()))}setSummaryFromCommit(n,/(\d+)[^,]*(?:,\s*(\d+)[^,]*)?(?:,\s*(\d+))?/g.exec(s.shift()));return n}},7286:e=>{e.exports=DiffSummary;function DiffSummary(){this.files=[];this.insertions=0;this.deletions=0;this.changed=0}DiffSummary.prototype.insertions=0;DiffSummary.prototype.deletions=0;DiffSummary.prototype.changed=0;DiffSummary.parse=function(e){var t,r;var s=e.trim().split("\n");var n=new DiffSummary;var o=s.pop();if(o){o.trim().split(", ").forEach(function(e){var t=/(\d+)\s([a-z]+)/.exec(e);if(!t){return}if(/files?/.test(t[2])){n.changed=parseInt(t[1],10)}else{n[t[2].replace(/s$/,"")+"s"]=parseInt(t[1],10)}})}while(t=s.shift()){textFileChange(t,n.files)||binaryFileChange(t,n.files)}return n};function textFileChange(e,t){e=e.trim().match(/^(.+)\s+\|\s+(\d+)(\s+[+\-]+)?$/);if(e){var r=(e[3]||"").trim();t.push({file:e[1].trim(),changes:parseInt(e[2],10),insertions:r.replace(/-/g,"").length,deletions:r.replace(/\+/g,"").length,binary:false});return true}}function binaryFileChange(e,t){e=e.match(/^(.+) \|\s+Bin ([0-9.]+) -> ([0-9.]+) ([a-z]+)$/);if(e){t.push({file:e[1].trim(),before:+e[2],after:+e[3],binary:true});return true}}},5169:e=>{"use strict";function FetchSummary(e){this.raw=e;this.remote=null;this.branches=[];this.tags=[]}FetchSummary.parsers=[[/From (.+)$/,function(e,t){e.remote=t[0]}],[/\* \[new branch\]\s+(\S+)\s*\-> (.+)$/,function(e,t){e.branches.push({name:t[0],tracking:t[1]})}],[/\* \[new tag\]\s+(\S+)\s*\-> (.+)$/,function(e,t){e.tags.push({name:t[0],tracking:t[1]})}]];FetchSummary.parse=function(e){var t=new FetchSummary(e);String(e).trim().split("\n").forEach(function(e){var r=e.trim();FetchSummary.parsers.some(function(e){var s=e[0].exec(r);if(s){e[1](t,s.slice(1));return true}})});return t};e.exports=FetchSummary},6507:(e,t,r)=>{e.exports=ListLogSummary;var s=r(7286);function ListLogSummary(e){this.all=e;this.latest=e.length&&e[0]||null;this.total=e.length}ListLogSummary.prototype.all=null;ListLogSummary.prototype.latest=null;ListLogSummary.prototype.total=0;function ListLogLine(e,t){for(var r=0;r<t.length;r++){this[t[r]]=e[r]||""}}ListLogLine.prototype.diff=null;ListLogSummary.START_BOUNDARY="òòòòòò ";ListLogSummary.COMMIT_BOUNDARY=" òò";ListLogSummary.SPLITTER=" ò ";ListLogSummary.parse=function(e,t,r){r=r||["hash","date","message","refs","author_name","author_email"];return new ListLogSummary(e.trim().split(ListLogSummary.START_BOUNDARY).filter(function(e){return!!e.trim()}).map(function(e){var n=e.trim().split(ListLogSummary.COMMIT_BOUNDARY);var o=new ListLogLine(n[0].trim().split(t),r);if(n.length>1&&!!n[1].trim()){o.diff=s.parse(n[1])}return o}))}},5301:(e,t,r)=>{e.exports={CommitSummary:r(921),DiffSummary:r(7286),FetchSummary:r(5169),ListLogSummary:r(6507)}},9318:(e,t,r)=>{"use strict";const s=r(2087);const n=r(1621);const o=process.env;let i;if(n("no-color")||n("no-colors")||n("color=false")){i=false}else if(n("color")||n("colors")||n("color=true")||n("color=always")){i=true}if("FORCE_COLOR"in o){i=o.FORCE_COLOR.length===0||parseInt(o.FORCE_COLOR,10)!==0}function translateLevel(e){if(e===0){return false}return{level:e,hasBasic:true,has256:e>=2,has16m:e>=3}}function supportsColor(e){if(i===false){return 0}if(n("color=16m")||n("color=full")||n("color=truecolor")){return 3}if(n("color=256")){return 2}if(e&&!e.isTTY&&i!==true){return 0}const t=i?1:0;if(process.platform==="win32"){const e=s.release().split(".");if(Number(process.versions.node.split(".")[0])>=8&&Number(e[0])>=10&&Number(e[2])>=10586){return Number(e[2])>=14931?3:2}return 1}if("CI"in o){if(["TRAVIS","CIRCLECI","APPVEYOR","GITLAB_CI"].some(e=>e in o)||o.CI_NAME==="codeship"){return 1}return t}if("TEAMCITY_VERSION"in o){return/^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(o.TEAMCITY_VERSION)?1:0}if(o.COLORTERM==="truecolor"){return 3}if("TERM_PROGRAM"in o){const e=parseInt((o.TERM_PROGRAM_VERSION||"").split(".")[0],10);switch(o.TERM_PROGRAM){case"iTerm.app":return e>=3?3:2;case"Apple_Terminal":return 2}}if(/-256(color)?$/i.test(o.TERM)){return 2}if(/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(o.TERM)){return 1}if("COLORTERM"in o){return 1}if(o.TERM==="dumb"){return t}return t}function getSupportLevel(e){const t=supportsColor(e);return translateLevel(t)}e.exports={supportsColor:getSupportLevel,stdout:getSupportLevel(process.stdout),stderr:getSupportLevel(process.stderr)}},4294:(e,t,r)=>{e.exports=r(4219)},4219:(e,t,r)=>{"use strict";var s=r(1631);var n=r(4016);var o=r(8605);var i=r(7211);var a=r(8614);var c=r(2357);var u=r(1669);t.httpOverHttp=httpOverHttp;t.httpsOverHttp=httpsOverHttp;t.httpOverHttps=httpOverHttps;t.httpsOverHttps=httpsOverHttps;function httpOverHttp(e){var t=new TunnelingAgent(e);t.request=o.request;return t}function httpsOverHttp(e){var t=new TunnelingAgent(e);t.request=o.request;t.createSocket=createSecureSocket;t.defaultPort=443;return t}function httpOverHttps(e){var t=new TunnelingAgent(e);t.request=i.request;return t}function httpsOverHttps(e){var t=new TunnelingAgent(e);t.request=i.request;t.createSocket=createSecureSocket;t.defaultPort=443;return t}function TunnelingAgent(e){var t=this;t.options=e||{};t.proxyOptions=t.options.proxy||{};t.maxSockets=t.options.maxSockets||o.Agent.defaultMaxSockets;t.requests=[];t.sockets=[];t.on("free",function onFree(e,r,s,n){var o=toOptions(r,s,n);for(var i=0,a=t.requests.length;i<a;++i){var c=t.requests[i];if(c.host===o.host&&c.port===o.port){t.requests.splice(i,1);c.request.onSocket(e);return}}e.destroy();t.removeSocket(e)})}u.inherits(TunnelingAgent,a.EventEmitter);TunnelingAgent.prototype.addRequest=function addRequest(e,t,r,s){var n=this;var o=mergeOptions({request:e},n.options,toOptions(t,r,s));if(n.sockets.length>=this.maxSockets){n.requests.push(o);return}n.createSocket(o,function(t){t.on("free",onFree);t.on("close",onCloseOrRemove);t.on("agentRemove",onCloseOrRemove);e.onSocket(t);function onFree(){n.emit("free",t,o)}function onCloseOrRemove(e){n.removeSocket(t);t.removeListener("free",onFree);t.removeListener("close",onCloseOrRemove);t.removeListener("agentRemove",onCloseOrRemove)}})};TunnelingAgent.prototype.createSocket=function createSocket(e,t){var r=this;var s={};r.sockets.push(s);var n=mergeOptions({},r.proxyOptions,{method:"CONNECT",path:e.host+":"+e.port,agent:false,headers:{host:e.host+":"+e.port}});if(e.localAddress){n.localAddress=e.localAddress}if(n.proxyAuth){n.headers=n.headers||{};n.headers["Proxy-Authorization"]="Basic "+new Buffer(n.proxyAuth).toString("base64")}l("making CONNECT request");var o=r.request(n);o.useChunkedEncodingByDefault=false;o.once("response",onResponse);o.once("upgrade",onUpgrade);o.once("connect",onConnect);o.once("error",onError);o.end();function onResponse(e){e.upgrade=true}function onUpgrade(e,t,r){process.nextTick(function(){onConnect(e,t,r)})}function onConnect(n,i,a){o.removeAllListeners();i.removeAllListeners();if(n.statusCode!==200){l("tunneling socket could not be established, statusCode=%d",n.statusCode);i.destroy();var c=new Error("tunneling socket could not be established, "+"statusCode="+n.statusCode);c.code="ECONNRESET";e.request.emit("error",c);r.removeSocket(s);return}if(a.length>0){l("got illegal response body from proxy");i.destroy();var c=new Error("got illegal response body from proxy");c.code="ECONNRESET";e.request.emit("error",c);r.removeSocket(s);return}l("tunneling connection has established");r.sockets[r.sockets.indexOf(s)]=i;return t(i)}function onError(t){o.removeAllListeners();l("tunneling socket could not be established, cause=%s\n",t.message,t.stack);var n=new Error("tunneling socket could not be established, "+"cause="+t.message);n.code="ECONNRESET";e.request.emit("error",n);r.removeSocket(s)}};TunnelingAgent.prototype.removeSocket=function removeSocket(e){var t=this.sockets.indexOf(e);if(t===-1){return}this.sockets.splice(t,1);var r=this.requests.shift();if(r){this.createSocket(r,function(e){r.request.onSocket(e)})}};function createSecureSocket(e,t){var r=this;TunnelingAgent.prototype.createSocket.call(r,e,function(s){var o=e.request.getHeader("host");var i=mergeOptions({},r.options,{socket:s,servername:o?o.replace(/:.*$/,""):e.host});var a=n.connect(0,i);r.sockets[r.sockets.indexOf(s)]=a;t(a)})}function toOptions(e,t,r){if(typeof e==="string"){return{host:e,port:t,localAddress:r}}return e}function mergeOptions(e){for(var t=1,r=arguments.length;t<r;++t){var s=arguments[t];if(typeof s==="object"){var n=Object.keys(s);for(var o=0,i=n.length;o<i;++o){var a=n[o];if(s[a]!==undefined){e[a]=s[a]}}}}return e}var l;if(process.env.NODE_DEBUG&&/\btunnel\b/.test(process.env.NODE_DEBUG)){l=function(){var e=Array.prototype.slice.call(arguments);if(typeof e[0]==="string"){e[0]="TUNNEL: "+e[0]}else{e.unshift("TUNNEL:")}console.error.apply(console,e)}}else{l=function(){}}t.debug=l},5030:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});function getUserAgent(){if(typeof navigator==="object"&&"userAgent"in navigator){return navigator.userAgent}if(typeof process==="object"&&"version"in process){return`Node.js/${process.version.substr(1)} (${process.platform}; ${process.arch})`}return"<environment undetectable>"}t.getUserAgent=getUserAgent},2940:e=>{e.exports=wrappy;function wrappy(e,t){if(e&&t)return wrappy(e)(t);if(typeof e!=="function")throw new TypeError("need wrapper function");Object.keys(e).forEach(function(t){wrapper[t]=e[t]});return wrapper;function wrapper(){var t=new Array(arguments.length);for(var r=0;r<t.length;r++){t[r]=arguments[r]}var s=e.apply(this,t);var n=t[t.length-1];if(typeof s==="function"&&s!==n){Object.keys(n).forEach(function(e){s[e]=n[e]})}return s}}},1713:(__unused_webpack_module,__unused_webpack_exports,__webpack_require__)=>{const core=__webpack_require__(2186);const{synchronizeBranches:synchronizeBranches}=__webpack_require__(1782);async function main(){try{const e=core.getInput("path",{required:true});await synchronizeBranches(e)}catch(e){core.setFailed(e.message)}}if(require.main===require.cache[eval("__filename")])main()},1782:(e,t,r)=>{const s=r(2186);const{context:n}=r(5438);const o=r(5747);const i=r(8577);const{basename:a,join:c,resolve:u}=r(5622);async function getChildRepositories(e){const t=o.opendirSync(e);const r=[];let s;while(s=await t.read()){const t=u(e,s.name);if(s.isDirectory()&&o.existsSync(c(t,".git"))){r.push(t)}}t.closeSync();return r}async function synchronizeBranches(e){if(n.ref==="refs/heads/master"||n.ref.startsWith("refs/tags/")){s.info(`Skipping synchronize for ${n.ref}`);return}const t=a(n.ref);const r=(await getChildRepositories(e)).filter(e=>a(e)!==n.repo.repo);for(let e=0;e<r.length;++e){const n=r[e];const o=a(n);const c=i(n);await c.silent(true).fetch(["--no-tags","--prune","--no-recurse-submodules","--depth=1","origin",t]).then(()=>{s.info(`Checking out ${o} ${t}`);c.checkout(["--force","-B",t,"FETCH_HEAD"])},e=>{if(e.message&&e.message.includes("couldn't find remote ref")){const t=e.message.trim().split(/(?:[\r\n]+|\s*:\s*)/).pop();s.info(`Not synchronized in ${o}: ${t}`)}else{throw e}})}}e.exports={getChildRepositories:getChildRepositories,synchronizeBranches:synchronizeBranches}},2877:module=>{module.exports=eval("require")("encoding")},2357:e=>{"use strict";e.exports=require("assert")},3129:e=>{"use strict";e.exports=require("child_process")},8614:e=>{"use strict";e.exports=require("events")},5747:e=>{"use strict";e.exports=require("fs")},8605:e=>{"use strict";e.exports=require("http")},7211:e=>{"use strict";e.exports=require("https")},1631:e=>{"use strict";e.exports=require("net")},2087:e=>{"use strict";e.exports=require("os")},5622:e=>{"use strict";e.exports=require("path")},2413:e=>{"use strict";e.exports=require("stream")},4016:e=>{"use strict";e.exports=require("tls")},3867:e=>{"use strict";e.exports=require("tty")},8835:e=>{"use strict";e.exports=require("url")},1669:e=>{"use strict";e.exports=require("util")},8761:e=>{"use strict";e.exports=require("zlib")}};var __webpack_module_cache__={};function __webpack_require__(e){if(__webpack_module_cache__[e]){return __webpack_module_cache__[e].exports}var t=__webpack_module_cache__[e]={exports:{}};var r=true;try{__webpack_modules__[e].call(t.exports,t,t.exports,__webpack_require__);r=false}finally{if(r)delete __webpack_module_cache__[e]}return t.exports}__webpack_require__.ab=__dirname+"/";return __webpack_require__(1713)})();
+require('./sourcemap-register.js');module.exports =
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ 7351:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const os = __importStar(__webpack_require__(2087));
+const utils_1 = __webpack_require__(5278);
+/**
+ * Commands
+ *
+ * Command Format:
+ *   ::name key=value,key=value::message
+ *
+ * Examples:
+ *   ::warning::This is the message
+ *   ::set-env name=MY_VAR::some value
+ */
+function issueCommand(command, properties, message) {
+    const cmd = new Command(command, properties, message);
+    process.stdout.write(cmd.toString() + os.EOL);
+}
+exports.issueCommand = issueCommand;
+function issue(name, message = '') {
+    issueCommand(name, {}, message);
+}
+exports.issue = issue;
+const CMD_STRING = '::';
+class Command {
+    constructor(command, properties, message) {
+        if (!command) {
+            command = 'missing.command';
+        }
+        this.command = command;
+        this.properties = properties;
+        this.message = message;
+    }
+    toString() {
+        let cmdStr = CMD_STRING + this.command;
+        if (this.properties && Object.keys(this.properties).length > 0) {
+            cmdStr += ' ';
+            let first = true;
+            for (const key in this.properties) {
+                if (this.properties.hasOwnProperty(key)) {
+                    const val = this.properties[key];
+                    if (val) {
+                        if (first) {
+                            first = false;
+                        }
+                        else {
+                            cmdStr += ',';
+                        }
+                        cmdStr += `${key}=${escapeProperty(val)}`;
+                    }
+                }
+            }
+        }
+        cmdStr += `${CMD_STRING}${escapeData(this.message)}`;
+        return cmdStr;
+    }
+}
+function escapeData(s) {
+    return utils_1.toCommandValue(s)
+        .replace(/%/g, '%25')
+        .replace(/\r/g, '%0D')
+        .replace(/\n/g, '%0A');
+}
+function escapeProperty(s) {
+    return utils_1.toCommandValue(s)
+        .replace(/%/g, '%25')
+        .replace(/\r/g, '%0D')
+        .replace(/\n/g, '%0A')
+        .replace(/:/g, '%3A')
+        .replace(/,/g, '%2C');
+}
+//# sourceMappingURL=command.js.map
+
+/***/ }),
+
+/***/ 2186:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const command_1 = __webpack_require__(7351);
+const file_command_1 = __webpack_require__(717);
+const utils_1 = __webpack_require__(5278);
+const os = __importStar(__webpack_require__(2087));
+const path = __importStar(__webpack_require__(5622));
+/**
+ * The code to exit an action
+ */
+var ExitCode;
+(function (ExitCode) {
+    /**
+     * A code indicating that the action was successful
+     */
+    ExitCode[ExitCode["Success"] = 0] = "Success";
+    /**
+     * A code indicating that the action was a failure
+     */
+    ExitCode[ExitCode["Failure"] = 1] = "Failure";
+})(ExitCode = exports.ExitCode || (exports.ExitCode = {}));
+//-----------------------------------------------------------------------
+// Variables
+//-----------------------------------------------------------------------
+/**
+ * Sets env variable for this action and future actions in the job
+ * @param name the name of the variable to set
+ * @param val the value of the variable. Non-string values will be converted to a string via JSON.stringify
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function exportVariable(name, val) {
+    const convertedVal = utils_1.toCommandValue(val);
+    process.env[name] = convertedVal;
+    const filePath = process.env['GITHUB_ENV'] || '';
+    if (filePath) {
+        const delimiter = '_GitHubActionsFileCommandDelimeter_';
+        const commandValue = `${name}<<${delimiter}${os.EOL}${convertedVal}${os.EOL}${delimiter}`;
+        file_command_1.issueCommand('ENV', commandValue);
+    }
+    else {
+        command_1.issueCommand('set-env', { name }, convertedVal);
+    }
+}
+exports.exportVariable = exportVariable;
+/**
+ * Registers a secret which will get masked from logs
+ * @param secret value of the secret
+ */
+function setSecret(secret) {
+    command_1.issueCommand('add-mask', {}, secret);
+}
+exports.setSecret = setSecret;
+/**
+ * Prepends inputPath to the PATH (for this action and future actions)
+ * @param inputPath
+ */
+function addPath(inputPath) {
+    const filePath = process.env['GITHUB_PATH'] || '';
+    if (filePath) {
+        file_command_1.issueCommand('PATH', inputPath);
+    }
+    else {
+        command_1.issueCommand('add-path', {}, inputPath);
+    }
+    process.env['PATH'] = `${inputPath}${path.delimiter}${process.env['PATH']}`;
+}
+exports.addPath = addPath;
+/**
+ * Gets the value of an input.  The value is also trimmed.
+ *
+ * @param     name     name of the input to get
+ * @param     options  optional. See InputOptions.
+ * @returns   string
+ */
+function getInput(name, options) {
+    const val = process.env[`INPUT_${name.replace(/ /g, '_').toUpperCase()}`] || '';
+    if (options && options.required && !val) {
+        throw new Error(`Input required and not supplied: ${name}`);
+    }
+    return val.trim();
+}
+exports.getInput = getInput;
+/**
+ * Sets the value of an output.
+ *
+ * @param     name     name of the output to set
+ * @param     value    value to store. Non-string values will be converted to a string via JSON.stringify
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function setOutput(name, value) {
+    command_1.issueCommand('set-output', { name }, value);
+}
+exports.setOutput = setOutput;
+/**
+ * Enables or disables the echoing of commands into stdout for the rest of the step.
+ * Echoing is disabled by default if ACTIONS_STEP_DEBUG is not set.
+ *
+ */
+function setCommandEcho(enabled) {
+    command_1.issue('echo', enabled ? 'on' : 'off');
+}
+exports.setCommandEcho = setCommandEcho;
+//-----------------------------------------------------------------------
+// Results
+//-----------------------------------------------------------------------
+/**
+ * Sets the action status to failed.
+ * When the action exits it will be with an exit code of 1
+ * @param message add error issue message
+ */
+function setFailed(message) {
+    process.exitCode = ExitCode.Failure;
+    error(message);
+}
+exports.setFailed = setFailed;
+//-----------------------------------------------------------------------
+// Logging Commands
+//-----------------------------------------------------------------------
+/**
+ * Gets whether Actions Step Debug is on or not
+ */
+function isDebug() {
+    return process.env['RUNNER_DEBUG'] === '1';
+}
+exports.isDebug = isDebug;
+/**
+ * Writes debug message to user log
+ * @param message debug message
+ */
+function debug(message) {
+    command_1.issueCommand('debug', {}, message);
+}
+exports.debug = debug;
+/**
+ * Adds an error issue
+ * @param message error issue message. Errors will be converted to string via toString()
+ */
+function error(message) {
+    command_1.issue('error', message instanceof Error ? message.toString() : message);
+}
+exports.error = error;
+/**
+ * Adds an warning issue
+ * @param message warning issue message. Errors will be converted to string via toString()
+ */
+function warning(message) {
+    command_1.issue('warning', message instanceof Error ? message.toString() : message);
+}
+exports.warning = warning;
+/**
+ * Writes info to log with console.log.
+ * @param message info message
+ */
+function info(message) {
+    process.stdout.write(message + os.EOL);
+}
+exports.info = info;
+/**
+ * Begin an output group.
+ *
+ * Output until the next `groupEnd` will be foldable in this group
+ *
+ * @param name The name of the output group
+ */
+function startGroup(name) {
+    command_1.issue('group', name);
+}
+exports.startGroup = startGroup;
+/**
+ * End an output group.
+ */
+function endGroup() {
+    command_1.issue('endgroup');
+}
+exports.endGroup = endGroup;
+/**
+ * Wrap an asynchronous function call in a group.
+ *
+ * Returns the same type as the function itself.
+ *
+ * @param name The name of the group
+ * @param fn The function to wrap in the group
+ */
+function group(name, fn) {
+    return __awaiter(this, void 0, void 0, function* () {
+        startGroup(name);
+        let result;
+        try {
+            result = yield fn();
+        }
+        finally {
+            endGroup();
+        }
+        return result;
+    });
+}
+exports.group = group;
+//-----------------------------------------------------------------------
+// Wrapper action state
+//-----------------------------------------------------------------------
+/**
+ * Saves state for current action, the state can only be retrieved by this action's post job execution.
+ *
+ * @param     name     name of the state to store
+ * @param     value    value to store. Non-string values will be converted to a string via JSON.stringify
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function saveState(name, value) {
+    command_1.issueCommand('save-state', { name }, value);
+}
+exports.saveState = saveState;
+/**
+ * Gets the value of an state set by this action's main execution.
+ *
+ * @param     name     name of the state to get
+ * @returns   string
+ */
+function getState(name) {
+    return process.env[`STATE_${name}`] || '';
+}
+exports.getState = getState;
+//# sourceMappingURL=core.js.map
+
+/***/ }),
+
+/***/ 717:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+// For internal use, subject to change.
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+// We use any as a valid input type
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const fs = __importStar(__webpack_require__(5747));
+const os = __importStar(__webpack_require__(2087));
+const utils_1 = __webpack_require__(5278);
+function issueCommand(command, message) {
+    const filePath = process.env[`GITHUB_${command}`];
+    if (!filePath) {
+        throw new Error(`Unable to find environment variable for file command ${command}`);
+    }
+    if (!fs.existsSync(filePath)) {
+        throw new Error(`Missing file at path: ${filePath}`);
+    }
+    fs.appendFileSync(filePath, `${utils_1.toCommandValue(message)}${os.EOL}`, {
+        encoding: 'utf8'
+    });
+}
+exports.issueCommand = issueCommand;
+//# sourceMappingURL=file-command.js.map
+
+/***/ }),
+
+/***/ 5278:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+// We use any as a valid input type
+/* eslint-disable @typescript-eslint/no-explicit-any */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/**
+ * Sanitizes an input into a string so it can be passed into issueCommand safely
+ * @param input input to sanitize into a string
+ */
+function toCommandValue(input) {
+    if (input === null || input === undefined) {
+        return '';
+    }
+    else if (typeof input === 'string' || input instanceof String) {
+        return input;
+    }
+    return JSON.stringify(input);
+}
+exports.toCommandValue = toCommandValue;
+//# sourceMappingURL=utils.js.map
+
+/***/ }),
+
+/***/ 4087:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Context = void 0;
+const fs_1 = __webpack_require__(5747);
+const os_1 = __webpack_require__(2087);
+class Context {
+    /**
+     * Hydrate the context from the environment
+     */
+    constructor() {
+        this.payload = {};
+        if (process.env.GITHUB_EVENT_PATH) {
+            if (fs_1.existsSync(process.env.GITHUB_EVENT_PATH)) {
+                this.payload = JSON.parse(fs_1.readFileSync(process.env.GITHUB_EVENT_PATH, { encoding: 'utf8' }));
+            }
+            else {
+                const path = process.env.GITHUB_EVENT_PATH;
+                process.stdout.write(`GITHUB_EVENT_PATH ${path} does not exist${os_1.EOL}`);
+            }
+        }
+        this.eventName = process.env.GITHUB_EVENT_NAME;
+        this.sha = process.env.GITHUB_SHA;
+        this.ref = process.env.GITHUB_REF;
+        this.workflow = process.env.GITHUB_WORKFLOW;
+        this.action = process.env.GITHUB_ACTION;
+        this.actor = process.env.GITHUB_ACTOR;
+        this.job = process.env.GITHUB_JOB;
+        this.runNumber = parseInt(process.env.GITHUB_RUN_NUMBER, 10);
+        this.runId = parseInt(process.env.GITHUB_RUN_ID, 10);
+    }
+    get issue() {
+        const payload = this.payload;
+        return Object.assign(Object.assign({}, this.repo), { number: (payload.issue || payload.pull_request || payload).number });
+    }
+    get repo() {
+        if (process.env.GITHUB_REPOSITORY) {
+            const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
+            return { owner, repo };
+        }
+        if (this.payload.repository) {
+            return {
+                owner: this.payload.repository.owner.login,
+                repo: this.payload.repository.name
+            };
+        }
+        throw new Error("context.repo requires a GITHUB_REPOSITORY environment variable like 'owner/repo'");
+    }
+}
+exports.Context = Context;
+//# sourceMappingURL=context.js.map
+
+/***/ }),
+
+/***/ 5438:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getOctokit = exports.context = void 0;
+const Context = __importStar(__webpack_require__(4087));
+const utils_1 = __webpack_require__(3030);
+exports.context = new Context.Context();
+/**
+ * Returns a hydrated octokit ready to use for GitHub Actions
+ *
+ * @param     token    the repo PAT or GITHUB_TOKEN
+ * @param     options  other options to set
+ */
+function getOctokit(token, options) {
+    return new utils_1.GitHub(utils_1.getOctokitOptions(token, options));
+}
+exports.getOctokit = getOctokit;
+//# sourceMappingURL=github.js.map
+
+/***/ }),
+
+/***/ 7914:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getApiBaseUrl = exports.getProxyAgent = exports.getAuthString = void 0;
+const httpClient = __importStar(__webpack_require__(9925));
+function getAuthString(token, options) {
+    if (!token && !options.auth) {
+        throw new Error('Parameter token or opts.auth is required');
+    }
+    else if (token && options.auth) {
+        throw new Error('Parameters token and opts.auth may not both be specified');
+    }
+    return typeof options.auth === 'string' ? options.auth : `token ${token}`;
+}
+exports.getAuthString = getAuthString;
+function getProxyAgent(destinationUrl) {
+    const hc = new httpClient.HttpClient();
+    return hc.getAgent(destinationUrl);
+}
+exports.getProxyAgent = getProxyAgent;
+function getApiBaseUrl() {
+    return process.env['GITHUB_API_URL'] || 'https://api.github.com';
+}
+exports.getApiBaseUrl = getApiBaseUrl;
+//# sourceMappingURL=utils.js.map
+
+/***/ }),
+
+/***/ 3030:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getOctokitOptions = exports.GitHub = exports.context = void 0;
+const Context = __importStar(__webpack_require__(4087));
+const Utils = __importStar(__webpack_require__(7914));
+// octokit + plugins
+const core_1 = __webpack_require__(6762);
+const plugin_rest_endpoint_methods_1 = __webpack_require__(3044);
+const plugin_paginate_rest_1 = __webpack_require__(4193);
+exports.context = new Context.Context();
+const baseUrl = Utils.getApiBaseUrl();
+const defaults = {
+    baseUrl,
+    request: {
+        agent: Utils.getProxyAgent(baseUrl)
+    }
+};
+exports.GitHub = core_1.Octokit.plugin(plugin_rest_endpoint_methods_1.restEndpointMethods, plugin_paginate_rest_1.paginateRest).defaults(defaults);
+/**
+ * Convience function to correctly format Octokit Options to pass into the constructor.
+ *
+ * @param     token    the repo PAT or GITHUB_TOKEN
+ * @param     options  other options to set
+ */
+function getOctokitOptions(token, options) {
+    const opts = Object.assign({}, options || {}); // Shallow clone - don't mutate the object provided by the caller
+    // Auth
+    const auth = Utils.getAuthString(token, opts);
+    if (auth) {
+        opts.auth = auth;
+    }
+    return opts;
+}
+exports.getOctokitOptions = getOctokitOptions;
+//# sourceMappingURL=utils.js.map
+
+/***/ }),
+
+/***/ 9925:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const http = __webpack_require__(8605);
+const https = __webpack_require__(7211);
+const pm = __webpack_require__(6443);
+let tunnel;
+var HttpCodes;
+(function (HttpCodes) {
+    HttpCodes[HttpCodes["OK"] = 200] = "OK";
+    HttpCodes[HttpCodes["MultipleChoices"] = 300] = "MultipleChoices";
+    HttpCodes[HttpCodes["MovedPermanently"] = 301] = "MovedPermanently";
+    HttpCodes[HttpCodes["ResourceMoved"] = 302] = "ResourceMoved";
+    HttpCodes[HttpCodes["SeeOther"] = 303] = "SeeOther";
+    HttpCodes[HttpCodes["NotModified"] = 304] = "NotModified";
+    HttpCodes[HttpCodes["UseProxy"] = 305] = "UseProxy";
+    HttpCodes[HttpCodes["SwitchProxy"] = 306] = "SwitchProxy";
+    HttpCodes[HttpCodes["TemporaryRedirect"] = 307] = "TemporaryRedirect";
+    HttpCodes[HttpCodes["PermanentRedirect"] = 308] = "PermanentRedirect";
+    HttpCodes[HttpCodes["BadRequest"] = 400] = "BadRequest";
+    HttpCodes[HttpCodes["Unauthorized"] = 401] = "Unauthorized";
+    HttpCodes[HttpCodes["PaymentRequired"] = 402] = "PaymentRequired";
+    HttpCodes[HttpCodes["Forbidden"] = 403] = "Forbidden";
+    HttpCodes[HttpCodes["NotFound"] = 404] = "NotFound";
+    HttpCodes[HttpCodes["MethodNotAllowed"] = 405] = "MethodNotAllowed";
+    HttpCodes[HttpCodes["NotAcceptable"] = 406] = "NotAcceptable";
+    HttpCodes[HttpCodes["ProxyAuthenticationRequired"] = 407] = "ProxyAuthenticationRequired";
+    HttpCodes[HttpCodes["RequestTimeout"] = 408] = "RequestTimeout";
+    HttpCodes[HttpCodes["Conflict"] = 409] = "Conflict";
+    HttpCodes[HttpCodes["Gone"] = 410] = "Gone";
+    HttpCodes[HttpCodes["TooManyRequests"] = 429] = "TooManyRequests";
+    HttpCodes[HttpCodes["InternalServerError"] = 500] = "InternalServerError";
+    HttpCodes[HttpCodes["NotImplemented"] = 501] = "NotImplemented";
+    HttpCodes[HttpCodes["BadGateway"] = 502] = "BadGateway";
+    HttpCodes[HttpCodes["ServiceUnavailable"] = 503] = "ServiceUnavailable";
+    HttpCodes[HttpCodes["GatewayTimeout"] = 504] = "GatewayTimeout";
+})(HttpCodes = exports.HttpCodes || (exports.HttpCodes = {}));
+var Headers;
+(function (Headers) {
+    Headers["Accept"] = "accept";
+    Headers["ContentType"] = "content-type";
+})(Headers = exports.Headers || (exports.Headers = {}));
+var MediaTypes;
+(function (MediaTypes) {
+    MediaTypes["ApplicationJson"] = "application/json";
+})(MediaTypes = exports.MediaTypes || (exports.MediaTypes = {}));
+/**
+ * Returns the proxy URL, depending upon the supplied url and proxy environment variables.
+ * @param serverUrl  The server URL where the request will be sent. For example, https://api.github.com
+ */
+function getProxyUrl(serverUrl) {
+    let proxyUrl = pm.getProxyUrl(new URL(serverUrl));
+    return proxyUrl ? proxyUrl.href : '';
+}
+exports.getProxyUrl = getProxyUrl;
+const HttpRedirectCodes = [
+    HttpCodes.MovedPermanently,
+    HttpCodes.ResourceMoved,
+    HttpCodes.SeeOther,
+    HttpCodes.TemporaryRedirect,
+    HttpCodes.PermanentRedirect
+];
+const HttpResponseRetryCodes = [
+    HttpCodes.BadGateway,
+    HttpCodes.ServiceUnavailable,
+    HttpCodes.GatewayTimeout
+];
+const RetryableHttpVerbs = ['OPTIONS', 'GET', 'DELETE', 'HEAD'];
+const ExponentialBackoffCeiling = 10;
+const ExponentialBackoffTimeSlice = 5;
+class HttpClientError extends Error {
+    constructor(message, statusCode) {
+        super(message);
+        this.name = 'HttpClientError';
+        this.statusCode = statusCode;
+        Object.setPrototypeOf(this, HttpClientError.prototype);
+    }
+}
+exports.HttpClientError = HttpClientError;
+class HttpClientResponse {
+    constructor(message) {
+        this.message = message;
+    }
+    readBody() {
+        return new Promise(async (resolve, reject) => {
+            let output = Buffer.alloc(0);
+            this.message.on('data', (chunk) => {
+                output = Buffer.concat([output, chunk]);
+            });
+            this.message.on('end', () => {
+                resolve(output.toString());
+            });
+        });
+    }
+}
+exports.HttpClientResponse = HttpClientResponse;
+function isHttps(requestUrl) {
+    let parsedUrl = new URL(requestUrl);
+    return parsedUrl.protocol === 'https:';
+}
+exports.isHttps = isHttps;
+class HttpClient {
+    constructor(userAgent, handlers, requestOptions) {
+        this._ignoreSslError = false;
+        this._allowRedirects = true;
+        this._allowRedirectDowngrade = false;
+        this._maxRedirects = 50;
+        this._allowRetries = false;
+        this._maxRetries = 1;
+        this._keepAlive = false;
+        this._disposed = false;
+        this.userAgent = userAgent;
+        this.handlers = handlers || [];
+        this.requestOptions = requestOptions;
+        if (requestOptions) {
+            if (requestOptions.ignoreSslError != null) {
+                this._ignoreSslError = requestOptions.ignoreSslError;
+            }
+            this._socketTimeout = requestOptions.socketTimeout;
+            if (requestOptions.allowRedirects != null) {
+                this._allowRedirects = requestOptions.allowRedirects;
+            }
+            if (requestOptions.allowRedirectDowngrade != null) {
+                this._allowRedirectDowngrade = requestOptions.allowRedirectDowngrade;
+            }
+            if (requestOptions.maxRedirects != null) {
+                this._maxRedirects = Math.max(requestOptions.maxRedirects, 0);
+            }
+            if (requestOptions.keepAlive != null) {
+                this._keepAlive = requestOptions.keepAlive;
+            }
+            if (requestOptions.allowRetries != null) {
+                this._allowRetries = requestOptions.allowRetries;
+            }
+            if (requestOptions.maxRetries != null) {
+                this._maxRetries = requestOptions.maxRetries;
+            }
+        }
+    }
+    options(requestUrl, additionalHeaders) {
+        return this.request('OPTIONS', requestUrl, null, additionalHeaders || {});
+    }
+    get(requestUrl, additionalHeaders) {
+        return this.request('GET', requestUrl, null, additionalHeaders || {});
+    }
+    del(requestUrl, additionalHeaders) {
+        return this.request('DELETE', requestUrl, null, additionalHeaders || {});
+    }
+    post(requestUrl, data, additionalHeaders) {
+        return this.request('POST', requestUrl, data, additionalHeaders || {});
+    }
+    patch(requestUrl, data, additionalHeaders) {
+        return this.request('PATCH', requestUrl, data, additionalHeaders || {});
+    }
+    put(requestUrl, data, additionalHeaders) {
+        return this.request('PUT', requestUrl, data, additionalHeaders || {});
+    }
+    head(requestUrl, additionalHeaders) {
+        return this.request('HEAD', requestUrl, null, additionalHeaders || {});
+    }
+    sendStream(verb, requestUrl, stream, additionalHeaders) {
+        return this.request(verb, requestUrl, stream, additionalHeaders);
+    }
+    /**
+     * Gets a typed object from an endpoint
+     * Be aware that not found returns a null.  Other errors (4xx, 5xx) reject the promise
+     */
+    async getJson(requestUrl, additionalHeaders = {}) {
+        additionalHeaders[Headers.Accept] = this._getExistingOrDefaultHeader(additionalHeaders, Headers.Accept, MediaTypes.ApplicationJson);
+        let res = await this.get(requestUrl, additionalHeaders);
+        return this._processResponse(res, this.requestOptions);
+    }
+    async postJson(requestUrl, obj, additionalHeaders = {}) {
+        let data = JSON.stringify(obj, null, 2);
+        additionalHeaders[Headers.Accept] = this._getExistingOrDefaultHeader(additionalHeaders, Headers.Accept, MediaTypes.ApplicationJson);
+        additionalHeaders[Headers.ContentType] = this._getExistingOrDefaultHeader(additionalHeaders, Headers.ContentType, MediaTypes.ApplicationJson);
+        let res = await this.post(requestUrl, data, additionalHeaders);
+        return this._processResponse(res, this.requestOptions);
+    }
+    async putJson(requestUrl, obj, additionalHeaders = {}) {
+        let data = JSON.stringify(obj, null, 2);
+        additionalHeaders[Headers.Accept] = this._getExistingOrDefaultHeader(additionalHeaders, Headers.Accept, MediaTypes.ApplicationJson);
+        additionalHeaders[Headers.ContentType] = this._getExistingOrDefaultHeader(additionalHeaders, Headers.ContentType, MediaTypes.ApplicationJson);
+        let res = await this.put(requestUrl, data, additionalHeaders);
+        return this._processResponse(res, this.requestOptions);
+    }
+    async patchJson(requestUrl, obj, additionalHeaders = {}) {
+        let data = JSON.stringify(obj, null, 2);
+        additionalHeaders[Headers.Accept] = this._getExistingOrDefaultHeader(additionalHeaders, Headers.Accept, MediaTypes.ApplicationJson);
+        additionalHeaders[Headers.ContentType] = this._getExistingOrDefaultHeader(additionalHeaders, Headers.ContentType, MediaTypes.ApplicationJson);
+        let res = await this.patch(requestUrl, data, additionalHeaders);
+        return this._processResponse(res, this.requestOptions);
+    }
+    /**
+     * Makes a raw http request.
+     * All other methods such as get, post, patch, and request ultimately call this.
+     * Prefer get, del, post and patch
+     */
+    async request(verb, requestUrl, data, headers) {
+        if (this._disposed) {
+            throw new Error('Client has already been disposed.');
+        }
+        let parsedUrl = new URL(requestUrl);
+        let info = this._prepareRequest(verb, parsedUrl, headers);
+        // Only perform retries on reads since writes may not be idempotent.
+        let maxTries = this._allowRetries && RetryableHttpVerbs.indexOf(verb) != -1
+            ? this._maxRetries + 1
+            : 1;
+        let numTries = 0;
+        let response;
+        while (numTries < maxTries) {
+            response = await this.requestRaw(info, data);
+            // Check if it's an authentication challenge
+            if (response &&
+                response.message &&
+                response.message.statusCode === HttpCodes.Unauthorized) {
+                let authenticationHandler;
+                for (let i = 0; i < this.handlers.length; i++) {
+                    if (this.handlers[i].canHandleAuthentication(response)) {
+                        authenticationHandler = this.handlers[i];
+                        break;
+                    }
+                }
+                if (authenticationHandler) {
+                    return authenticationHandler.handleAuthentication(this, info, data);
+                }
+                else {
+                    // We have received an unauthorized response but have no handlers to handle it.
+                    // Let the response return to the caller.
+                    return response;
+                }
+            }
+            let redirectsRemaining = this._maxRedirects;
+            while (HttpRedirectCodes.indexOf(response.message.statusCode) != -1 &&
+                this._allowRedirects &&
+                redirectsRemaining > 0) {
+                const redirectUrl = response.message.headers['location'];
+                if (!redirectUrl) {
+                    // if there's no location to redirect to, we won't
+                    break;
+                }
+                let parsedRedirectUrl = new URL(redirectUrl);
+                if (parsedUrl.protocol == 'https:' &&
+                    parsedUrl.protocol != parsedRedirectUrl.protocol &&
+                    !this._allowRedirectDowngrade) {
+                    throw new Error('Redirect from HTTPS to HTTP protocol. This downgrade is not allowed for security reasons. If you want to allow this behavior, set the allowRedirectDowngrade option to true.');
+                }
+                // we need to finish reading the response before reassigning response
+                // which will leak the open socket.
+                await response.readBody();
+                // strip authorization header if redirected to a different hostname
+                if (parsedRedirectUrl.hostname !== parsedUrl.hostname) {
+                    for (let header in headers) {
+                        // header names are case insensitive
+                        if (header.toLowerCase() === 'authorization') {
+                            delete headers[header];
+                        }
+                    }
+                }
+                // let's make the request with the new redirectUrl
+                info = this._prepareRequest(verb, parsedRedirectUrl, headers);
+                response = await this.requestRaw(info, data);
+                redirectsRemaining--;
+            }
+            if (HttpResponseRetryCodes.indexOf(response.message.statusCode) == -1) {
+                // If not a retry code, return immediately instead of retrying
+                return response;
+            }
+            numTries += 1;
+            if (numTries < maxTries) {
+                await response.readBody();
+                await this._performExponentialBackoff(numTries);
+            }
+        }
+        return response;
+    }
+    /**
+     * Needs to be called if keepAlive is set to true in request options.
+     */
+    dispose() {
+        if (this._agent) {
+            this._agent.destroy();
+        }
+        this._disposed = true;
+    }
+    /**
+     * Raw request.
+     * @param info
+     * @param data
+     */
+    requestRaw(info, data) {
+        return new Promise((resolve, reject) => {
+            let callbackForResult = function (err, res) {
+                if (err) {
+                    reject(err);
+                }
+                resolve(res);
+            };
+            this.requestRawWithCallback(info, data, callbackForResult);
+        });
+    }
+    /**
+     * Raw request with callback.
+     * @param info
+     * @param data
+     * @param onResult
+     */
+    requestRawWithCallback(info, data, onResult) {
+        let socket;
+        if (typeof data === 'string') {
+            info.options.headers['Content-Length'] = Buffer.byteLength(data, 'utf8');
+        }
+        let callbackCalled = false;
+        let handleResult = (err, res) => {
+            if (!callbackCalled) {
+                callbackCalled = true;
+                onResult(err, res);
+            }
+        };
+        let req = info.httpModule.request(info.options, (msg) => {
+            let res = new HttpClientResponse(msg);
+            handleResult(null, res);
+        });
+        req.on('socket', sock => {
+            socket = sock;
+        });
+        // If we ever get disconnected, we want the socket to timeout eventually
+        req.setTimeout(this._socketTimeout || 3 * 60000, () => {
+            if (socket) {
+                socket.end();
+            }
+            handleResult(new Error('Request timeout: ' + info.options.path), null);
+        });
+        req.on('error', function (err) {
+            // err has statusCode property
+            // res should have headers
+            handleResult(err, null);
+        });
+        if (data && typeof data === 'string') {
+            req.write(data, 'utf8');
+        }
+        if (data && typeof data !== 'string') {
+            data.on('close', function () {
+                req.end();
+            });
+            data.pipe(req);
+        }
+        else {
+            req.end();
+        }
+    }
+    /**
+     * Gets an http agent. This function is useful when you need an http agent that handles
+     * routing through a proxy server - depending upon the url and proxy environment variables.
+     * @param serverUrl  The server URL where the request will be sent. For example, https://api.github.com
+     */
+    getAgent(serverUrl) {
+        let parsedUrl = new URL(serverUrl);
+        return this._getAgent(parsedUrl);
+    }
+    _prepareRequest(method, requestUrl, headers) {
+        const info = {};
+        info.parsedUrl = requestUrl;
+        const usingSsl = info.parsedUrl.protocol === 'https:';
+        info.httpModule = usingSsl ? https : http;
+        const defaultPort = usingSsl ? 443 : 80;
+        info.options = {};
+        info.options.host = info.parsedUrl.hostname;
+        info.options.port = info.parsedUrl.port
+            ? parseInt(info.parsedUrl.port)
+            : defaultPort;
+        info.options.path =
+            (info.parsedUrl.pathname || '') + (info.parsedUrl.search || '');
+        info.options.method = method;
+        info.options.headers = this._mergeHeaders(headers);
+        if (this.userAgent != null) {
+            info.options.headers['user-agent'] = this.userAgent;
+        }
+        info.options.agent = this._getAgent(info.parsedUrl);
+        // gives handlers an opportunity to participate
+        if (this.handlers) {
+            this.handlers.forEach(handler => {
+                handler.prepareRequest(info.options);
+            });
+        }
+        return info;
+    }
+    _mergeHeaders(headers) {
+        const lowercaseKeys = obj => Object.keys(obj).reduce((c, k) => ((c[k.toLowerCase()] = obj[k]), c), {});
+        if (this.requestOptions && this.requestOptions.headers) {
+            return Object.assign({}, lowercaseKeys(this.requestOptions.headers), lowercaseKeys(headers));
+        }
+        return lowercaseKeys(headers || {});
+    }
+    _getExistingOrDefaultHeader(additionalHeaders, header, _default) {
+        const lowercaseKeys = obj => Object.keys(obj).reduce((c, k) => ((c[k.toLowerCase()] = obj[k]), c), {});
+        let clientHeader;
+        if (this.requestOptions && this.requestOptions.headers) {
+            clientHeader = lowercaseKeys(this.requestOptions.headers)[header];
+        }
+        return additionalHeaders[header] || clientHeader || _default;
+    }
+    _getAgent(parsedUrl) {
+        let agent;
+        let proxyUrl = pm.getProxyUrl(parsedUrl);
+        let useProxy = proxyUrl && proxyUrl.hostname;
+        if (this._keepAlive && useProxy) {
+            agent = this._proxyAgent;
+        }
+        if (this._keepAlive && !useProxy) {
+            agent = this._agent;
+        }
+        // if agent is already assigned use that agent.
+        if (!!agent) {
+            return agent;
+        }
+        const usingSsl = parsedUrl.protocol === 'https:';
+        let maxSockets = 100;
+        if (!!this.requestOptions) {
+            maxSockets = this.requestOptions.maxSockets || http.globalAgent.maxSockets;
+        }
+        if (useProxy) {
+            // If using proxy, need tunnel
+            if (!tunnel) {
+                tunnel = __webpack_require__(4294);
+            }
+            const agentOptions = {
+                maxSockets: maxSockets,
+                keepAlive: this._keepAlive,
+                proxy: {
+                    proxyAuth: `${proxyUrl.username}:${proxyUrl.password}`,
+                    host: proxyUrl.hostname,
+                    port: proxyUrl.port
+                }
+            };
+            let tunnelAgent;
+            const overHttps = proxyUrl.protocol === 'https:';
+            if (usingSsl) {
+                tunnelAgent = overHttps ? tunnel.httpsOverHttps : tunnel.httpsOverHttp;
+            }
+            else {
+                tunnelAgent = overHttps ? tunnel.httpOverHttps : tunnel.httpOverHttp;
+            }
+            agent = tunnelAgent(agentOptions);
+            this._proxyAgent = agent;
+        }
+        // if reusing agent across request and tunneling agent isn't assigned create a new agent
+        if (this._keepAlive && !agent) {
+            const options = { keepAlive: this._keepAlive, maxSockets: maxSockets };
+            agent = usingSsl ? new https.Agent(options) : new http.Agent(options);
+            this._agent = agent;
+        }
+        // if not using private agent and tunnel agent isn't setup then use global agent
+        if (!agent) {
+            agent = usingSsl ? https.globalAgent : http.globalAgent;
+        }
+        if (usingSsl && this._ignoreSslError) {
+            // we don't want to set NODE_TLS_REJECT_UNAUTHORIZED=0 since that will affect request for entire process
+            // http.RequestOptions doesn't expose a way to modify RequestOptions.agent.options
+            // we have to cast it to any and change it directly
+            agent.options = Object.assign(agent.options || {}, {
+                rejectUnauthorized: false
+            });
+        }
+        return agent;
+    }
+    _performExponentialBackoff(retryNumber) {
+        retryNumber = Math.min(ExponentialBackoffCeiling, retryNumber);
+        const ms = ExponentialBackoffTimeSlice * Math.pow(2, retryNumber);
+        return new Promise(resolve => setTimeout(() => resolve(), ms));
+    }
+    static dateTimeDeserializer(key, value) {
+        if (typeof value === 'string') {
+            let a = new Date(value);
+            if (!isNaN(a.valueOf())) {
+                return a;
+            }
+        }
+        return value;
+    }
+    async _processResponse(res, options) {
+        return new Promise(async (resolve, reject) => {
+            const statusCode = res.message.statusCode;
+            const response = {
+                statusCode: statusCode,
+                result: null,
+                headers: {}
+            };
+            // not found leads to null obj returned
+            if (statusCode == HttpCodes.NotFound) {
+                resolve(response);
+            }
+            let obj;
+            let contents;
+            // get the result from the body
+            try {
+                contents = await res.readBody();
+                if (contents && contents.length > 0) {
+                    if (options && options.deserializeDates) {
+                        obj = JSON.parse(contents, HttpClient.dateTimeDeserializer);
+                    }
+                    else {
+                        obj = JSON.parse(contents);
+                    }
+                    response.result = obj;
+                }
+                response.headers = res.message.headers;
+            }
+            catch (err) {
+                // Invalid resource (contents not json);  leaving result obj null
+            }
+            // note that 3xx redirects are handled by the http layer.
+            if (statusCode > 299) {
+                let msg;
+                // if exception/error in body, attempt to get better error
+                if (obj && obj.message) {
+                    msg = obj.message;
+                }
+                else if (contents && contents.length > 0) {
+                    // it may be the case that the exception is in the body message as string
+                    msg = contents;
+                }
+                else {
+                    msg = 'Failed request: (' + statusCode + ')';
+                }
+                let err = new HttpClientError(msg, statusCode);
+                err.result = response.result;
+                reject(err);
+            }
+            else {
+                resolve(response);
+            }
+        });
+    }
+}
+exports.HttpClient = HttpClient;
+
+
+/***/ }),
+
+/***/ 6443:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+function getProxyUrl(reqUrl) {
+    let usingSsl = reqUrl.protocol === 'https:';
+    let proxyUrl;
+    if (checkBypass(reqUrl)) {
+        return proxyUrl;
+    }
+    let proxyVar;
+    if (usingSsl) {
+        proxyVar = process.env['https_proxy'] || process.env['HTTPS_PROXY'];
+    }
+    else {
+        proxyVar = process.env['http_proxy'] || process.env['HTTP_PROXY'];
+    }
+    if (proxyVar) {
+        proxyUrl = new URL(proxyVar);
+    }
+    return proxyUrl;
+}
+exports.getProxyUrl = getProxyUrl;
+function checkBypass(reqUrl) {
+    if (!reqUrl.hostname) {
+        return false;
+    }
+    let noProxy = process.env['no_proxy'] || process.env['NO_PROXY'] || '';
+    if (!noProxy) {
+        return false;
+    }
+    // Determine the request port
+    let reqPort;
+    if (reqUrl.port) {
+        reqPort = Number(reqUrl.port);
+    }
+    else if (reqUrl.protocol === 'http:') {
+        reqPort = 80;
+    }
+    else if (reqUrl.protocol === 'https:') {
+        reqPort = 443;
+    }
+    // Format the request hostname and hostname with port
+    let upperReqHosts = [reqUrl.hostname.toUpperCase()];
+    if (typeof reqPort === 'number') {
+        upperReqHosts.push(`${upperReqHosts[0]}:${reqPort}`);
+    }
+    // Compare request host against noproxy
+    for (let upperNoProxyItem of noProxy
+        .split(',')
+        .map(x => x.trim().toUpperCase())
+        .filter(x => x)) {
+        if (upperReqHosts.some(x => x === upperNoProxyItem)) {
+            return true;
+        }
+    }
+    return false;
+}
+exports.checkBypass = checkBypass;
+
+
+/***/ }),
+
+/***/ 4751:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__export(__webpack_require__(2825));
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 2825:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const fs_1 = __webpack_require__(5747);
+const debug_1 = __importDefault(__webpack_require__(8231));
+const log = debug_1.default('@kwsites/file-exists');
+function check(path, isFile, isDirectory) {
+    log(`checking %s`, path);
+    try {
+        const stat = fs_1.statSync(path);
+        if (stat.isFile() && isFile) {
+            log(`[OK] path represents a file`);
+            return true;
+        }
+        if (stat.isDirectory() && isDirectory) {
+            log(`[OK] path represents a directory`);
+            return true;
+        }
+        log(`[FAIL] path represents something other than a file or directory`);
+        return false;
+    }
+    catch (e) {
+        if (e.code === 'ENOENT') {
+            log(`[FAIL] path is not accessible: %o`, e);
+            return false;
+        }
+        log(`[FATAL] %o`, e);
+        throw e;
+    }
+}
+/**
+ * Synchronous validation of a path existing either as a file or as a directory.
+ *
+ * @param {string} path The path to check
+ * @param {number} type One or both of the exported numeric constants
+ */
+function exists(path, type = exports.READABLE) {
+    return check(path, (type & exports.FILE) > 0, (type & exports.FOLDER) > 0);
+}
+exports.exists = exists;
+/**
+ * Constant representing a file
+ */
+exports.FILE = 1;
+/**
+ * Constant representing a folder
+ */
+exports.FOLDER = 2;
+/**
+ * Constant representing either a file or a folder
+ */
+exports.READABLE = exports.FILE + exports.FOLDER;
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 9819:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createDeferred = exports.deferred = void 0;
+/**
+ * Creates a new `DeferredPromise`
+ *
+ * ```typescript
+ import {deferred} from '@kwsites/promise-deferred`;
+ ```
+ */
+function deferred() {
+    let done;
+    let fail;
+    let status = 'pending';
+    const promise = new Promise((_done, _fail) => {
+        done = _done;
+        fail = _fail;
+    });
+    return {
+        promise,
+        done(result) {
+            if (status === 'pending') {
+                status = 'resolved';
+                done(result);
+            }
+        },
+        fail(error) {
+            if (status === 'pending') {
+                status = 'rejected';
+                fail(error);
+            }
+        },
+        get fulfilled() {
+            return status !== 'pending';
+        },
+        get status() {
+            return status;
+        },
+    };
+}
+exports.deferred = deferred;
+/**
+ * Alias of the exported `deferred` function, to help consumers wanting to use `deferred` as the
+ * local variable name rather than the factory import name, without needing to rename on import.
+ *
+ * ```typescript
+ import {createDeferred} from '@kwsites/promise-deferred`;
+ ```
+ */
+exports.createDeferred = deferred;
+/**
+ * Default export allows use as:
+ *
+ * ```typescript
+ import deferred from '@kwsites/promise-deferred`;
+ ```
+ */
+exports.default = deferred;
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 334:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+async function auth(token) {
+  const tokenType = token.split(/\./).length === 3 ? "app" : /^v\d+\./.test(token) ? "installation" : "oauth";
+  return {
+    type: "token",
+    token: token,
+    tokenType
+  };
+}
+
+/**
+ * Prefix token for usage in the Authorization header
+ *
+ * @param token OAuth token or JSON Web Token
+ */
+function withAuthorizationPrefix(token) {
+  if (token.split(/\./).length === 3) {
+    return `bearer ${token}`;
+  }
+
+  return `token ${token}`;
+}
+
+async function hook(token, request, route, parameters) {
+  const endpoint = request.endpoint.merge(route, parameters);
+  endpoint.headers.authorization = withAuthorizationPrefix(token);
+  return request(endpoint);
+}
+
+const createTokenAuth = function createTokenAuth(token) {
+  if (!token) {
+    throw new Error("[@octokit/auth-token] No token passed to createTokenAuth");
+  }
+
+  if (typeof token !== "string") {
+    throw new Error("[@octokit/auth-token] Token passed to createTokenAuth is not a string");
+  }
+
+  token = token.replace(/^(token|bearer) +/i, "");
+  return Object.assign(auth.bind(null, token), {
+    hook: hook.bind(null, token)
+  });
+};
+
+exports.createTokenAuth = createTokenAuth;
+//# sourceMappingURL=index.js.map
+
+
+/***/ }),
+
+/***/ 6762:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+var universalUserAgent = __webpack_require__(5030);
+var beforeAfterHook = __webpack_require__(3682);
+var request = __webpack_require__(6234);
+var graphql = __webpack_require__(8467);
+var authToken = __webpack_require__(334);
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+const VERSION = "3.2.1";
+
+class Octokit {
+  constructor(options = {}) {
+    const hook = new beforeAfterHook.Collection();
+    const requestDefaults = {
+      baseUrl: request.request.endpoint.DEFAULTS.baseUrl,
+      headers: {},
+      request: Object.assign({}, options.request, {
+        hook: hook.bind(null, "request")
+      }),
+      mediaType: {
+        previews: [],
+        format: ""
+      }
+    }; // prepend default user agent with `options.userAgent` if set
+
+    requestDefaults.headers["user-agent"] = [options.userAgent, `octokit-core.js/${VERSION} ${universalUserAgent.getUserAgent()}`].filter(Boolean).join(" ");
+
+    if (options.baseUrl) {
+      requestDefaults.baseUrl = options.baseUrl;
+    }
+
+    if (options.previews) {
+      requestDefaults.mediaType.previews = options.previews;
+    }
+
+    if (options.timeZone) {
+      requestDefaults.headers["time-zone"] = options.timeZone;
+    }
+
+    this.request = request.request.defaults(requestDefaults);
+    this.graphql = graphql.withCustomRequest(this.request).defaults(requestDefaults);
+    this.log = Object.assign({
+      debug: () => {},
+      info: () => {},
+      warn: console.warn.bind(console),
+      error: console.error.bind(console)
+    }, options.log);
+    this.hook = hook; // (1) If neither `options.authStrategy` nor `options.auth` are set, the `octokit` instance
+    //     is unauthenticated. The `this.auth()` method is a no-op and no request hook is registered.
+    // (2) If only `options.auth` is set, use the default token authentication strategy.
+    // (3) If `options.authStrategy` is set then use it and pass in `options.auth`. Always pass own request as many strategies accept a custom request instance.
+    // TODO: type `options.auth` based on `options.authStrategy`.
+
+    if (!options.authStrategy) {
+      if (!options.auth) {
+        // (1)
+        this.auth = async () => ({
+          type: "unauthenticated"
+        });
+      } else {
+        // (2)
+        const auth = authToken.createTokenAuth(options.auth); // @ts-ignore  ¯\_(ツ)_/¯
+
+        hook.wrap("request", auth.hook);
+        this.auth = auth;
+      }
+    } else {
+      const {
+        authStrategy
+      } = options,
+            otherOptions = _objectWithoutProperties(options, ["authStrategy"]);
+
+      const auth = authStrategy(Object.assign({
+        request: this.request,
+        log: this.log,
+        // we pass the current octokit instance as well as its constructor options
+        // to allow for authentication strategies that return a new octokit instance
+        // that shares the same internal state as the current one. The original
+        // requirement for this was the "event-octokit" authentication strategy
+        // of https://github.com/probot/octokit-auth-probot.
+        octokit: this,
+        octokitOptions: otherOptions
+      }, options.auth)); // @ts-ignore  ¯\_(ツ)_/¯
+
+      hook.wrap("request", auth.hook);
+      this.auth = auth;
+    } // apply plugins
+    // https://stackoverflow.com/a/16345172
+
+
+    const classConstructor = this.constructor;
+    classConstructor.plugins.forEach(plugin => {
+      Object.assign(this, plugin(this, options));
+    });
+  }
+
+  static defaults(defaults) {
+    const OctokitWithDefaults = class extends this {
+      constructor(...args) {
+        const options = args[0] || {};
+
+        if (typeof defaults === "function") {
+          super(defaults(options));
+          return;
+        }
+
+        super(Object.assign({}, defaults, options, options.userAgent && defaults.userAgent ? {
+          userAgent: `${options.userAgent} ${defaults.userAgent}`
+        } : null));
+      }
+
+    };
+    return OctokitWithDefaults;
+  }
+  /**
+   * Attach a plugin (or many) to your Octokit instance.
+   *
+   * @example
+   * const API = Octokit.plugin(plugin1, plugin2, plugin3, ...)
+   */
+
+
+  static plugin(...newPlugins) {
+    var _a;
+
+    const currentPlugins = this.plugins;
+    const NewOctokit = (_a = class extends this {}, _a.plugins = currentPlugins.concat(newPlugins.filter(plugin => !currentPlugins.includes(plugin))), _a);
+    return NewOctokit;
+  }
+
+}
+Octokit.VERSION = VERSION;
+Octokit.plugins = [];
+
+exports.Octokit = Octokit;
+//# sourceMappingURL=index.js.map
+
+
+/***/ }),
+
+/***/ 9440:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+var isPlainObject = __webpack_require__(558);
+var universalUserAgent = __webpack_require__(5030);
+
+function lowercaseKeys(object) {
+  if (!object) {
+    return {};
+  }
+
+  return Object.keys(object).reduce((newObj, key) => {
+    newObj[key.toLowerCase()] = object[key];
+    return newObj;
+  }, {});
+}
+
+function mergeDeep(defaults, options) {
+  const result = Object.assign({}, defaults);
+  Object.keys(options).forEach(key => {
+    if (isPlainObject.isPlainObject(options[key])) {
+      if (!(key in defaults)) Object.assign(result, {
+        [key]: options[key]
+      });else result[key] = mergeDeep(defaults[key], options[key]);
+    } else {
+      Object.assign(result, {
+        [key]: options[key]
+      });
+    }
+  });
+  return result;
+}
+
+function removeUndefinedProperties(obj) {
+  for (const key in obj) {
+    if (obj[key] === undefined) {
+      delete obj[key];
+    }
+  }
+
+  return obj;
+}
+
+function merge(defaults, route, options) {
+  if (typeof route === "string") {
+    let [method, url] = route.split(" ");
+    options = Object.assign(url ? {
+      method,
+      url
+    } : {
+      url: method
+    }, options);
+  } else {
+    options = Object.assign({}, route);
+  } // lowercase header names before merging with defaults to avoid duplicates
+
+
+  options.headers = lowercaseKeys(options.headers); // remove properties with undefined values before merging
+
+  removeUndefinedProperties(options);
+  removeUndefinedProperties(options.headers);
+  const mergedOptions = mergeDeep(defaults || {}, options); // mediaType.previews arrays are merged, instead of overwritten
+
+  if (defaults && defaults.mediaType.previews.length) {
+    mergedOptions.mediaType.previews = defaults.mediaType.previews.filter(preview => !mergedOptions.mediaType.previews.includes(preview)).concat(mergedOptions.mediaType.previews);
+  }
+
+  mergedOptions.mediaType.previews = mergedOptions.mediaType.previews.map(preview => preview.replace(/-preview/, ""));
+  return mergedOptions;
+}
+
+function addQueryParameters(url, parameters) {
+  const separator = /\?/.test(url) ? "&" : "?";
+  const names = Object.keys(parameters);
+
+  if (names.length === 0) {
+    return url;
+  }
+
+  return url + separator + names.map(name => {
+    if (name === "q") {
+      return "q=" + parameters.q.split("+").map(encodeURIComponent).join("+");
+    }
+
+    return `${name}=${encodeURIComponent(parameters[name])}`;
+  }).join("&");
+}
+
+const urlVariableRegex = /\{[^}]+\}/g;
+
+function removeNonChars(variableName) {
+  return variableName.replace(/^\W+|\W+$/g, "").split(/,/);
+}
+
+function extractUrlVariableNames(url) {
+  const matches = url.match(urlVariableRegex);
+
+  if (!matches) {
+    return [];
+  }
+
+  return matches.map(removeNonChars).reduce((a, b) => a.concat(b), []);
+}
+
+function omit(object, keysToOmit) {
+  return Object.keys(object).filter(option => !keysToOmit.includes(option)).reduce((obj, key) => {
+    obj[key] = object[key];
+    return obj;
+  }, {});
+}
+
+// Based on https://github.com/bramstein/url-template, licensed under BSD
+// TODO: create separate package.
+//
+// Copyright (c) 2012-2014, Bram Stein
+// All rights reserved.
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//  1. Redistributions of source code must retain the above copyright
+//     notice, this list of conditions and the following disclaimer.
+//  2. Redistributions in binary form must reproduce the above copyright
+//     notice, this list of conditions and the following disclaimer in the
+//     documentation and/or other materials provided with the distribution.
+//  3. The name of the author may not be used to endorse or promote products
+//     derived from this software without specific prior written permission.
+// THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED
+// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+// EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+// NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+// EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+/* istanbul ignore file */
+function encodeReserved(str) {
+  return str.split(/(%[0-9A-Fa-f]{2})/g).map(function (part) {
+    if (!/%[0-9A-Fa-f]/.test(part)) {
+      part = encodeURI(part).replace(/%5B/g, "[").replace(/%5D/g, "]");
+    }
+
+    return part;
+  }).join("");
+}
+
+function encodeUnreserved(str) {
+  return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
+    return "%" + c.charCodeAt(0).toString(16).toUpperCase();
+  });
+}
+
+function encodeValue(operator, value, key) {
+  value = operator === "+" || operator === "#" ? encodeReserved(value) : encodeUnreserved(value);
+
+  if (key) {
+    return encodeUnreserved(key) + "=" + value;
+  } else {
+    return value;
+  }
+}
+
+function isDefined(value) {
+  return value !== undefined && value !== null;
+}
+
+function isKeyOperator(operator) {
+  return operator === ";" || operator === "&" || operator === "?";
+}
+
+function getValues(context, operator, key, modifier) {
+  var value = context[key],
+      result = [];
+
+  if (isDefined(value) && value !== "") {
+    if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+      value = value.toString();
+
+      if (modifier && modifier !== "*") {
+        value = value.substring(0, parseInt(modifier, 10));
+      }
+
+      result.push(encodeValue(operator, value, isKeyOperator(operator) ? key : ""));
+    } else {
+      if (modifier === "*") {
+        if (Array.isArray(value)) {
+          value.filter(isDefined).forEach(function (value) {
+            result.push(encodeValue(operator, value, isKeyOperator(operator) ? key : ""));
+          });
+        } else {
+          Object.keys(value).forEach(function (k) {
+            if (isDefined(value[k])) {
+              result.push(encodeValue(operator, value[k], k));
+            }
+          });
+        }
+      } else {
+        const tmp = [];
+
+        if (Array.isArray(value)) {
+          value.filter(isDefined).forEach(function (value) {
+            tmp.push(encodeValue(operator, value));
+          });
+        } else {
+          Object.keys(value).forEach(function (k) {
+            if (isDefined(value[k])) {
+              tmp.push(encodeUnreserved(k));
+              tmp.push(encodeValue(operator, value[k].toString()));
+            }
+          });
+        }
+
+        if (isKeyOperator(operator)) {
+          result.push(encodeUnreserved(key) + "=" + tmp.join(","));
+        } else if (tmp.length !== 0) {
+          result.push(tmp.join(","));
+        }
+      }
+    }
+  } else {
+    if (operator === ";") {
+      if (isDefined(value)) {
+        result.push(encodeUnreserved(key));
+      }
+    } else if (value === "" && (operator === "&" || operator === "?")) {
+      result.push(encodeUnreserved(key) + "=");
+    } else if (value === "") {
+      result.push("");
+    }
+  }
+
+  return result;
+}
+
+function parseUrl(template) {
+  return {
+    expand: expand.bind(null, template)
+  };
+}
+
+function expand(template, context) {
+  var operators = ["+", "#", ".", "/", ";", "?", "&"];
+  return template.replace(/\{([^\{\}]+)\}|([^\{\}]+)/g, function (_, expression, literal) {
+    if (expression) {
+      let operator = "";
+      const values = [];
+
+      if (operators.indexOf(expression.charAt(0)) !== -1) {
+        operator = expression.charAt(0);
+        expression = expression.substr(1);
+      }
+
+      expression.split(/,/g).forEach(function (variable) {
+        var tmp = /([^:\*]*)(?::(\d+)|(\*))?/.exec(variable);
+        values.push(getValues(context, operator, tmp[1], tmp[2] || tmp[3]));
+      });
+
+      if (operator && operator !== "+") {
+        var separator = ",";
+
+        if (operator === "?") {
+          separator = "&";
+        } else if (operator !== "#") {
+          separator = operator;
+        }
+
+        return (values.length !== 0 ? operator : "") + values.join(separator);
+      } else {
+        return values.join(",");
+      }
+    } else {
+      return encodeReserved(literal);
+    }
+  });
+}
+
+function parse(options) {
+  // https://fetch.spec.whatwg.org/#methods
+  let method = options.method.toUpperCase(); // replace :varname with {varname} to make it RFC 6570 compatible
+
+  let url = (options.url || "/").replace(/:([a-z]\w+)/g, "{$1}");
+  let headers = Object.assign({}, options.headers);
+  let body;
+  let parameters = omit(options, ["method", "baseUrl", "url", "headers", "request", "mediaType"]); // extract variable names from URL to calculate remaining variables later
+
+  const urlVariableNames = extractUrlVariableNames(url);
+  url = parseUrl(url).expand(parameters);
+
+  if (!/^http/.test(url)) {
+    url = options.baseUrl + url;
+  }
+
+  const omittedParameters = Object.keys(options).filter(option => urlVariableNames.includes(option)).concat("baseUrl");
+  const remainingParameters = omit(parameters, omittedParameters);
+  const isBinaryRequest = /application\/octet-stream/i.test(headers.accept);
+
+  if (!isBinaryRequest) {
+    if (options.mediaType.format) {
+      // e.g. application/vnd.github.v3+json => application/vnd.github.v3.raw
+      headers.accept = headers.accept.split(/,/).map(preview => preview.replace(/application\/vnd(\.\w+)(\.v3)?(\.\w+)?(\+json)?$/, `application/vnd$1$2.${options.mediaType.format}`)).join(",");
+    }
+
+    if (options.mediaType.previews.length) {
+      const previewsFromAcceptHeader = headers.accept.match(/[\w-]+(?=-preview)/g) || [];
+      headers.accept = previewsFromAcceptHeader.concat(options.mediaType.previews).map(preview => {
+        const format = options.mediaType.format ? `.${options.mediaType.format}` : "+json";
+        return `application/vnd.github.${preview}-preview${format}`;
+      }).join(",");
+    }
+  } // for GET/HEAD requests, set URL query parameters from remaining parameters
+  // for PATCH/POST/PUT/DELETE requests, set request body from remaining parameters
+
+
+  if (["GET", "HEAD"].includes(method)) {
+    url = addQueryParameters(url, remainingParameters);
+  } else {
+    if ("data" in remainingParameters) {
+      body = remainingParameters.data;
+    } else {
+      if (Object.keys(remainingParameters).length) {
+        body = remainingParameters;
+      } else {
+        headers["content-length"] = 0;
+      }
+    }
+  } // default content-type for JSON if body is set
+
+
+  if (!headers["content-type"] && typeof body !== "undefined") {
+    headers["content-type"] = "application/json; charset=utf-8";
+  } // GitHub expects 'content-length: 0' header for PUT/PATCH requests without body.
+  // fetch does not allow to set `content-length` header, but we can set body to an empty string
+
+
+  if (["PATCH", "PUT"].includes(method) && typeof body === "undefined") {
+    body = "";
+  } // Only return body/request keys if present
+
+
+  return Object.assign({
+    method,
+    url,
+    headers
+  }, typeof body !== "undefined" ? {
+    body
+  } : null, options.request ? {
+    request: options.request
+  } : null);
+}
+
+function endpointWithDefaults(defaults, route, options) {
+  return parse(merge(defaults, route, options));
+}
+
+function withDefaults(oldDefaults, newDefaults) {
+  const DEFAULTS = merge(oldDefaults, newDefaults);
+  const endpoint = endpointWithDefaults.bind(null, DEFAULTS);
+  return Object.assign(endpoint, {
+    DEFAULTS,
+    defaults: withDefaults.bind(null, DEFAULTS),
+    merge: merge.bind(null, DEFAULTS),
+    parse
+  });
+}
+
+const VERSION = "6.0.9";
+
+const userAgent = `octokit-endpoint.js/${VERSION} ${universalUserAgent.getUserAgent()}`; // DEFAULTS has all properties set that EndpointOptions has, except url.
+// So we use RequestParameters and add method as additional required property.
+
+const DEFAULTS = {
+  method: "GET",
+  baseUrl: "https://api.github.com",
+  headers: {
+    accept: "application/vnd.github.v3+json",
+    "user-agent": userAgent
+  },
+  mediaType: {
+    format: "",
+    previews: []
+  }
+};
+
+const endpoint = withDefaults(null, DEFAULTS);
+
+exports.endpoint = endpoint;
+//# sourceMappingURL=index.js.map
+
+
+/***/ }),
+
+/***/ 558:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+/*!
+ * is-plain-object <https://github.com/jonschlinkert/is-plain-object>
+ *
+ * Copyright (c) 2014-2017, Jon Schlinkert.
+ * Released under the MIT License.
+ */
+
+function isObject(o) {
+  return Object.prototype.toString.call(o) === '[object Object]';
+}
+
+function isPlainObject(o) {
+  var ctor,prot;
+
+  if (isObject(o) === false) return false;
+
+  // If has modified constructor
+  ctor = o.constructor;
+  if (ctor === undefined) return true;
+
+  // If has modified prototype
+  prot = ctor.prototype;
+  if (isObject(prot) === false) return false;
+
+  // If constructor does not have an Object-specific method
+  if (prot.hasOwnProperty('isPrototypeOf') === false) {
+    return false;
+  }
+
+  // Most likely a plain Object
+  return true;
+}
+
+exports.isPlainObject = isPlainObject;
+
+
+/***/ }),
+
+/***/ 8467:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+var request = __webpack_require__(6234);
+var universalUserAgent = __webpack_require__(5030);
+
+const VERSION = "4.5.7";
+
+class GraphqlError extends Error {
+  constructor(request, response) {
+    const message = response.data.errors[0].message;
+    super(message);
+    Object.assign(this, response.data);
+    Object.assign(this, {
+      headers: response.headers
+    });
+    this.name = "GraphqlError";
+    this.request = request; // Maintains proper stack trace (only available on V8)
+
+    /* istanbul ignore next */
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, this.constructor);
+    }
+  }
+
+}
+
+const NON_VARIABLE_OPTIONS = ["method", "baseUrl", "url", "headers", "request", "query", "mediaType"];
+const GHES_V3_SUFFIX_REGEX = /\/api\/v3\/?$/;
+function graphql(request, query, options) {
+  if (typeof query === "string" && options && "query" in options) {
+    return Promise.reject(new Error(`[@octokit/graphql] "query" cannot be used as variable name`));
+  }
+
+  const parsedOptions = typeof query === "string" ? Object.assign({
+    query
+  }, options) : query;
+  const requestOptions = Object.keys(parsedOptions).reduce((result, key) => {
+    if (NON_VARIABLE_OPTIONS.includes(key)) {
+      result[key] = parsedOptions[key];
+      return result;
+    }
+
+    if (!result.variables) {
+      result.variables = {};
+    }
+
+    result.variables[key] = parsedOptions[key];
+    return result;
+  }, {}); // workaround for GitHub Enterprise baseUrl set with /api/v3 suffix
+  // https://github.com/octokit/auth-app.js/issues/111#issuecomment-657610451
+
+  const baseUrl = parsedOptions.baseUrl || request.endpoint.DEFAULTS.baseUrl;
+
+  if (GHES_V3_SUFFIX_REGEX.test(baseUrl)) {
+    requestOptions.url = baseUrl.replace(GHES_V3_SUFFIX_REGEX, "/api/graphql");
+  }
+
+  return request(requestOptions).then(response => {
+    if (response.data.errors) {
+      const headers = {};
+
+      for (const key of Object.keys(response.headers)) {
+        headers[key] = response.headers[key];
+      }
+
+      throw new GraphqlError(requestOptions, {
+        headers,
+        data: response.data
+      });
+    }
+
+    return response.data.data;
+  });
+}
+
+function withDefaults(request$1, newDefaults) {
+  const newRequest = request$1.defaults(newDefaults);
+
+  const newApi = (query, options) => {
+    return graphql(newRequest, query, options);
+  };
+
+  return Object.assign(newApi, {
+    defaults: withDefaults.bind(null, newRequest),
+    endpoint: request.request.endpoint
+  });
+}
+
+const graphql$1 = withDefaults(request.request, {
+  headers: {
+    "user-agent": `octokit-graphql.js/${VERSION} ${universalUserAgent.getUserAgent()}`
+  },
+  method: "POST",
+  url: "/graphql"
+});
+function withCustomRequest(customRequest) {
+  return withDefaults(customRequest, {
+    method: "POST",
+    url: "/graphql"
+  });
+}
+
+exports.graphql = graphql$1;
+exports.withCustomRequest = withCustomRequest;
+//# sourceMappingURL=index.js.map
+
+
+/***/ }),
+
+/***/ 4193:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+const VERSION = "2.6.0";
+
+/**
+ * Some “list” response that can be paginated have a different response structure
+ *
+ * They have a `total_count` key in the response (search also has `incomplete_results`,
+ * /installation/repositories also has `repository_selection`), as well as a key with
+ * the list of the items which name varies from endpoint to endpoint.
+ *
+ * Octokit normalizes these responses so that paginated results are always returned following
+ * the same structure. One challenge is that if the list response has only one page, no Link
+ * header is provided, so this header alone is not sufficient to check wether a response is
+ * paginated or not.
+ *
+ * We check if a "total_count" key is present in the response data, but also make sure that
+ * a "url" property is not, as the "Get the combined status for a specific ref" endpoint would
+ * otherwise match: https://developer.github.com/v3/repos/statuses/#get-the-combined-status-for-a-specific-ref
+ */
+function normalizePaginatedListResponse(response) {
+  const responseNeedsNormalization = "total_count" in response.data && !("url" in response.data);
+  if (!responseNeedsNormalization) return response; // keep the additional properties intact as there is currently no other way
+  // to retrieve the same information.
+
+  const incompleteResults = response.data.incomplete_results;
+  const repositorySelection = response.data.repository_selection;
+  const totalCount = response.data.total_count;
+  delete response.data.incomplete_results;
+  delete response.data.repository_selection;
+  delete response.data.total_count;
+  const namespaceKey = Object.keys(response.data)[0];
+  const data = response.data[namespaceKey];
+  response.data = data;
+
+  if (typeof incompleteResults !== "undefined") {
+    response.data.incomplete_results = incompleteResults;
+  }
+
+  if (typeof repositorySelection !== "undefined") {
+    response.data.repository_selection = repositorySelection;
+  }
+
+  response.data.total_count = totalCount;
+  return response;
+}
+
+function iterator(octokit, route, parameters) {
+  const options = typeof route === "function" ? route.endpoint(parameters) : octokit.request.endpoint(route, parameters);
+  const requestMethod = typeof route === "function" ? route : octokit.request;
+  const method = options.method;
+  const headers = options.headers;
+  let url = options.url;
+  return {
+    [Symbol.asyncIterator]: () => ({
+      async next() {
+        if (!url) return {
+          done: true
+        };
+        const response = await requestMethod({
+          method,
+          url,
+          headers
+        });
+        const normalizedResponse = normalizePaginatedListResponse(response); // `response.headers.link` format:
+        // '<https://api.github.com/users/aseemk/followers?page=2>; rel="next", <https://api.github.com/users/aseemk/followers?page=2>; rel="last"'
+        // sets `url` to undefined if "next" URL is not present or `link` header is not set
+
+        url = ((normalizedResponse.headers.link || "").match(/<([^>]+)>;\s*rel="next"/) || [])[1];
+        return {
+          value: normalizedResponse
+        };
+      }
+
+    })
+  };
+}
+
+function paginate(octokit, route, parameters, mapFn) {
+  if (typeof parameters === "function") {
+    mapFn = parameters;
+    parameters = undefined;
+  }
+
+  return gather(octokit, [], iterator(octokit, route, parameters)[Symbol.asyncIterator](), mapFn);
+}
+
+function gather(octokit, results, iterator, mapFn) {
+  return iterator.next().then(result => {
+    if (result.done) {
+      return results;
+    }
+
+    let earlyExit = false;
+
+    function done() {
+      earlyExit = true;
+    }
+
+    results = results.concat(mapFn ? mapFn(result.value, done) : result.value.data);
+
+    if (earlyExit) {
+      return results;
+    }
+
+    return gather(octokit, results, iterator, mapFn);
+  });
+}
+
+const composePaginateRest = Object.assign(paginate, {
+  iterator
+});
+
+/**
+ * @param octokit Octokit instance
+ * @param options Options passed to Octokit constructor
+ */
+
+function paginateRest(octokit) {
+  return {
+    paginate: Object.assign(paginate.bind(null, octokit), {
+      iterator: iterator.bind(null, octokit)
+    })
+  };
+}
+paginateRest.VERSION = VERSION;
+
+exports.composePaginateRest = composePaginateRest;
+exports.paginateRest = paginateRest;
+//# sourceMappingURL=index.js.map
+
+
+/***/ }),
+
+/***/ 3044:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+const Endpoints = {
+  actions: {
+    addSelectedRepoToOrgSecret: ["PUT /orgs/{org}/actions/secrets/{secret_name}/repositories/{repository_id}"],
+    cancelWorkflowRun: ["POST /repos/{owner}/{repo}/actions/runs/{run_id}/cancel"],
+    createOrUpdateOrgSecret: ["PUT /orgs/{org}/actions/secrets/{secret_name}"],
+    createOrUpdateRepoSecret: ["PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}"],
+    createRegistrationTokenForOrg: ["POST /orgs/{org}/actions/runners/registration-token"],
+    createRegistrationTokenForRepo: ["POST /repos/{owner}/{repo}/actions/runners/registration-token"],
+    createRemoveTokenForOrg: ["POST /orgs/{org}/actions/runners/remove-token"],
+    createRemoveTokenForRepo: ["POST /repos/{owner}/{repo}/actions/runners/remove-token"],
+    createWorkflowDispatch: ["POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches"],
+    deleteArtifact: ["DELETE /repos/{owner}/{repo}/actions/artifacts/{artifact_id}"],
+    deleteOrgSecret: ["DELETE /orgs/{org}/actions/secrets/{secret_name}"],
+    deleteRepoSecret: ["DELETE /repos/{owner}/{repo}/actions/secrets/{secret_name}"],
+    deleteSelfHostedRunnerFromOrg: ["DELETE /orgs/{org}/actions/runners/{runner_id}"],
+    deleteSelfHostedRunnerFromRepo: ["DELETE /repos/{owner}/{repo}/actions/runners/{runner_id}"],
+    deleteWorkflowRun: ["DELETE /repos/{owner}/{repo}/actions/runs/{run_id}"],
+    deleteWorkflowRunLogs: ["DELETE /repos/{owner}/{repo}/actions/runs/{run_id}/logs"],
+    downloadArtifact: ["GET /repos/{owner}/{repo}/actions/artifacts/{artifact_id}/{archive_format}"],
+    downloadJobLogsForWorkflowRun: ["GET /repos/{owner}/{repo}/actions/jobs/{job_id}/logs"],
+    downloadWorkflowRunLogs: ["GET /repos/{owner}/{repo}/actions/runs/{run_id}/logs"],
+    getArtifact: ["GET /repos/{owner}/{repo}/actions/artifacts/{artifact_id}"],
+    getJobForWorkflowRun: ["GET /repos/{owner}/{repo}/actions/jobs/{job_id}"],
+    getOrgPublicKey: ["GET /orgs/{org}/actions/secrets/public-key"],
+    getOrgSecret: ["GET /orgs/{org}/actions/secrets/{secret_name}"],
+    getRepoPublicKey: ["GET /repos/{owner}/{repo}/actions/secrets/public-key"],
+    getRepoSecret: ["GET /repos/{owner}/{repo}/actions/secrets/{secret_name}"],
+    getSelfHostedRunnerForOrg: ["GET /orgs/{org}/actions/runners/{runner_id}"],
+    getSelfHostedRunnerForRepo: ["GET /repos/{owner}/{repo}/actions/runners/{runner_id}"],
+    getWorkflow: ["GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}"],
+    getWorkflowRun: ["GET /repos/{owner}/{repo}/actions/runs/{run_id}"],
+    getWorkflowRunUsage: ["GET /repos/{owner}/{repo}/actions/runs/{run_id}/timing"],
+    getWorkflowUsage: ["GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/timing"],
+    listArtifactsForRepo: ["GET /repos/{owner}/{repo}/actions/artifacts"],
+    listJobsForWorkflowRun: ["GET /repos/{owner}/{repo}/actions/runs/{run_id}/jobs"],
+    listOrgSecrets: ["GET /orgs/{org}/actions/secrets"],
+    listRepoSecrets: ["GET /repos/{owner}/{repo}/actions/secrets"],
+    listRepoWorkflows: ["GET /repos/{owner}/{repo}/actions/workflows"],
+    listRunnerApplicationsForOrg: ["GET /orgs/{org}/actions/runners/downloads"],
+    listRunnerApplicationsForRepo: ["GET /repos/{owner}/{repo}/actions/runners/downloads"],
+    listSelectedReposForOrgSecret: ["GET /orgs/{org}/actions/secrets/{secret_name}/repositories"],
+    listSelfHostedRunnersForOrg: ["GET /orgs/{org}/actions/runners"],
+    listSelfHostedRunnersForRepo: ["GET /repos/{owner}/{repo}/actions/runners"],
+    listWorkflowRunArtifacts: ["GET /repos/{owner}/{repo}/actions/runs/{run_id}/artifacts"],
+    listWorkflowRuns: ["GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs"],
+    listWorkflowRunsForRepo: ["GET /repos/{owner}/{repo}/actions/runs"],
+    reRunWorkflow: ["POST /repos/{owner}/{repo}/actions/runs/{run_id}/rerun"],
+    removeSelectedRepoFromOrgSecret: ["DELETE /orgs/{org}/actions/secrets/{secret_name}/repositories/{repository_id}"],
+    setSelectedReposForOrgSecret: ["PUT /orgs/{org}/actions/secrets/{secret_name}/repositories"]
+  },
+  activity: {
+    checkRepoIsStarredByAuthenticatedUser: ["GET /user/starred/{owner}/{repo}"],
+    deleteRepoSubscription: ["DELETE /repos/{owner}/{repo}/subscription"],
+    deleteThreadSubscription: ["DELETE /notifications/threads/{thread_id}/subscription"],
+    getFeeds: ["GET /feeds"],
+    getRepoSubscription: ["GET /repos/{owner}/{repo}/subscription"],
+    getThread: ["GET /notifications/threads/{thread_id}"],
+    getThreadSubscriptionForAuthenticatedUser: ["GET /notifications/threads/{thread_id}/subscription"],
+    listEventsForAuthenticatedUser: ["GET /users/{username}/events"],
+    listNotificationsForAuthenticatedUser: ["GET /notifications"],
+    listOrgEventsForAuthenticatedUser: ["GET /users/{username}/events/orgs/{org}"],
+    listPublicEvents: ["GET /events"],
+    listPublicEventsForRepoNetwork: ["GET /networks/{owner}/{repo}/events"],
+    listPublicEventsForUser: ["GET /users/{username}/events/public"],
+    listPublicOrgEvents: ["GET /orgs/{org}/events"],
+    listReceivedEventsForUser: ["GET /users/{username}/received_events"],
+    listReceivedPublicEventsForUser: ["GET /users/{username}/received_events/public"],
+    listRepoEvents: ["GET /repos/{owner}/{repo}/events"],
+    listRepoNotificationsForAuthenticatedUser: ["GET /repos/{owner}/{repo}/notifications"],
+    listReposStarredByAuthenticatedUser: ["GET /user/starred"],
+    listReposStarredByUser: ["GET /users/{username}/starred"],
+    listReposWatchedByUser: ["GET /users/{username}/subscriptions"],
+    listStargazersForRepo: ["GET /repos/{owner}/{repo}/stargazers"],
+    listWatchedReposForAuthenticatedUser: ["GET /user/subscriptions"],
+    listWatchersForRepo: ["GET /repos/{owner}/{repo}/subscribers"],
+    markNotificationsAsRead: ["PUT /notifications"],
+    markRepoNotificationsAsRead: ["PUT /repos/{owner}/{repo}/notifications"],
+    markThreadAsRead: ["PATCH /notifications/threads/{thread_id}"],
+    setRepoSubscription: ["PUT /repos/{owner}/{repo}/subscription"],
+    setThreadSubscription: ["PUT /notifications/threads/{thread_id}/subscription"],
+    starRepoForAuthenticatedUser: ["PUT /user/starred/{owner}/{repo}"],
+    unstarRepoForAuthenticatedUser: ["DELETE /user/starred/{owner}/{repo}"]
+  },
+  apps: {
+    addRepoToInstallation: ["PUT /user/installations/{installation_id}/repositories/{repository_id}"],
+    checkToken: ["POST /applications/{client_id}/token"],
+    createContentAttachment: ["POST /content_references/{content_reference_id}/attachments", {
+      mediaType: {
+        previews: ["corsair"]
+      }
+    }],
+    createFromManifest: ["POST /app-manifests/{code}/conversions"],
+    createInstallationAccessToken: ["POST /app/installations/{installation_id}/access_tokens"],
+    deleteAuthorization: ["DELETE /applications/{client_id}/grant"],
+    deleteInstallation: ["DELETE /app/installations/{installation_id}"],
+    deleteToken: ["DELETE /applications/{client_id}/token"],
+    getAuthenticated: ["GET /app"],
+    getBySlug: ["GET /apps/{app_slug}"],
+    getInstallation: ["GET /app/installations/{installation_id}"],
+    getOrgInstallation: ["GET /orgs/{org}/installation"],
+    getRepoInstallation: ["GET /repos/{owner}/{repo}/installation"],
+    getSubscriptionPlanForAccount: ["GET /marketplace_listing/accounts/{account_id}"],
+    getSubscriptionPlanForAccountStubbed: ["GET /marketplace_listing/stubbed/accounts/{account_id}"],
+    getUserInstallation: ["GET /users/{username}/installation"],
+    listAccountsForPlan: ["GET /marketplace_listing/plans/{plan_id}/accounts"],
+    listAccountsForPlanStubbed: ["GET /marketplace_listing/stubbed/plans/{plan_id}/accounts"],
+    listInstallationReposForAuthenticatedUser: ["GET /user/installations/{installation_id}/repositories"],
+    listInstallations: ["GET /app/installations"],
+    listInstallationsForAuthenticatedUser: ["GET /user/installations"],
+    listPlans: ["GET /marketplace_listing/plans"],
+    listPlansStubbed: ["GET /marketplace_listing/stubbed/plans"],
+    listReposAccessibleToInstallation: ["GET /installation/repositories"],
+    listSubscriptionsForAuthenticatedUser: ["GET /user/marketplace_purchases"],
+    listSubscriptionsForAuthenticatedUserStubbed: ["GET /user/marketplace_purchases/stubbed"],
+    removeRepoFromInstallation: ["DELETE /user/installations/{installation_id}/repositories/{repository_id}"],
+    resetToken: ["PATCH /applications/{client_id}/token"],
+    revokeInstallationAccessToken: ["DELETE /installation/token"],
+    suspendInstallation: ["PUT /app/installations/{installation_id}/suspended"],
+    unsuspendInstallation: ["DELETE /app/installations/{installation_id}/suspended"]
+  },
+  billing: {
+    getGithubActionsBillingOrg: ["GET /orgs/{org}/settings/billing/actions"],
+    getGithubActionsBillingUser: ["GET /users/{username}/settings/billing/actions"],
+    getGithubPackagesBillingOrg: ["GET /orgs/{org}/settings/billing/packages"],
+    getGithubPackagesBillingUser: ["GET /users/{username}/settings/billing/packages"],
+    getSharedStorageBillingOrg: ["GET /orgs/{org}/settings/billing/shared-storage"],
+    getSharedStorageBillingUser: ["GET /users/{username}/settings/billing/shared-storage"]
+  },
+  checks: {
+    create: ["POST /repos/{owner}/{repo}/check-runs", {
+      mediaType: {
+        previews: ["antiope"]
+      }
+    }],
+    createSuite: ["POST /repos/{owner}/{repo}/check-suites", {
+      mediaType: {
+        previews: ["antiope"]
+      }
+    }],
+    get: ["GET /repos/{owner}/{repo}/check-runs/{check_run_id}", {
+      mediaType: {
+        previews: ["antiope"]
+      }
+    }],
+    getSuite: ["GET /repos/{owner}/{repo}/check-suites/{check_suite_id}", {
+      mediaType: {
+        previews: ["antiope"]
+      }
+    }],
+    listAnnotations: ["GET /repos/{owner}/{repo}/check-runs/{check_run_id}/annotations", {
+      mediaType: {
+        previews: ["antiope"]
+      }
+    }],
+    listForRef: ["GET /repos/{owner}/{repo}/commits/{ref}/check-runs", {
+      mediaType: {
+        previews: ["antiope"]
+      }
+    }],
+    listForSuite: ["GET /repos/{owner}/{repo}/check-suites/{check_suite_id}/check-runs", {
+      mediaType: {
+        previews: ["antiope"]
+      }
+    }],
+    listSuitesForRef: ["GET /repos/{owner}/{repo}/commits/{ref}/check-suites", {
+      mediaType: {
+        previews: ["antiope"]
+      }
+    }],
+    rerequestSuite: ["POST /repos/{owner}/{repo}/check-suites/{check_suite_id}/rerequest", {
+      mediaType: {
+        previews: ["antiope"]
+      }
+    }],
+    setSuitesPreferences: ["PATCH /repos/{owner}/{repo}/check-suites/preferences", {
+      mediaType: {
+        previews: ["antiope"]
+      }
+    }],
+    update: ["PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}", {
+      mediaType: {
+        previews: ["antiope"]
+      }
+    }]
+  },
+  codeScanning: {
+    getAlert: ["GET /repos/{owner}/{repo}/code-scanning/alerts/{alert_number}", {}, {
+      renamedParameters: {
+        alert_id: "alert_number"
+      }
+    }],
+    listAlertsForRepo: ["GET /repos/{owner}/{repo}/code-scanning/alerts"],
+    listRecentAnalyses: ["GET /repos/{owner}/{repo}/code-scanning/analyses"],
+    updateAlert: ["PATCH /repos/{owner}/{repo}/code-scanning/alerts/{alert_number}"],
+    uploadSarif: ["POST /repos/{owner}/{repo}/code-scanning/sarifs"]
+  },
+  codesOfConduct: {
+    getAllCodesOfConduct: ["GET /codes_of_conduct", {
+      mediaType: {
+        previews: ["scarlet-witch"]
+      }
+    }],
+    getConductCode: ["GET /codes_of_conduct/{key}", {
+      mediaType: {
+        previews: ["scarlet-witch"]
+      }
+    }],
+    getForRepo: ["GET /repos/{owner}/{repo}/community/code_of_conduct", {
+      mediaType: {
+        previews: ["scarlet-witch"]
+      }
+    }]
+  },
+  emojis: {
+    get: ["GET /emojis"]
+  },
+  gists: {
+    checkIsStarred: ["GET /gists/{gist_id}/star"],
+    create: ["POST /gists"],
+    createComment: ["POST /gists/{gist_id}/comments"],
+    delete: ["DELETE /gists/{gist_id}"],
+    deleteComment: ["DELETE /gists/{gist_id}/comments/{comment_id}"],
+    fork: ["POST /gists/{gist_id}/forks"],
+    get: ["GET /gists/{gist_id}"],
+    getComment: ["GET /gists/{gist_id}/comments/{comment_id}"],
+    getRevision: ["GET /gists/{gist_id}/{sha}"],
+    list: ["GET /gists"],
+    listComments: ["GET /gists/{gist_id}/comments"],
+    listCommits: ["GET /gists/{gist_id}/commits"],
+    listForUser: ["GET /users/{username}/gists"],
+    listForks: ["GET /gists/{gist_id}/forks"],
+    listPublic: ["GET /gists/public"],
+    listStarred: ["GET /gists/starred"],
+    star: ["PUT /gists/{gist_id}/star"],
+    unstar: ["DELETE /gists/{gist_id}/star"],
+    update: ["PATCH /gists/{gist_id}"],
+    updateComment: ["PATCH /gists/{gist_id}/comments/{comment_id}"]
+  },
+  git: {
+    createBlob: ["POST /repos/{owner}/{repo}/git/blobs"],
+    createCommit: ["POST /repos/{owner}/{repo}/git/commits"],
+    createRef: ["POST /repos/{owner}/{repo}/git/refs"],
+    createTag: ["POST /repos/{owner}/{repo}/git/tags"],
+    createTree: ["POST /repos/{owner}/{repo}/git/trees"],
+    deleteRef: ["DELETE /repos/{owner}/{repo}/git/refs/{ref}"],
+    getBlob: ["GET /repos/{owner}/{repo}/git/blobs/{file_sha}"],
+    getCommit: ["GET /repos/{owner}/{repo}/git/commits/{commit_sha}"],
+    getRef: ["GET /repos/{owner}/{repo}/git/ref/{ref}"],
+    getTag: ["GET /repos/{owner}/{repo}/git/tags/{tag_sha}"],
+    getTree: ["GET /repos/{owner}/{repo}/git/trees/{tree_sha}"],
+    listMatchingRefs: ["GET /repos/{owner}/{repo}/git/matching-refs/{ref}"],
+    updateRef: ["PATCH /repos/{owner}/{repo}/git/refs/{ref}"]
+  },
+  gitignore: {
+    getAllTemplates: ["GET /gitignore/templates"],
+    getTemplate: ["GET /gitignore/templates/{name}"]
+  },
+  interactions: {
+    getRestrictionsForOrg: ["GET /orgs/{org}/interaction-limits", {
+      mediaType: {
+        previews: ["sombra"]
+      }
+    }],
+    getRestrictionsForRepo: ["GET /repos/{owner}/{repo}/interaction-limits", {
+      mediaType: {
+        previews: ["sombra"]
+      }
+    }],
+    removeRestrictionsForOrg: ["DELETE /orgs/{org}/interaction-limits", {
+      mediaType: {
+        previews: ["sombra"]
+      }
+    }],
+    removeRestrictionsForRepo: ["DELETE /repos/{owner}/{repo}/interaction-limits", {
+      mediaType: {
+        previews: ["sombra"]
+      }
+    }],
+    setRestrictionsForOrg: ["PUT /orgs/{org}/interaction-limits", {
+      mediaType: {
+        previews: ["sombra"]
+      }
+    }],
+    setRestrictionsForRepo: ["PUT /repos/{owner}/{repo}/interaction-limits", {
+      mediaType: {
+        previews: ["sombra"]
+      }
+    }]
+  },
+  issues: {
+    addAssignees: ["POST /repos/{owner}/{repo}/issues/{issue_number}/assignees"],
+    addLabels: ["POST /repos/{owner}/{repo}/issues/{issue_number}/labels"],
+    checkUserCanBeAssigned: ["GET /repos/{owner}/{repo}/assignees/{assignee}"],
+    create: ["POST /repos/{owner}/{repo}/issues"],
+    createComment: ["POST /repos/{owner}/{repo}/issues/{issue_number}/comments"],
+    createLabel: ["POST /repos/{owner}/{repo}/labels"],
+    createMilestone: ["POST /repos/{owner}/{repo}/milestones"],
+    deleteComment: ["DELETE /repos/{owner}/{repo}/issues/comments/{comment_id}"],
+    deleteLabel: ["DELETE /repos/{owner}/{repo}/labels/{name}"],
+    deleteMilestone: ["DELETE /repos/{owner}/{repo}/milestones/{milestone_number}"],
+    get: ["GET /repos/{owner}/{repo}/issues/{issue_number}"],
+    getComment: ["GET /repos/{owner}/{repo}/issues/comments/{comment_id}"],
+    getEvent: ["GET /repos/{owner}/{repo}/issues/events/{event_id}"],
+    getLabel: ["GET /repos/{owner}/{repo}/labels/{name}"],
+    getMilestone: ["GET /repos/{owner}/{repo}/milestones/{milestone_number}"],
+    list: ["GET /issues"],
+    listAssignees: ["GET /repos/{owner}/{repo}/assignees"],
+    listComments: ["GET /repos/{owner}/{repo}/issues/{issue_number}/comments"],
+    listCommentsForRepo: ["GET /repos/{owner}/{repo}/issues/comments"],
+    listEvents: ["GET /repos/{owner}/{repo}/issues/{issue_number}/events"],
+    listEventsForRepo: ["GET /repos/{owner}/{repo}/issues/events"],
+    listEventsForTimeline: ["GET /repos/{owner}/{repo}/issues/{issue_number}/timeline", {
+      mediaType: {
+        previews: ["mockingbird"]
+      }
+    }],
+    listForAuthenticatedUser: ["GET /user/issues"],
+    listForOrg: ["GET /orgs/{org}/issues"],
+    listForRepo: ["GET /repos/{owner}/{repo}/issues"],
+    listLabelsForMilestone: ["GET /repos/{owner}/{repo}/milestones/{milestone_number}/labels"],
+    listLabelsForRepo: ["GET /repos/{owner}/{repo}/labels"],
+    listLabelsOnIssue: ["GET /repos/{owner}/{repo}/issues/{issue_number}/labels"],
+    listMilestones: ["GET /repos/{owner}/{repo}/milestones"],
+    lock: ["PUT /repos/{owner}/{repo}/issues/{issue_number}/lock"],
+    removeAllLabels: ["DELETE /repos/{owner}/{repo}/issues/{issue_number}/labels"],
+    removeAssignees: ["DELETE /repos/{owner}/{repo}/issues/{issue_number}/assignees"],
+    removeLabel: ["DELETE /repos/{owner}/{repo}/issues/{issue_number}/labels/{name}"],
+    setLabels: ["PUT /repos/{owner}/{repo}/issues/{issue_number}/labels"],
+    unlock: ["DELETE /repos/{owner}/{repo}/issues/{issue_number}/lock"],
+    update: ["PATCH /repos/{owner}/{repo}/issues/{issue_number}"],
+    updateComment: ["PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}"],
+    updateLabel: ["PATCH /repos/{owner}/{repo}/labels/{name}"],
+    updateMilestone: ["PATCH /repos/{owner}/{repo}/milestones/{milestone_number}"]
+  },
+  licenses: {
+    get: ["GET /licenses/{license}"],
+    getAllCommonlyUsed: ["GET /licenses"],
+    getForRepo: ["GET /repos/{owner}/{repo}/license"]
+  },
+  markdown: {
+    render: ["POST /markdown"],
+    renderRaw: ["POST /markdown/raw", {
+      headers: {
+        "content-type": "text/plain; charset=utf-8"
+      }
+    }]
+  },
+  meta: {
+    get: ["GET /meta"]
+  },
+  migrations: {
+    cancelImport: ["DELETE /repos/{owner}/{repo}/import"],
+    deleteArchiveForAuthenticatedUser: ["DELETE /user/migrations/{migration_id}/archive", {
+      mediaType: {
+        previews: ["wyandotte"]
+      }
+    }],
+    deleteArchiveForOrg: ["DELETE /orgs/{org}/migrations/{migration_id}/archive", {
+      mediaType: {
+        previews: ["wyandotte"]
+      }
+    }],
+    downloadArchiveForOrg: ["GET /orgs/{org}/migrations/{migration_id}/archive", {
+      mediaType: {
+        previews: ["wyandotte"]
+      }
+    }],
+    getArchiveForAuthenticatedUser: ["GET /user/migrations/{migration_id}/archive", {
+      mediaType: {
+        previews: ["wyandotte"]
+      }
+    }],
+    getCommitAuthors: ["GET /repos/{owner}/{repo}/import/authors"],
+    getImportStatus: ["GET /repos/{owner}/{repo}/import"],
+    getLargeFiles: ["GET /repos/{owner}/{repo}/import/large_files"],
+    getStatusForAuthenticatedUser: ["GET /user/migrations/{migration_id}", {
+      mediaType: {
+        previews: ["wyandotte"]
+      }
+    }],
+    getStatusForOrg: ["GET /orgs/{org}/migrations/{migration_id}", {
+      mediaType: {
+        previews: ["wyandotte"]
+      }
+    }],
+    listForAuthenticatedUser: ["GET /user/migrations", {
+      mediaType: {
+        previews: ["wyandotte"]
+      }
+    }],
+    listForOrg: ["GET /orgs/{org}/migrations", {
+      mediaType: {
+        previews: ["wyandotte"]
+      }
+    }],
+    listReposForOrg: ["GET /orgs/{org}/migrations/{migration_id}/repositories", {
+      mediaType: {
+        previews: ["wyandotte"]
+      }
+    }],
+    listReposForUser: ["GET /user/migrations/{migration_id}/repositories", {
+      mediaType: {
+        previews: ["wyandotte"]
+      }
+    }],
+    mapCommitAuthor: ["PATCH /repos/{owner}/{repo}/import/authors/{author_id}"],
+    setLfsPreference: ["PATCH /repos/{owner}/{repo}/import/lfs"],
+    startForAuthenticatedUser: ["POST /user/migrations"],
+    startForOrg: ["POST /orgs/{org}/migrations"],
+    startImport: ["PUT /repos/{owner}/{repo}/import"],
+    unlockRepoForAuthenticatedUser: ["DELETE /user/migrations/{migration_id}/repos/{repo_name}/lock", {
+      mediaType: {
+        previews: ["wyandotte"]
+      }
+    }],
+    unlockRepoForOrg: ["DELETE /orgs/{org}/migrations/{migration_id}/repos/{repo_name}/lock", {
+      mediaType: {
+        previews: ["wyandotte"]
+      }
+    }],
+    updateImport: ["PATCH /repos/{owner}/{repo}/import"]
+  },
+  orgs: {
+    blockUser: ["PUT /orgs/{org}/blocks/{username}"],
+    checkBlockedUser: ["GET /orgs/{org}/blocks/{username}"],
+    checkMembershipForUser: ["GET /orgs/{org}/members/{username}"],
+    checkPublicMembershipForUser: ["GET /orgs/{org}/public_members/{username}"],
+    convertMemberToOutsideCollaborator: ["PUT /orgs/{org}/outside_collaborators/{username}"],
+    createInvitation: ["POST /orgs/{org}/invitations"],
+    createWebhook: ["POST /orgs/{org}/hooks"],
+    deleteWebhook: ["DELETE /orgs/{org}/hooks/{hook_id}"],
+    get: ["GET /orgs/{org}"],
+    getMembershipForAuthenticatedUser: ["GET /user/memberships/orgs/{org}"],
+    getMembershipForUser: ["GET /orgs/{org}/memberships/{username}"],
+    getWebhook: ["GET /orgs/{org}/hooks/{hook_id}"],
+    list: ["GET /organizations"],
+    listAppInstallations: ["GET /orgs/{org}/installations"],
+    listBlockedUsers: ["GET /orgs/{org}/blocks"],
+    listForAuthenticatedUser: ["GET /user/orgs"],
+    listForUser: ["GET /users/{username}/orgs"],
+    listInvitationTeams: ["GET /orgs/{org}/invitations/{invitation_id}/teams"],
+    listMembers: ["GET /orgs/{org}/members"],
+    listMembershipsForAuthenticatedUser: ["GET /user/memberships/orgs"],
+    listOutsideCollaborators: ["GET /orgs/{org}/outside_collaborators"],
+    listPendingInvitations: ["GET /orgs/{org}/invitations"],
+    listPublicMembers: ["GET /orgs/{org}/public_members"],
+    listWebhooks: ["GET /orgs/{org}/hooks"],
+    pingWebhook: ["POST /orgs/{org}/hooks/{hook_id}/pings"],
+    removeMember: ["DELETE /orgs/{org}/members/{username}"],
+    removeMembershipForUser: ["DELETE /orgs/{org}/memberships/{username}"],
+    removeOutsideCollaborator: ["DELETE /orgs/{org}/outside_collaborators/{username}"],
+    removePublicMembershipForAuthenticatedUser: ["DELETE /orgs/{org}/public_members/{username}"],
+    setMembershipForUser: ["PUT /orgs/{org}/memberships/{username}"],
+    setPublicMembershipForAuthenticatedUser: ["PUT /orgs/{org}/public_members/{username}"],
+    unblockUser: ["DELETE /orgs/{org}/blocks/{username}"],
+    update: ["PATCH /orgs/{org}"],
+    updateMembershipForAuthenticatedUser: ["PATCH /user/memberships/orgs/{org}"],
+    updateWebhook: ["PATCH /orgs/{org}/hooks/{hook_id}"]
+  },
+  projects: {
+    addCollaborator: ["PUT /projects/{project_id}/collaborators/{username}", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    createCard: ["POST /projects/columns/{column_id}/cards", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    createColumn: ["POST /projects/{project_id}/columns", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    createForAuthenticatedUser: ["POST /user/projects", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    createForOrg: ["POST /orgs/{org}/projects", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    createForRepo: ["POST /repos/{owner}/{repo}/projects", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    delete: ["DELETE /projects/{project_id}", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    deleteCard: ["DELETE /projects/columns/cards/{card_id}", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    deleteColumn: ["DELETE /projects/columns/{column_id}", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    get: ["GET /projects/{project_id}", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    getCard: ["GET /projects/columns/cards/{card_id}", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    getColumn: ["GET /projects/columns/{column_id}", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    getPermissionForUser: ["GET /projects/{project_id}/collaborators/{username}/permission", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    listCards: ["GET /projects/columns/{column_id}/cards", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    listCollaborators: ["GET /projects/{project_id}/collaborators", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    listColumns: ["GET /projects/{project_id}/columns", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    listForOrg: ["GET /orgs/{org}/projects", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    listForRepo: ["GET /repos/{owner}/{repo}/projects", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    listForUser: ["GET /users/{username}/projects", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    moveCard: ["POST /projects/columns/cards/{card_id}/moves", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    moveColumn: ["POST /projects/columns/{column_id}/moves", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    removeCollaborator: ["DELETE /projects/{project_id}/collaborators/{username}", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    update: ["PATCH /projects/{project_id}", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    updateCard: ["PATCH /projects/columns/cards/{card_id}", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    updateColumn: ["PATCH /projects/columns/{column_id}", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }]
+  },
+  pulls: {
+    checkIfMerged: ["GET /repos/{owner}/{repo}/pulls/{pull_number}/merge"],
+    create: ["POST /repos/{owner}/{repo}/pulls"],
+    createReplyForReviewComment: ["POST /repos/{owner}/{repo}/pulls/{pull_number}/comments/{comment_id}/replies"],
+    createReview: ["POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews"],
+    createReviewComment: ["POST /repos/{owner}/{repo}/pulls/{pull_number}/comments"],
+    deletePendingReview: ["DELETE /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}"],
+    deleteReviewComment: ["DELETE /repos/{owner}/{repo}/pulls/comments/{comment_id}"],
+    dismissReview: ["PUT /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}/dismissals"],
+    get: ["GET /repos/{owner}/{repo}/pulls/{pull_number}"],
+    getReview: ["GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}"],
+    getReviewComment: ["GET /repos/{owner}/{repo}/pulls/comments/{comment_id}"],
+    list: ["GET /repos/{owner}/{repo}/pulls"],
+    listCommentsForReview: ["GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}/comments"],
+    listCommits: ["GET /repos/{owner}/{repo}/pulls/{pull_number}/commits"],
+    listFiles: ["GET /repos/{owner}/{repo}/pulls/{pull_number}/files"],
+    listRequestedReviewers: ["GET /repos/{owner}/{repo}/pulls/{pull_number}/requested_reviewers"],
+    listReviewComments: ["GET /repos/{owner}/{repo}/pulls/{pull_number}/comments"],
+    listReviewCommentsForRepo: ["GET /repos/{owner}/{repo}/pulls/comments"],
+    listReviews: ["GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews"],
+    merge: ["PUT /repos/{owner}/{repo}/pulls/{pull_number}/merge"],
+    removeRequestedReviewers: ["DELETE /repos/{owner}/{repo}/pulls/{pull_number}/requested_reviewers"],
+    requestReviewers: ["POST /repos/{owner}/{repo}/pulls/{pull_number}/requested_reviewers"],
+    submitReview: ["POST /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}/events"],
+    update: ["PATCH /repos/{owner}/{repo}/pulls/{pull_number}"],
+    updateBranch: ["PUT /repos/{owner}/{repo}/pulls/{pull_number}/update-branch", {
+      mediaType: {
+        previews: ["lydian"]
+      }
+    }],
+    updateReview: ["PUT /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}"],
+    updateReviewComment: ["PATCH /repos/{owner}/{repo}/pulls/comments/{comment_id}"]
+  },
+  rateLimit: {
+    get: ["GET /rate_limit"]
+  },
+  reactions: {
+    createForCommitComment: ["POST /repos/{owner}/{repo}/comments/{comment_id}/reactions", {
+      mediaType: {
+        previews: ["squirrel-girl"]
+      }
+    }],
+    createForIssue: ["POST /repos/{owner}/{repo}/issues/{issue_number}/reactions", {
+      mediaType: {
+        previews: ["squirrel-girl"]
+      }
+    }],
+    createForIssueComment: ["POST /repos/{owner}/{repo}/issues/comments/{comment_id}/reactions", {
+      mediaType: {
+        previews: ["squirrel-girl"]
+      }
+    }],
+    createForPullRequestReviewComment: ["POST /repos/{owner}/{repo}/pulls/comments/{comment_id}/reactions", {
+      mediaType: {
+        previews: ["squirrel-girl"]
+      }
+    }],
+    createForTeamDiscussionCommentInOrg: ["POST /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}/reactions", {
+      mediaType: {
+        previews: ["squirrel-girl"]
+      }
+    }],
+    createForTeamDiscussionInOrg: ["POST /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/reactions", {
+      mediaType: {
+        previews: ["squirrel-girl"]
+      }
+    }],
+    deleteForCommitComment: ["DELETE /repos/{owner}/{repo}/comments/{comment_id}/reactions/{reaction_id}", {
+      mediaType: {
+        previews: ["squirrel-girl"]
+      }
+    }],
+    deleteForIssue: ["DELETE /repos/{owner}/{repo}/issues/{issue_number}/reactions/{reaction_id}", {
+      mediaType: {
+        previews: ["squirrel-girl"]
+      }
+    }],
+    deleteForIssueComment: ["DELETE /repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/{reaction_id}", {
+      mediaType: {
+        previews: ["squirrel-girl"]
+      }
+    }],
+    deleteForPullRequestComment: ["DELETE /repos/{owner}/{repo}/pulls/comments/{comment_id}/reactions/{reaction_id}", {
+      mediaType: {
+        previews: ["squirrel-girl"]
+      }
+    }],
+    deleteForTeamDiscussion: ["DELETE /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/reactions/{reaction_id}", {
+      mediaType: {
+        previews: ["squirrel-girl"]
+      }
+    }],
+    deleteForTeamDiscussionComment: ["DELETE /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}/reactions/{reaction_id}", {
+      mediaType: {
+        previews: ["squirrel-girl"]
+      }
+    }],
+    deleteLegacy: ["DELETE /reactions/{reaction_id}", {
+      mediaType: {
+        previews: ["squirrel-girl"]
+      }
+    }, {
+      deprecated: "octokit.reactions.deleteLegacy() is deprecated, see https://developer.github.com/v3/reactions/#delete-a-reaction-legacy"
+    }],
+    listForCommitComment: ["GET /repos/{owner}/{repo}/comments/{comment_id}/reactions", {
+      mediaType: {
+        previews: ["squirrel-girl"]
+      }
+    }],
+    listForIssue: ["GET /repos/{owner}/{repo}/issues/{issue_number}/reactions", {
+      mediaType: {
+        previews: ["squirrel-girl"]
+      }
+    }],
+    listForIssueComment: ["GET /repos/{owner}/{repo}/issues/comments/{comment_id}/reactions", {
+      mediaType: {
+        previews: ["squirrel-girl"]
+      }
+    }],
+    listForPullRequestReviewComment: ["GET /repos/{owner}/{repo}/pulls/comments/{comment_id}/reactions", {
+      mediaType: {
+        previews: ["squirrel-girl"]
+      }
+    }],
+    listForTeamDiscussionCommentInOrg: ["GET /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}/reactions", {
+      mediaType: {
+        previews: ["squirrel-girl"]
+      }
+    }],
+    listForTeamDiscussionInOrg: ["GET /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/reactions", {
+      mediaType: {
+        previews: ["squirrel-girl"]
+      }
+    }]
+  },
+  repos: {
+    acceptInvitation: ["PATCH /user/repository_invitations/{invitation_id}"],
+    addAppAccessRestrictions: ["POST /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/apps", {}, {
+      mapToData: "apps"
+    }],
+    addCollaborator: ["PUT /repos/{owner}/{repo}/collaborators/{username}"],
+    addStatusCheckContexts: ["POST /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks/contexts", {}, {
+      mapToData: "contexts"
+    }],
+    addTeamAccessRestrictions: ["POST /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/teams", {}, {
+      mapToData: "teams"
+    }],
+    addUserAccessRestrictions: ["POST /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/users", {}, {
+      mapToData: "users"
+    }],
+    checkCollaborator: ["GET /repos/{owner}/{repo}/collaborators/{username}"],
+    checkVulnerabilityAlerts: ["GET /repos/{owner}/{repo}/vulnerability-alerts", {
+      mediaType: {
+        previews: ["dorian"]
+      }
+    }],
+    compareCommits: ["GET /repos/{owner}/{repo}/compare/{base}...{head}"],
+    createCommitComment: ["POST /repos/{owner}/{repo}/commits/{commit_sha}/comments"],
+    createCommitSignatureProtection: ["POST /repos/{owner}/{repo}/branches/{branch}/protection/required_signatures", {
+      mediaType: {
+        previews: ["zzzax"]
+      }
+    }],
+    createCommitStatus: ["POST /repos/{owner}/{repo}/statuses/{sha}"],
+    createDeployKey: ["POST /repos/{owner}/{repo}/keys"],
+    createDeployment: ["POST /repos/{owner}/{repo}/deployments"],
+    createDeploymentStatus: ["POST /repos/{owner}/{repo}/deployments/{deployment_id}/statuses"],
+    createDispatchEvent: ["POST /repos/{owner}/{repo}/dispatches"],
+    createForAuthenticatedUser: ["POST /user/repos"],
+    createFork: ["POST /repos/{owner}/{repo}/forks"],
+    createInOrg: ["POST /orgs/{org}/repos"],
+    createOrUpdateFileContents: ["PUT /repos/{owner}/{repo}/contents/{path}"],
+    createPagesSite: ["POST /repos/{owner}/{repo}/pages", {
+      mediaType: {
+        previews: ["switcheroo"]
+      }
+    }],
+    createRelease: ["POST /repos/{owner}/{repo}/releases"],
+    createUsingTemplate: ["POST /repos/{template_owner}/{template_repo}/generate", {
+      mediaType: {
+        previews: ["baptiste"]
+      }
+    }],
+    createWebhook: ["POST /repos/{owner}/{repo}/hooks"],
+    declineInvitation: ["DELETE /user/repository_invitations/{invitation_id}"],
+    delete: ["DELETE /repos/{owner}/{repo}"],
+    deleteAccessRestrictions: ["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/restrictions"],
+    deleteAdminBranchProtection: ["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/enforce_admins"],
+    deleteBranchProtection: ["DELETE /repos/{owner}/{repo}/branches/{branch}/protection"],
+    deleteCommitComment: ["DELETE /repos/{owner}/{repo}/comments/{comment_id}"],
+    deleteCommitSignatureProtection: ["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/required_signatures", {
+      mediaType: {
+        previews: ["zzzax"]
+      }
+    }],
+    deleteDeployKey: ["DELETE /repos/{owner}/{repo}/keys/{key_id}"],
+    deleteDeployment: ["DELETE /repos/{owner}/{repo}/deployments/{deployment_id}"],
+    deleteFile: ["DELETE /repos/{owner}/{repo}/contents/{path}"],
+    deleteInvitation: ["DELETE /repos/{owner}/{repo}/invitations/{invitation_id}"],
+    deletePagesSite: ["DELETE /repos/{owner}/{repo}/pages", {
+      mediaType: {
+        previews: ["switcheroo"]
+      }
+    }],
+    deletePullRequestReviewProtection: ["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/required_pull_request_reviews"],
+    deleteRelease: ["DELETE /repos/{owner}/{repo}/releases/{release_id}"],
+    deleteReleaseAsset: ["DELETE /repos/{owner}/{repo}/releases/assets/{asset_id}"],
+    deleteWebhook: ["DELETE /repos/{owner}/{repo}/hooks/{hook_id}"],
+    disableAutomatedSecurityFixes: ["DELETE /repos/{owner}/{repo}/automated-security-fixes", {
+      mediaType: {
+        previews: ["london"]
+      }
+    }],
+    disableVulnerabilityAlerts: ["DELETE /repos/{owner}/{repo}/vulnerability-alerts", {
+      mediaType: {
+        previews: ["dorian"]
+      }
+    }],
+    downloadArchive: ["GET /repos/{owner}/{repo}/{archive_format}/{ref}"],
+    enableAutomatedSecurityFixes: ["PUT /repos/{owner}/{repo}/automated-security-fixes", {
+      mediaType: {
+        previews: ["london"]
+      }
+    }],
+    enableVulnerabilityAlerts: ["PUT /repos/{owner}/{repo}/vulnerability-alerts", {
+      mediaType: {
+        previews: ["dorian"]
+      }
+    }],
+    get: ["GET /repos/{owner}/{repo}"],
+    getAccessRestrictions: ["GET /repos/{owner}/{repo}/branches/{branch}/protection/restrictions"],
+    getAdminBranchProtection: ["GET /repos/{owner}/{repo}/branches/{branch}/protection/enforce_admins"],
+    getAllStatusCheckContexts: ["GET /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks/contexts"],
+    getAllTopics: ["GET /repos/{owner}/{repo}/topics", {
+      mediaType: {
+        previews: ["mercy"]
+      }
+    }],
+    getAppsWithAccessToProtectedBranch: ["GET /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/apps"],
+    getBranch: ["GET /repos/{owner}/{repo}/branches/{branch}"],
+    getBranchProtection: ["GET /repos/{owner}/{repo}/branches/{branch}/protection"],
+    getClones: ["GET /repos/{owner}/{repo}/traffic/clones"],
+    getCodeFrequencyStats: ["GET /repos/{owner}/{repo}/stats/code_frequency"],
+    getCollaboratorPermissionLevel: ["GET /repos/{owner}/{repo}/collaborators/{username}/permission"],
+    getCombinedStatusForRef: ["GET /repos/{owner}/{repo}/commits/{ref}/status"],
+    getCommit: ["GET /repos/{owner}/{repo}/commits/{ref}"],
+    getCommitActivityStats: ["GET /repos/{owner}/{repo}/stats/commit_activity"],
+    getCommitComment: ["GET /repos/{owner}/{repo}/comments/{comment_id}"],
+    getCommitSignatureProtection: ["GET /repos/{owner}/{repo}/branches/{branch}/protection/required_signatures", {
+      mediaType: {
+        previews: ["zzzax"]
+      }
+    }],
+    getCommunityProfileMetrics: ["GET /repos/{owner}/{repo}/community/profile", {
+      mediaType: {
+        previews: ["black-panther"]
+      }
+    }],
+    getContent: ["GET /repos/{owner}/{repo}/contents/{path}"],
+    getContributorsStats: ["GET /repos/{owner}/{repo}/stats/contributors"],
+    getDeployKey: ["GET /repos/{owner}/{repo}/keys/{key_id}"],
+    getDeployment: ["GET /repos/{owner}/{repo}/deployments/{deployment_id}"],
+    getDeploymentStatus: ["GET /repos/{owner}/{repo}/deployments/{deployment_id}/statuses/{status_id}"],
+    getLatestPagesBuild: ["GET /repos/{owner}/{repo}/pages/builds/latest"],
+    getLatestRelease: ["GET /repos/{owner}/{repo}/releases/latest"],
+    getPages: ["GET /repos/{owner}/{repo}/pages"],
+    getPagesBuild: ["GET /repos/{owner}/{repo}/pages/builds/{build_id}"],
+    getParticipationStats: ["GET /repos/{owner}/{repo}/stats/participation"],
+    getPullRequestReviewProtection: ["GET /repos/{owner}/{repo}/branches/{branch}/protection/required_pull_request_reviews"],
+    getPunchCardStats: ["GET /repos/{owner}/{repo}/stats/punch_card"],
+    getReadme: ["GET /repos/{owner}/{repo}/readme"],
+    getRelease: ["GET /repos/{owner}/{repo}/releases/{release_id}"],
+    getReleaseAsset: ["GET /repos/{owner}/{repo}/releases/assets/{asset_id}"],
+    getReleaseByTag: ["GET /repos/{owner}/{repo}/releases/tags/{tag}"],
+    getStatusChecksProtection: ["GET /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks"],
+    getTeamsWithAccessToProtectedBranch: ["GET /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/teams"],
+    getTopPaths: ["GET /repos/{owner}/{repo}/traffic/popular/paths"],
+    getTopReferrers: ["GET /repos/{owner}/{repo}/traffic/popular/referrers"],
+    getUsersWithAccessToProtectedBranch: ["GET /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/users"],
+    getViews: ["GET /repos/{owner}/{repo}/traffic/views"],
+    getWebhook: ["GET /repos/{owner}/{repo}/hooks/{hook_id}"],
+    listBranches: ["GET /repos/{owner}/{repo}/branches"],
+    listBranchesForHeadCommit: ["GET /repos/{owner}/{repo}/commits/{commit_sha}/branches-where-head", {
+      mediaType: {
+        previews: ["groot"]
+      }
+    }],
+    listCollaborators: ["GET /repos/{owner}/{repo}/collaborators"],
+    listCommentsForCommit: ["GET /repos/{owner}/{repo}/commits/{commit_sha}/comments"],
+    listCommitCommentsForRepo: ["GET /repos/{owner}/{repo}/comments"],
+    listCommitStatusesForRef: ["GET /repos/{owner}/{repo}/commits/{ref}/statuses"],
+    listCommits: ["GET /repos/{owner}/{repo}/commits"],
+    listContributors: ["GET /repos/{owner}/{repo}/contributors"],
+    listDeployKeys: ["GET /repos/{owner}/{repo}/keys"],
+    listDeploymentStatuses: ["GET /repos/{owner}/{repo}/deployments/{deployment_id}/statuses"],
+    listDeployments: ["GET /repos/{owner}/{repo}/deployments"],
+    listForAuthenticatedUser: ["GET /user/repos"],
+    listForOrg: ["GET /orgs/{org}/repos"],
+    listForUser: ["GET /users/{username}/repos"],
+    listForks: ["GET /repos/{owner}/{repo}/forks"],
+    listInvitations: ["GET /repos/{owner}/{repo}/invitations"],
+    listInvitationsForAuthenticatedUser: ["GET /user/repository_invitations"],
+    listLanguages: ["GET /repos/{owner}/{repo}/languages"],
+    listPagesBuilds: ["GET /repos/{owner}/{repo}/pages/builds"],
+    listPublic: ["GET /repositories"],
+    listPullRequestsAssociatedWithCommit: ["GET /repos/{owner}/{repo}/commits/{commit_sha}/pulls", {
+      mediaType: {
+        previews: ["groot"]
+      }
+    }],
+    listReleaseAssets: ["GET /repos/{owner}/{repo}/releases/{release_id}/assets"],
+    listReleases: ["GET /repos/{owner}/{repo}/releases"],
+    listTags: ["GET /repos/{owner}/{repo}/tags"],
+    listTeams: ["GET /repos/{owner}/{repo}/teams"],
+    listWebhooks: ["GET /repos/{owner}/{repo}/hooks"],
+    merge: ["POST /repos/{owner}/{repo}/merges"],
+    pingWebhook: ["POST /repos/{owner}/{repo}/hooks/{hook_id}/pings"],
+    removeAppAccessRestrictions: ["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/apps", {}, {
+      mapToData: "apps"
+    }],
+    removeCollaborator: ["DELETE /repos/{owner}/{repo}/collaborators/{username}"],
+    removeStatusCheckContexts: ["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks/contexts", {}, {
+      mapToData: "contexts"
+    }],
+    removeStatusCheckProtection: ["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks"],
+    removeTeamAccessRestrictions: ["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/teams", {}, {
+      mapToData: "teams"
+    }],
+    removeUserAccessRestrictions: ["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/users", {}, {
+      mapToData: "users"
+    }],
+    replaceAllTopics: ["PUT /repos/{owner}/{repo}/topics", {
+      mediaType: {
+        previews: ["mercy"]
+      }
+    }],
+    requestPagesBuild: ["POST /repos/{owner}/{repo}/pages/builds"],
+    setAdminBranchProtection: ["POST /repos/{owner}/{repo}/branches/{branch}/protection/enforce_admins"],
+    setAppAccessRestrictions: ["PUT /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/apps", {}, {
+      mapToData: "apps"
+    }],
+    setStatusCheckContexts: ["PUT /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks/contexts", {}, {
+      mapToData: "contexts"
+    }],
+    setTeamAccessRestrictions: ["PUT /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/teams", {}, {
+      mapToData: "teams"
+    }],
+    setUserAccessRestrictions: ["PUT /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/users", {}, {
+      mapToData: "users"
+    }],
+    testPushWebhook: ["POST /repos/{owner}/{repo}/hooks/{hook_id}/tests"],
+    transfer: ["POST /repos/{owner}/{repo}/transfer"],
+    update: ["PATCH /repos/{owner}/{repo}"],
+    updateBranchProtection: ["PUT /repos/{owner}/{repo}/branches/{branch}/protection"],
+    updateCommitComment: ["PATCH /repos/{owner}/{repo}/comments/{comment_id}"],
+    updateInformationAboutPagesSite: ["PUT /repos/{owner}/{repo}/pages"],
+    updateInvitation: ["PATCH /repos/{owner}/{repo}/invitations/{invitation_id}"],
+    updatePullRequestReviewProtection: ["PATCH /repos/{owner}/{repo}/branches/{branch}/protection/required_pull_request_reviews"],
+    updateRelease: ["PATCH /repos/{owner}/{repo}/releases/{release_id}"],
+    updateReleaseAsset: ["PATCH /repos/{owner}/{repo}/releases/assets/{asset_id}"],
+    updateStatusCheckPotection: ["PATCH /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks"],
+    updateWebhook: ["PATCH /repos/{owner}/{repo}/hooks/{hook_id}"],
+    uploadReleaseAsset: ["POST /repos/{owner}/{repo}/releases/{release_id}/assets{?name,label}", {
+      baseUrl: "https://uploads.github.com"
+    }]
+  },
+  search: {
+    code: ["GET /search/code"],
+    commits: ["GET /search/commits", {
+      mediaType: {
+        previews: ["cloak"]
+      }
+    }],
+    issuesAndPullRequests: ["GET /search/issues"],
+    labels: ["GET /search/labels"],
+    repos: ["GET /search/repositories"],
+    topics: ["GET /search/topics", {
+      mediaType: {
+        previews: ["mercy"]
+      }
+    }],
+    users: ["GET /search/users"]
+  },
+  teams: {
+    addOrUpdateMembershipForUserInOrg: ["PUT /orgs/{org}/teams/{team_slug}/memberships/{username}"],
+    addOrUpdateProjectPermissionsInOrg: ["PUT /orgs/{org}/teams/{team_slug}/projects/{project_id}", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    addOrUpdateRepoPermissionsInOrg: ["PUT /orgs/{org}/teams/{team_slug}/repos/{owner}/{repo}"],
+    checkPermissionsForProjectInOrg: ["GET /orgs/{org}/teams/{team_slug}/projects/{project_id}", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    checkPermissionsForRepoInOrg: ["GET /orgs/{org}/teams/{team_slug}/repos/{owner}/{repo}"],
+    create: ["POST /orgs/{org}/teams"],
+    createDiscussionCommentInOrg: ["POST /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments"],
+    createDiscussionInOrg: ["POST /orgs/{org}/teams/{team_slug}/discussions"],
+    deleteDiscussionCommentInOrg: ["DELETE /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}"],
+    deleteDiscussionInOrg: ["DELETE /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}"],
+    deleteInOrg: ["DELETE /orgs/{org}/teams/{team_slug}"],
+    getByName: ["GET /orgs/{org}/teams/{team_slug}"],
+    getDiscussionCommentInOrg: ["GET /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}"],
+    getDiscussionInOrg: ["GET /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}"],
+    getMembershipForUserInOrg: ["GET /orgs/{org}/teams/{team_slug}/memberships/{username}"],
+    list: ["GET /orgs/{org}/teams"],
+    listChildInOrg: ["GET /orgs/{org}/teams/{team_slug}/teams"],
+    listDiscussionCommentsInOrg: ["GET /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments"],
+    listDiscussionsInOrg: ["GET /orgs/{org}/teams/{team_slug}/discussions"],
+    listForAuthenticatedUser: ["GET /user/teams"],
+    listMembersInOrg: ["GET /orgs/{org}/teams/{team_slug}/members"],
+    listPendingInvitationsInOrg: ["GET /orgs/{org}/teams/{team_slug}/invitations"],
+    listProjectsInOrg: ["GET /orgs/{org}/teams/{team_slug}/projects", {
+      mediaType: {
+        previews: ["inertia"]
+      }
+    }],
+    listReposInOrg: ["GET /orgs/{org}/teams/{team_slug}/repos"],
+    removeMembershipForUserInOrg: ["DELETE /orgs/{org}/teams/{team_slug}/memberships/{username}"],
+    removeProjectInOrg: ["DELETE /orgs/{org}/teams/{team_slug}/projects/{project_id}"],
+    removeRepoInOrg: ["DELETE /orgs/{org}/teams/{team_slug}/repos/{owner}/{repo}"],
+    updateDiscussionCommentInOrg: ["PATCH /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}"],
+    updateDiscussionInOrg: ["PATCH /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}"],
+    updateInOrg: ["PATCH /orgs/{org}/teams/{team_slug}"]
+  },
+  users: {
+    addEmailForAuthenticated: ["POST /user/emails"],
+    block: ["PUT /user/blocks/{username}"],
+    checkBlocked: ["GET /user/blocks/{username}"],
+    checkFollowingForUser: ["GET /users/{username}/following/{target_user}"],
+    checkPersonIsFollowedByAuthenticated: ["GET /user/following/{username}"],
+    createGpgKeyForAuthenticated: ["POST /user/gpg_keys"],
+    createPublicSshKeyForAuthenticated: ["POST /user/keys"],
+    deleteEmailForAuthenticated: ["DELETE /user/emails"],
+    deleteGpgKeyForAuthenticated: ["DELETE /user/gpg_keys/{gpg_key_id}"],
+    deletePublicSshKeyForAuthenticated: ["DELETE /user/keys/{key_id}"],
+    follow: ["PUT /user/following/{username}"],
+    getAuthenticated: ["GET /user"],
+    getByUsername: ["GET /users/{username}"],
+    getContextForUser: ["GET /users/{username}/hovercard"],
+    getGpgKeyForAuthenticated: ["GET /user/gpg_keys/{gpg_key_id}"],
+    getPublicSshKeyForAuthenticated: ["GET /user/keys/{key_id}"],
+    list: ["GET /users"],
+    listBlockedByAuthenticated: ["GET /user/blocks"],
+    listEmailsForAuthenticated: ["GET /user/emails"],
+    listFollowedByAuthenticated: ["GET /user/following"],
+    listFollowersForAuthenticatedUser: ["GET /user/followers"],
+    listFollowersForUser: ["GET /users/{username}/followers"],
+    listFollowingForUser: ["GET /users/{username}/following"],
+    listGpgKeysForAuthenticated: ["GET /user/gpg_keys"],
+    listGpgKeysForUser: ["GET /users/{username}/gpg_keys"],
+    listPublicEmailsForAuthenticated: ["GET /user/public_emails"],
+    listPublicKeysForUser: ["GET /users/{username}/keys"],
+    listPublicSshKeysForAuthenticated: ["GET /user/keys"],
+    setPrimaryEmailVisibilityForAuthenticated: ["PATCH /user/email/visibility"],
+    unblock: ["DELETE /user/blocks/{username}"],
+    unfollow: ["DELETE /user/following/{username}"],
+    updateAuthenticated: ["PATCH /user"]
+  }
+};
+
+const VERSION = "4.2.1";
+
+function endpointsToMethods(octokit, endpointsMap) {
+  const newMethods = {};
+
+  for (const [scope, endpoints] of Object.entries(endpointsMap)) {
+    for (const [methodName, endpoint] of Object.entries(endpoints)) {
+      const [route, defaults, decorations] = endpoint;
+      const [method, url] = route.split(/ /);
+      const endpointDefaults = Object.assign({
+        method,
+        url
+      }, defaults);
+
+      if (!newMethods[scope]) {
+        newMethods[scope] = {};
+      }
+
+      const scopeMethods = newMethods[scope];
+
+      if (decorations) {
+        scopeMethods[methodName] = decorate(octokit, scope, methodName, endpointDefaults, decorations);
+        continue;
+      }
+
+      scopeMethods[methodName] = octokit.request.defaults(endpointDefaults);
+    }
+  }
+
+  return newMethods;
+}
+
+function decorate(octokit, scope, methodName, defaults, decorations) {
+  const requestWithDefaults = octokit.request.defaults(defaults);
+  /* istanbul ignore next */
+
+  function withDecorations(...args) {
+    // @ts-ignore https://github.com/microsoft/TypeScript/issues/25488
+    let options = requestWithDefaults.endpoint.merge(...args); // There are currently no other decorations than `.mapToData`
+
+    if (decorations.mapToData) {
+      options = Object.assign({}, options, {
+        data: options[decorations.mapToData],
+        [decorations.mapToData]: undefined
+      });
+      return requestWithDefaults(options);
+    }
+
+    if (decorations.renamed) {
+      const [newScope, newMethodName] = decorations.renamed;
+      octokit.log.warn(`octokit.${scope}.${methodName}() has been renamed to octokit.${newScope}.${newMethodName}()`);
+    }
+
+    if (decorations.deprecated) {
+      octokit.log.warn(decorations.deprecated);
+    }
+
+    if (decorations.renamedParameters) {
+      // @ts-ignore https://github.com/microsoft/TypeScript/issues/25488
+      const options = requestWithDefaults.endpoint.merge(...args);
+
+      for (const [name, alias] of Object.entries(decorations.renamedParameters)) {
+        if (name in options) {
+          octokit.log.warn(`"${name}" parameter is deprecated for "octokit.${scope}.${methodName}()". Use "${alias}" instead`);
+
+          if (!(alias in options)) {
+            options[alias] = options[name];
+          }
+
+          delete options[name];
+        }
+      }
+
+      return requestWithDefaults(options);
+    } // @ts-ignore https://github.com/microsoft/TypeScript/issues/25488
+
+
+    return requestWithDefaults(...args);
+  }
+
+  return Object.assign(withDecorations, requestWithDefaults);
+}
+
+/**
+ * This plugin is a 1:1 copy of internal @octokit/rest plugins. The primary
+ * goal is to rebuild @octokit/rest on top of @octokit/core. Once that is
+ * done, we will remove the registerEndpoints methods and return the methods
+ * directly as with the other plugins. At that point we will also remove the
+ * legacy workarounds and deprecations.
+ *
+ * See the plan at
+ * https://github.com/octokit/plugin-rest-endpoint-methods.js/pull/1
+ */
+
+function restEndpointMethods(octokit) {
+  return endpointsToMethods(octokit, Endpoints);
+}
+restEndpointMethods.VERSION = VERSION;
+
+exports.restEndpointMethods = restEndpointMethods;
+//# sourceMappingURL=index.js.map
+
+
+/***/ }),
+
+/***/ 537:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var deprecation = __webpack_require__(8932);
+var once = _interopDefault(__webpack_require__(1223));
+
+const logOnce = once(deprecation => console.warn(deprecation));
+/**
+ * Error with extra properties to help with debugging
+ */
+
+class RequestError extends Error {
+  constructor(message, statusCode, options) {
+    super(message); // Maintains proper stack trace (only available on V8)
+
+    /* istanbul ignore next */
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, this.constructor);
+    }
+
+    this.name = "HttpError";
+    this.status = statusCode;
+    Object.defineProperty(this, "code", {
+      get() {
+        logOnce(new deprecation.Deprecation("[@octokit/request-error] `error.code` is deprecated, use `error.status`."));
+        return statusCode;
+      }
+
+    });
+    this.headers = options.headers || {}; // redact request credentials without mutating original request options
+
+    const requestCopy = Object.assign({}, options.request);
+
+    if (options.request.headers.authorization) {
+      requestCopy.headers = Object.assign({}, options.request.headers, {
+        authorization: options.request.headers.authorization.replace(/ .*$/, " [REDACTED]")
+      });
+    }
+
+    requestCopy.url = requestCopy.url // client_id & client_secret can be passed as URL query parameters to increase rate limit
+    // see https://developer.github.com/v3/#increasing-the-unauthenticated-rate-limit-for-oauth-applications
+    .replace(/\bclient_secret=\w+/g, "client_secret=[REDACTED]") // OAuth tokens can be passed as URL query parameters, although it is not recommended
+    // see https://developer.github.com/v3/#oauth2-token-sent-in-a-header
+    .replace(/\baccess_token=\w+/g, "access_token=[REDACTED]");
+    this.request = requestCopy;
+  }
+
+}
+
+exports.RequestError = RequestError;
+//# sourceMappingURL=index.js.map
+
+
+/***/ }),
+
+/***/ 6234:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var endpoint = __webpack_require__(9440);
+var universalUserAgent = __webpack_require__(5030);
+var isPlainObject = __webpack_require__(9062);
+var nodeFetch = _interopDefault(__webpack_require__(467));
+var requestError = __webpack_require__(537);
+
+const VERSION = "5.4.10";
+
+function getBufferResponse(response) {
+  return response.arrayBuffer();
+}
+
+function fetchWrapper(requestOptions) {
+  if (isPlainObject.isPlainObject(requestOptions.body) || Array.isArray(requestOptions.body)) {
+    requestOptions.body = JSON.stringify(requestOptions.body);
+  }
+
+  let headers = {};
+  let status;
+  let url;
+  const fetch = requestOptions.request && requestOptions.request.fetch || nodeFetch;
+  return fetch(requestOptions.url, Object.assign({
+    method: requestOptions.method,
+    body: requestOptions.body,
+    headers: requestOptions.headers,
+    redirect: requestOptions.redirect
+  }, requestOptions.request)).then(response => {
+    url = response.url;
+    status = response.status;
+
+    for (const keyAndValue of response.headers) {
+      headers[keyAndValue[0]] = keyAndValue[1];
+    }
+
+    if (status === 204 || status === 205) {
+      return;
+    } // GitHub API returns 200 for HEAD requests
+
+
+    if (requestOptions.method === "HEAD") {
+      if (status < 400) {
+        return;
+      }
+
+      throw new requestError.RequestError(response.statusText, status, {
+        headers,
+        request: requestOptions
+      });
+    }
+
+    if (status === 304) {
+      throw new requestError.RequestError("Not modified", status, {
+        headers,
+        request: requestOptions
+      });
+    }
+
+    if (status >= 400) {
+      return response.text().then(message => {
+        const error = new requestError.RequestError(message, status, {
+          headers,
+          request: requestOptions
+        });
+
+        try {
+          let responseBody = JSON.parse(error.message);
+          Object.assign(error, responseBody);
+          let errors = responseBody.errors; // Assumption `errors` would always be in Array format
+
+          error.message = error.message + ": " + errors.map(JSON.stringify).join(", ");
+        } catch (e) {// ignore, see octokit/rest.js#684
+        }
+
+        throw error;
+      });
+    }
+
+    const contentType = response.headers.get("content-type");
+
+    if (/application\/json/.test(contentType)) {
+      return response.json();
+    }
+
+    if (!contentType || /^text\/|charset=utf-8$/.test(contentType)) {
+      return response.text();
+    }
+
+    return getBufferResponse(response);
+  }).then(data => {
+    return {
+      status,
+      url,
+      headers,
+      data
+    };
+  }).catch(error => {
+    if (error instanceof requestError.RequestError) {
+      throw error;
+    }
+
+    throw new requestError.RequestError(error.message, 500, {
+      headers,
+      request: requestOptions
+    });
+  });
+}
+
+function withDefaults(oldEndpoint, newDefaults) {
+  const endpoint = oldEndpoint.defaults(newDefaults);
+
+  const newApi = function (route, parameters) {
+    const endpointOptions = endpoint.merge(route, parameters);
+
+    if (!endpointOptions.request || !endpointOptions.request.hook) {
+      return fetchWrapper(endpoint.parse(endpointOptions));
+    }
+
+    const request = (route, parameters) => {
+      return fetchWrapper(endpoint.parse(endpoint.merge(route, parameters)));
+    };
+
+    Object.assign(request, {
+      endpoint,
+      defaults: withDefaults.bind(null, endpoint)
+    });
+    return endpointOptions.request.hook(request, endpointOptions);
+  };
+
+  return Object.assign(newApi, {
+    endpoint,
+    defaults: withDefaults.bind(null, endpoint)
+  });
+}
+
+const request = withDefaults(endpoint.endpoint, {
+  headers: {
+    "user-agent": `octokit-request.js/${VERSION} ${universalUserAgent.getUserAgent()}`
+  }
+});
+
+exports.request = request;
+//# sourceMappingURL=index.js.map
+
+
+/***/ }),
+
+/***/ 9062:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+/*!
+ * is-plain-object <https://github.com/jonschlinkert/is-plain-object>
+ *
+ * Copyright (c) 2014-2017, Jon Schlinkert.
+ * Released under the MIT License.
+ */
+
+function isObject(o) {
+  return Object.prototype.toString.call(o) === '[object Object]';
+}
+
+function isPlainObject(o) {
+  var ctor,prot;
+
+  if (isObject(o) === false) return false;
+
+  // If has modified constructor
+  ctor = o.constructor;
+  if (ctor === undefined) return true;
+
+  // If has modified prototype
+  prot = ctor.prototype;
+  if (isObject(prot) === false) return false;
+
+  // If constructor does not have an Object-specific method
+  if (prot.hasOwnProperty('isPrototypeOf') === false) {
+    return false;
+  }
+
+  // Most likely a plain Object
+  return true;
+}
+
+exports.isPlainObject = isPlainObject;
+
+
+/***/ }),
+
+/***/ 3682:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var register = __webpack_require__(4670)
+var addHook = __webpack_require__(5549)
+var removeHook = __webpack_require__(6819)
+
+// bind with array of arguments: https://stackoverflow.com/a/21792913
+var bind = Function.bind
+var bindable = bind.bind(bind)
+
+function bindApi (hook, state, name) {
+  var removeHookRef = bindable(removeHook, null).apply(null, name ? [state, name] : [state])
+  hook.api = { remove: removeHookRef }
+  hook.remove = removeHookRef
+
+  ;['before', 'error', 'after', 'wrap'].forEach(function (kind) {
+    var args = name ? [state, kind, name] : [state, kind]
+    hook[kind] = hook.api[kind] = bindable(addHook, null).apply(null, args)
+  })
+}
+
+function HookSingular () {
+  var singularHookName = 'h'
+  var singularHookState = {
+    registry: {}
+  }
+  var singularHook = register.bind(null, singularHookState, singularHookName)
+  bindApi(singularHook, singularHookState, singularHookName)
+  return singularHook
+}
+
+function HookCollection () {
+  var state = {
+    registry: {}
+  }
+
+  var hook = register.bind(null, state)
+  bindApi(hook, state)
+
+  return hook
+}
+
+var collectionHookDeprecationMessageDisplayed = false
+function Hook () {
+  if (!collectionHookDeprecationMessageDisplayed) {
+    console.warn('[before-after-hook]: "Hook()" repurposing warning, use "Hook.Collection()". Read more: https://git.io/upgrade-before-after-hook-to-1.4')
+    collectionHookDeprecationMessageDisplayed = true
+  }
+  return HookCollection()
+}
+
+Hook.Singular = HookSingular.bind()
+Hook.Collection = HookCollection.bind()
+
+module.exports = Hook
+// expose constructors as a named property for TypeScript
+module.exports.Hook = Hook
+module.exports.Singular = Hook.Singular
+module.exports.Collection = Hook.Collection
+
+
+/***/ }),
+
+/***/ 5549:
+/***/ ((module) => {
+
+module.exports = addHook
+
+function addHook (state, kind, name, hook) {
+  var orig = hook
+  if (!state.registry[name]) {
+    state.registry[name] = []
+  }
+
+  if (kind === 'before') {
+    hook = function (method, options) {
+      return Promise.resolve()
+        .then(orig.bind(null, options))
+        .then(method.bind(null, options))
+    }
+  }
+
+  if (kind === 'after') {
+    hook = function (method, options) {
+      var result
+      return Promise.resolve()
+        .then(method.bind(null, options))
+        .then(function (result_) {
+          result = result_
+          return orig(result, options)
+        })
+        .then(function () {
+          return result
+        })
+    }
+  }
+
+  if (kind === 'error') {
+    hook = function (method, options) {
+      return Promise.resolve()
+        .then(method.bind(null, options))
+        .catch(function (error) {
+          return orig(error, options)
+        })
+    }
+  }
+
+  state.registry[name].push({
+    hook: hook,
+    orig: orig
+  })
+}
+
+
+/***/ }),
+
+/***/ 4670:
+/***/ ((module) => {
+
+module.exports = register
+
+function register (state, name, method, options) {
+  if (typeof method !== 'function') {
+    throw new Error('method for before hook must be a function')
+  }
+
+  if (!options) {
+    options = {}
+  }
+
+  if (Array.isArray(name)) {
+    return name.reverse().reduce(function (callback, name) {
+      return register.bind(null, state, name, callback, options)
+    }, method)()
+  }
+
+  return Promise.resolve()
+    .then(function () {
+      if (!state.registry[name]) {
+        return method(options)
+      }
+
+      return (state.registry[name]).reduce(function (method, registered) {
+        return registered.hook.bind(null, method, options)
+      }, method)()
+    })
+}
+
+
+/***/ }),
+
+/***/ 6819:
+/***/ ((module) => {
+
+module.exports = removeHook
+
+function removeHook (state, name, method) {
+  if (!state.registry[name]) {
+    return
+  }
+
+  var index = state.registry[name]
+    .map(function (registered) { return registered.orig })
+    .indexOf(method)
+
+  if (index === -1) {
+    return
+  }
+
+  state.registry[name].splice(index, 1)
+}
+
+
+/***/ }),
+
+/***/ 8222:
+/***/ ((module, exports, __webpack_require__) => {
+
+/* eslint-env browser */
+
+/**
+ * This is the web browser implementation of `debug()`.
+ */
+
+exports.log = log;
+exports.formatArgs = formatArgs;
+exports.save = save;
+exports.load = load;
+exports.useColors = useColors;
+exports.storage = localstorage();
+
+/**
+ * Colors.
+ */
+
+exports.colors = [
+	'#0000CC',
+	'#0000FF',
+	'#0033CC',
+	'#0033FF',
+	'#0066CC',
+	'#0066FF',
+	'#0099CC',
+	'#0099FF',
+	'#00CC00',
+	'#00CC33',
+	'#00CC66',
+	'#00CC99',
+	'#00CCCC',
+	'#00CCFF',
+	'#3300CC',
+	'#3300FF',
+	'#3333CC',
+	'#3333FF',
+	'#3366CC',
+	'#3366FF',
+	'#3399CC',
+	'#3399FF',
+	'#33CC00',
+	'#33CC33',
+	'#33CC66',
+	'#33CC99',
+	'#33CCCC',
+	'#33CCFF',
+	'#6600CC',
+	'#6600FF',
+	'#6633CC',
+	'#6633FF',
+	'#66CC00',
+	'#66CC33',
+	'#9900CC',
+	'#9900FF',
+	'#9933CC',
+	'#9933FF',
+	'#99CC00',
+	'#99CC33',
+	'#CC0000',
+	'#CC0033',
+	'#CC0066',
+	'#CC0099',
+	'#CC00CC',
+	'#CC00FF',
+	'#CC3300',
+	'#CC3333',
+	'#CC3366',
+	'#CC3399',
+	'#CC33CC',
+	'#CC33FF',
+	'#CC6600',
+	'#CC6633',
+	'#CC9900',
+	'#CC9933',
+	'#CCCC00',
+	'#CCCC33',
+	'#FF0000',
+	'#FF0033',
+	'#FF0066',
+	'#FF0099',
+	'#FF00CC',
+	'#FF00FF',
+	'#FF3300',
+	'#FF3333',
+	'#FF3366',
+	'#FF3399',
+	'#FF33CC',
+	'#FF33FF',
+	'#FF6600',
+	'#FF6633',
+	'#FF9900',
+	'#FF9933',
+	'#FFCC00',
+	'#FFCC33'
+];
+
+/**
+ * Currently only WebKit-based Web Inspectors, Firefox >= v31,
+ * and the Firebug extension (any Firefox version) are known
+ * to support "%c" CSS customizations.
+ *
+ * TODO: add a `localStorage` variable to explicitly enable/disable colors
+ */
+
+// eslint-disable-next-line complexity
+function useColors() {
+	// NB: In an Electron preload script, document will be defined but not fully
+	// initialized. Since we know we're in Chrome, we'll just detect this case
+	// explicitly
+	if (typeof window !== 'undefined' && window.process && (window.process.type === 'renderer' || window.process.__nwjs)) {
+		return true;
+	}
+
+	// Internet Explorer and Edge do not support colors.
+	if (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/(edge|trident)\/(\d+)/)) {
+		return false;
+	}
+
+	// Is webkit? http://stackoverflow.com/a/16459606/376773
+	// document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
+	return (typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance) ||
+		// Is firebug? http://stackoverflow.com/a/398120/376773
+		(typeof window !== 'undefined' && window.console && (window.console.firebug || (window.console.exception && window.console.table))) ||
+		// Is firefox >= v31?
+		// https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+		(typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31) ||
+		// Double check webkit in userAgent just in case we are in a worker
+		(typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/));
+}
+
+/**
+ * Colorize log arguments if enabled.
+ *
+ * @api public
+ */
+
+function formatArgs(args) {
+	args[0] = (this.useColors ? '%c' : '') +
+		this.namespace +
+		(this.useColors ? ' %c' : ' ') +
+		args[0] +
+		(this.useColors ? '%c ' : ' ') +
+		'+' + module.exports.humanize(this.diff);
+
+	if (!this.useColors) {
+		return;
+	}
+
+	const c = 'color: ' + this.color;
+	args.splice(1, 0, c, 'color: inherit');
+
+	// The final "%c" is somewhat tricky, because there could be other
+	// arguments passed either before or after the %c, so we need to
+	// figure out the correct index to insert the CSS into
+	let index = 0;
+	let lastC = 0;
+	args[0].replace(/%[a-zA-Z%]/g, match => {
+		if (match === '%%') {
+			return;
+		}
+		index++;
+		if (match === '%c') {
+			// We only are interested in the *last* %c
+			// (the user may have provided their own)
+			lastC = index;
+		}
+	});
+
+	args.splice(lastC, 0, c);
+}
+
+/**
+ * Invokes `console.log()` when available.
+ * No-op when `console.log` is not a "function".
+ *
+ * @api public
+ */
+function log(...args) {
+	// This hackery is required for IE8/9, where
+	// the `console.log` function doesn't have 'apply'
+	return typeof console === 'object' &&
+		console.log &&
+		console.log(...args);
+}
+
+/**
+ * Save `namespaces`.
+ *
+ * @param {String} namespaces
+ * @api private
+ */
+function save(namespaces) {
+	try {
+		if (namespaces) {
+			exports.storage.setItem('debug', namespaces);
+		} else {
+			exports.storage.removeItem('debug');
+		}
+	} catch (error) {
+		// Swallow
+		// XXX (@Qix-) should we be logging these?
+	}
+}
+
+/**
+ * Load `namespaces`.
+ *
+ * @return {String} returns the previously persisted debug modes
+ * @api private
+ */
+function load() {
+	let r;
+	try {
+		r = exports.storage.getItem('debug');
+	} catch (error) {
+		// Swallow
+		// XXX (@Qix-) should we be logging these?
+	}
+
+	// If debug isn't set in LS, and we're in Electron, try to load $DEBUG
+	if (!r && typeof process !== 'undefined' && 'env' in process) {
+		r = process.env.DEBUG;
+	}
+
+	return r;
+}
+
+/**
+ * Localstorage attempts to return the localstorage.
+ *
+ * This is necessary because safari throws
+ * when a user disables cookies/localstorage
+ * and you attempt to access it.
+ *
+ * @return {LocalStorage}
+ * @api private
+ */
+
+function localstorage() {
+	try {
+		// TVMLKit (Apple TV JS Runtime) does not have a window object, just localStorage in the global context
+		// The Browser also has localStorage in the global context.
+		return localStorage;
+	} catch (error) {
+		// Swallow
+		// XXX (@Qix-) should we be logging these?
+	}
+}
+
+module.exports = __webpack_require__(6243)(exports);
+
+const {formatters} = module.exports;
+
+/**
+ * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
+ */
+
+formatters.j = function (v) {
+	try {
+		return JSON.stringify(v);
+	} catch (error) {
+		return '[UnexpectedJSONParseError]: ' + error.message;
+	}
+};
+
+
+/***/ }),
+
+/***/ 6243:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+
+/**
+ * This is the common logic for both the Node.js and web browser
+ * implementations of `debug()`.
+ */
+
+function setup(env) {
+	createDebug.debug = createDebug;
+	createDebug.default = createDebug;
+	createDebug.coerce = coerce;
+	createDebug.disable = disable;
+	createDebug.enable = enable;
+	createDebug.enabled = enabled;
+	createDebug.humanize = __webpack_require__(900);
+
+	Object.keys(env).forEach(key => {
+		createDebug[key] = env[key];
+	});
+
+	/**
+	* Active `debug` instances.
+	*/
+	createDebug.instances = [];
+
+	/**
+	* The currently active debug mode names, and names to skip.
+	*/
+
+	createDebug.names = [];
+	createDebug.skips = [];
+
+	/**
+	* Map of special "%n" handling functions, for the debug "format" argument.
+	*
+	* Valid key names are a single, lower or upper-case letter, i.e. "n" and "N".
+	*/
+	createDebug.formatters = {};
+
+	/**
+	* Selects a color for a debug namespace
+	* @param {String} namespace The namespace string for the for the debug instance to be colored
+	* @return {Number|String} An ANSI color code for the given namespace
+	* @api private
+	*/
+	function selectColor(namespace) {
+		let hash = 0;
+
+		for (let i = 0; i < namespace.length; i++) {
+			hash = ((hash << 5) - hash) + namespace.charCodeAt(i);
+			hash |= 0; // Convert to 32bit integer
+		}
+
+		return createDebug.colors[Math.abs(hash) % createDebug.colors.length];
+	}
+	createDebug.selectColor = selectColor;
+
+	/**
+	* Create a debugger with the given `namespace`.
+	*
+	* @param {String} namespace
+	* @return {Function}
+	* @api public
+	*/
+	function createDebug(namespace) {
+		let prevTime;
+
+		function debug(...args) {
+			// Disabled?
+			if (!debug.enabled) {
+				return;
+			}
+
+			const self = debug;
+
+			// Set `diff` timestamp
+			const curr = Number(new Date());
+			const ms = curr - (prevTime || curr);
+			self.diff = ms;
+			self.prev = prevTime;
+			self.curr = curr;
+			prevTime = curr;
+
+			args[0] = createDebug.coerce(args[0]);
+
+			if (typeof args[0] !== 'string') {
+				// Anything else let's inspect with %O
+				args.unshift('%O');
+			}
+
+			// Apply any `formatters` transformations
+			let index = 0;
+			args[0] = args[0].replace(/%([a-zA-Z%])/g, (match, format) => {
+				// If we encounter an escaped % then don't increase the array index
+				if (match === '%%') {
+					return match;
+				}
+				index++;
+				const formatter = createDebug.formatters[format];
+				if (typeof formatter === 'function') {
+					const val = args[index];
+					match = formatter.call(self, val);
+
+					// Now we need to remove `args[index]` since it's inlined in the `format`
+					args.splice(index, 1);
+					index--;
+				}
+				return match;
+			});
+
+			// Apply env-specific formatting (colors, etc.)
+			createDebug.formatArgs.call(self, args);
+
+			const logFn = self.log || createDebug.log;
+			logFn.apply(self, args);
+		}
+
+		debug.namespace = namespace;
+		debug.enabled = createDebug.enabled(namespace);
+		debug.useColors = createDebug.useColors();
+		debug.color = selectColor(namespace);
+		debug.destroy = destroy;
+		debug.extend = extend;
+		// Debug.formatArgs = formatArgs;
+		// debug.rawLog = rawLog;
+
+		// env-specific initialization logic for debug instances
+		if (typeof createDebug.init === 'function') {
+			createDebug.init(debug);
+		}
+
+		createDebug.instances.push(debug);
+
+		return debug;
+	}
+
+	function destroy() {
+		const index = createDebug.instances.indexOf(this);
+		if (index !== -1) {
+			createDebug.instances.splice(index, 1);
+			return true;
+		}
+		return false;
+	}
+
+	function extend(namespace, delimiter) {
+		const newDebug = createDebug(this.namespace + (typeof delimiter === 'undefined' ? ':' : delimiter) + namespace);
+		newDebug.log = this.log;
+		return newDebug;
+	}
+
+	/**
+	* Enables a debug mode by namespaces. This can include modes
+	* separated by a colon and wildcards.
+	*
+	* @param {String} namespaces
+	* @api public
+	*/
+	function enable(namespaces) {
+		createDebug.save(namespaces);
+
+		createDebug.names = [];
+		createDebug.skips = [];
+
+		let i;
+		const split = (typeof namespaces === 'string' ? namespaces : '').split(/[\s,]+/);
+		const len = split.length;
+
+		for (i = 0; i < len; i++) {
+			if (!split[i]) {
+				// ignore empty strings
+				continue;
+			}
+
+			namespaces = split[i].replace(/\*/g, '.*?');
+
+			if (namespaces[0] === '-') {
+				createDebug.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
+			} else {
+				createDebug.names.push(new RegExp('^' + namespaces + '$'));
+			}
+		}
+
+		for (i = 0; i < createDebug.instances.length; i++) {
+			const instance = createDebug.instances[i];
+			instance.enabled = createDebug.enabled(instance.namespace);
+		}
+	}
+
+	/**
+	* Disable debug output.
+	*
+	* @return {String} namespaces
+	* @api public
+	*/
+	function disable() {
+		const namespaces = [
+			...createDebug.names.map(toNamespace),
+			...createDebug.skips.map(toNamespace).map(namespace => '-' + namespace)
+		].join(',');
+		createDebug.enable('');
+		return namespaces;
+	}
+
+	/**
+	* Returns true if the given mode name is enabled, false otherwise.
+	*
+	* @param {String} name
+	* @return {Boolean}
+	* @api public
+	*/
+	function enabled(name) {
+		if (name[name.length - 1] === '*') {
+			return true;
+		}
+
+		let i;
+		let len;
+
+		for (i = 0, len = createDebug.skips.length; i < len; i++) {
+			if (createDebug.skips[i].test(name)) {
+				return false;
+			}
+		}
+
+		for (i = 0, len = createDebug.names.length; i < len; i++) {
+			if (createDebug.names[i].test(name)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	* Convert regexp to namespace
+	*
+	* @param {RegExp} regxep
+	* @return {String} namespace
+	* @api private
+	*/
+	function toNamespace(regexp) {
+		return regexp.toString()
+			.substring(2, regexp.toString().length - 2)
+			.replace(/\.\*\?$/, '*');
+	}
+
+	/**
+	* Coerce `val`.
+	*
+	* @param {Mixed} val
+	* @return {Mixed}
+	* @api private
+	*/
+	function coerce(val) {
+		if (val instanceof Error) {
+			return val.stack || val.message;
+		}
+		return val;
+	}
+
+	createDebug.enable(createDebug.load());
+
+	return createDebug;
+}
+
+module.exports = setup;
+
+
+/***/ }),
+
+/***/ 8231:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Detect Electron renderer / nwjs process, which is node, but we should
+ * treat as a browser.
+ */
+
+if (typeof process === 'undefined' || process.type === 'renderer' || process.browser === true || process.__nwjs) {
+	module.exports = __webpack_require__(8222);
+} else {
+	module.exports = __webpack_require__(5332);
+}
+
+
+/***/ }),
+
+/***/ 5332:
+/***/ ((module, exports, __webpack_require__) => {
+
+/**
+ * Module dependencies.
+ */
+
+const tty = __webpack_require__(3867);
+const util = __webpack_require__(1669);
+
+/**
+ * This is the Node.js implementation of `debug()`.
+ */
+
+exports.init = init;
+exports.log = log;
+exports.formatArgs = formatArgs;
+exports.save = save;
+exports.load = load;
+exports.useColors = useColors;
+
+/**
+ * Colors.
+ */
+
+exports.colors = [6, 2, 3, 4, 5, 1];
+
+try {
+	// Optional dependency (as in, doesn't need to be installed, NOT like optionalDependencies in package.json)
+	// eslint-disable-next-line import/no-extraneous-dependencies
+	const supportsColor = __webpack_require__(9318);
+
+	if (supportsColor && (supportsColor.stderr || supportsColor).level >= 2) {
+		exports.colors = [
+			20,
+			21,
+			26,
+			27,
+			32,
+			33,
+			38,
+			39,
+			40,
+			41,
+			42,
+			43,
+			44,
+			45,
+			56,
+			57,
+			62,
+			63,
+			68,
+			69,
+			74,
+			75,
+			76,
+			77,
+			78,
+			79,
+			80,
+			81,
+			92,
+			93,
+			98,
+			99,
+			112,
+			113,
+			128,
+			129,
+			134,
+			135,
+			148,
+			149,
+			160,
+			161,
+			162,
+			163,
+			164,
+			165,
+			166,
+			167,
+			168,
+			169,
+			170,
+			171,
+			172,
+			173,
+			178,
+			179,
+			184,
+			185,
+			196,
+			197,
+			198,
+			199,
+			200,
+			201,
+			202,
+			203,
+			204,
+			205,
+			206,
+			207,
+			208,
+			209,
+			214,
+			215,
+			220,
+			221
+		];
+	}
+} catch (error) {
+	// Swallow - we only care if `supports-color` is available; it doesn't have to be.
+}
+
+/**
+ * Build up the default `inspectOpts` object from the environment variables.
+ *
+ *   $ DEBUG_COLORS=no DEBUG_DEPTH=10 DEBUG_SHOW_HIDDEN=enabled node script.js
+ */
+
+exports.inspectOpts = Object.keys(process.env).filter(key => {
+	return /^debug_/i.test(key);
+}).reduce((obj, key) => {
+	// Camel-case
+	const prop = key
+		.substring(6)
+		.toLowerCase()
+		.replace(/_([a-z])/g, (_, k) => {
+			return k.toUpperCase();
+		});
+
+	// Coerce string value into JS value
+	let val = process.env[key];
+	if (/^(yes|on|true|enabled)$/i.test(val)) {
+		val = true;
+	} else if (/^(no|off|false|disabled)$/i.test(val)) {
+		val = false;
+	} else if (val === 'null') {
+		val = null;
+	} else {
+		val = Number(val);
+	}
+
+	obj[prop] = val;
+	return obj;
+}, {});
+
+/**
+ * Is stdout a TTY? Colored output is enabled when `true`.
+ */
+
+function useColors() {
+	return 'colors' in exports.inspectOpts ?
+		Boolean(exports.inspectOpts.colors) :
+		tty.isatty(process.stderr.fd);
+}
+
+/**
+ * Adds ANSI color escape codes if enabled.
+ *
+ * @api public
+ */
+
+function formatArgs(args) {
+	const {namespace: name, useColors} = this;
+
+	if (useColors) {
+		const c = this.color;
+		const colorCode = '\u001B[3' + (c < 8 ? c : '8;5;' + c);
+		const prefix = `  ${colorCode};1m${name} \u001B[0m`;
+
+		args[0] = prefix + args[0].split('\n').join('\n' + prefix);
+		args.push(colorCode + 'm+' + module.exports.humanize(this.diff) + '\u001B[0m');
+	} else {
+		args[0] = getDate() + name + ' ' + args[0];
+	}
+}
+
+function getDate() {
+	if (exports.inspectOpts.hideDate) {
+		return '';
+	}
+	return new Date().toISOString() + ' ';
+}
+
+/**
+ * Invokes `util.format()` with the specified arguments and writes to stderr.
+ */
+
+function log(...args) {
+	return process.stderr.write(util.format(...args) + '\n');
+}
+
+/**
+ * Save `namespaces`.
+ *
+ * @param {String} namespaces
+ * @api private
+ */
+function save(namespaces) {
+	if (namespaces) {
+		process.env.DEBUG = namespaces;
+	} else {
+		// If you set a process.env field to null or undefined, it gets cast to the
+		// string 'null' or 'undefined'. Just delete instead.
+		delete process.env.DEBUG;
+	}
+}
+
+/**
+ * Load `namespaces`.
+ *
+ * @return {String} returns the previously persisted debug modes
+ * @api private
+ */
+
+function load() {
+	return process.env.DEBUG;
+}
+
+/**
+ * Init logic for `debug` instances.
+ *
+ * Create a new `inspectOpts` object in case `useColors` is set
+ * differently for a particular `debug` instance.
+ */
+
+function init(debug) {
+	debug.inspectOpts = {};
+
+	const keys = Object.keys(exports.inspectOpts);
+	for (let i = 0; i < keys.length; i++) {
+		debug.inspectOpts[keys[i]] = exports.inspectOpts[keys[i]];
+	}
+}
+
+module.exports = __webpack_require__(6243)(exports);
+
+const {formatters} = module.exports;
+
+/**
+ * Map %o to `util.inspect()`, all on a single line.
+ */
+
+formatters.o = function (v) {
+	this.inspectOpts.colors = this.useColors;
+	return util.inspect(v, this.inspectOpts)
+		.replace(/\s*\n\s*/g, ' ');
+};
+
+/**
+ * Map %O to `util.inspect()`, allowing multiple lines if needed.
+ */
+
+formatters.O = function (v) {
+	this.inspectOpts.colors = this.useColors;
+	return util.inspect(v, this.inspectOpts);
+};
+
+
+/***/ }),
+
+/***/ 8932:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+class Deprecation extends Error {
+  constructor(message) {
+    super(message); // Maintains proper stack trace (only available on V8)
+
+    /* istanbul ignore next */
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, this.constructor);
+    }
+
+    this.name = 'Deprecation';
+  }
+
+}
+
+exports.Deprecation = Deprecation;
+
+
+/***/ }),
+
+/***/ 1621:
+/***/ ((module) => {
+
+"use strict";
+
+module.exports = (flag, argv) => {
+	argv = argv || process.argv;
+	const prefix = flag.startsWith('-') ? '' : (flag.length === 1 ? '-' : '--');
+	const pos = argv.indexOf(prefix + flag);
+	const terminatorPos = argv.indexOf('--');
+	return pos !== -1 && (terminatorPos === -1 ? true : pos < terminatorPos);
+};
+
+
+/***/ }),
+
+/***/ 900:
+/***/ ((module) => {
+
+/**
+ * Helpers.
+ */
+
+var s = 1000;
+var m = s * 60;
+var h = m * 60;
+var d = h * 24;
+var w = d * 7;
+var y = d * 365.25;
+
+/**
+ * Parse or format the given `val`.
+ *
+ * Options:
+ *
+ *  - `long` verbose formatting [false]
+ *
+ * @param {String|Number} val
+ * @param {Object} [options]
+ * @throws {Error} throw an error if val is not a non-empty string or a number
+ * @return {String|Number}
+ * @api public
+ */
+
+module.exports = function(val, options) {
+  options = options || {};
+  var type = typeof val;
+  if (type === 'string' && val.length > 0) {
+    return parse(val);
+  } else if (type === 'number' && isFinite(val)) {
+    return options.long ? fmtLong(val) : fmtShort(val);
+  }
+  throw new Error(
+    'val is not a non-empty string or a valid number. val=' +
+      JSON.stringify(val)
+  );
+};
+
+/**
+ * Parse the given `str` and return milliseconds.
+ *
+ * @param {String} str
+ * @return {Number}
+ * @api private
+ */
+
+function parse(str) {
+  str = String(str);
+  if (str.length > 100) {
+    return;
+  }
+  var match = /^(-?(?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)?$/i.exec(
+    str
+  );
+  if (!match) {
+    return;
+  }
+  var n = parseFloat(match[1]);
+  var type = (match[2] || 'ms').toLowerCase();
+  switch (type) {
+    case 'years':
+    case 'year':
+    case 'yrs':
+    case 'yr':
+    case 'y':
+      return n * y;
+    case 'weeks':
+    case 'week':
+    case 'w':
+      return n * w;
+    case 'days':
+    case 'day':
+    case 'd':
+      return n * d;
+    case 'hours':
+    case 'hour':
+    case 'hrs':
+    case 'hr':
+    case 'h':
+      return n * h;
+    case 'minutes':
+    case 'minute':
+    case 'mins':
+    case 'min':
+    case 'm':
+      return n * m;
+    case 'seconds':
+    case 'second':
+    case 'secs':
+    case 'sec':
+    case 's':
+      return n * s;
+    case 'milliseconds':
+    case 'millisecond':
+    case 'msecs':
+    case 'msec':
+    case 'ms':
+      return n;
+    default:
+      return undefined;
+  }
+}
+
+/**
+ * Short format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function fmtShort(ms) {
+  var msAbs = Math.abs(ms);
+  if (msAbs >= d) {
+    return Math.round(ms / d) + 'd';
+  }
+  if (msAbs >= h) {
+    return Math.round(ms / h) + 'h';
+  }
+  if (msAbs >= m) {
+    return Math.round(ms / m) + 'm';
+  }
+  if (msAbs >= s) {
+    return Math.round(ms / s) + 's';
+  }
+  return ms + 'ms';
+}
+
+/**
+ * Long format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function fmtLong(ms) {
+  var msAbs = Math.abs(ms);
+  if (msAbs >= d) {
+    return plural(ms, msAbs, d, 'day');
+  }
+  if (msAbs >= h) {
+    return plural(ms, msAbs, h, 'hour');
+  }
+  if (msAbs >= m) {
+    return plural(ms, msAbs, m, 'minute');
+  }
+  if (msAbs >= s) {
+    return plural(ms, msAbs, s, 'second');
+  }
+  return ms + ' ms';
+}
+
+/**
+ * Pluralization helper.
+ */
+
+function plural(ms, msAbs, n, name) {
+  var isPlural = msAbs >= n * 1.5;
+  return Math.round(ms / n) + ' ' + name + (isPlural ? 's' : '');
+}
+
+
+/***/ }),
+
+/***/ 467:
+/***/ ((module, exports, __webpack_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var Stream = _interopDefault(__webpack_require__(2413));
+var http = _interopDefault(__webpack_require__(8605));
+var Url = _interopDefault(__webpack_require__(8835));
+var https = _interopDefault(__webpack_require__(7211));
+var zlib = _interopDefault(__webpack_require__(8761));
+
+// Based on https://github.com/tmpvar/jsdom/blob/aa85b2abf07766ff7bf5c1f6daafb3726f2f2db5/lib/jsdom/living/blob.js
+
+// fix for "Readable" isn't a named export issue
+const Readable = Stream.Readable;
+
+const BUFFER = Symbol('buffer');
+const TYPE = Symbol('type');
+
+class Blob {
+	constructor() {
+		this[TYPE] = '';
+
+		const blobParts = arguments[0];
+		const options = arguments[1];
+
+		const buffers = [];
+		let size = 0;
+
+		if (blobParts) {
+			const a = blobParts;
+			const length = Number(a.length);
+			for (let i = 0; i < length; i++) {
+				const element = a[i];
+				let buffer;
+				if (element instanceof Buffer) {
+					buffer = element;
+				} else if (ArrayBuffer.isView(element)) {
+					buffer = Buffer.from(element.buffer, element.byteOffset, element.byteLength);
+				} else if (element instanceof ArrayBuffer) {
+					buffer = Buffer.from(element);
+				} else if (element instanceof Blob) {
+					buffer = element[BUFFER];
+				} else {
+					buffer = Buffer.from(typeof element === 'string' ? element : String(element));
+				}
+				size += buffer.length;
+				buffers.push(buffer);
+			}
+		}
+
+		this[BUFFER] = Buffer.concat(buffers);
+
+		let type = options && options.type !== undefined && String(options.type).toLowerCase();
+		if (type && !/[^\u0020-\u007E]/.test(type)) {
+			this[TYPE] = type;
+		}
+	}
+	get size() {
+		return this[BUFFER].length;
+	}
+	get type() {
+		return this[TYPE];
+	}
+	text() {
+		return Promise.resolve(this[BUFFER].toString());
+	}
+	arrayBuffer() {
+		const buf = this[BUFFER];
+		const ab = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
+		return Promise.resolve(ab);
+	}
+	stream() {
+		const readable = new Readable();
+		readable._read = function () {};
+		readable.push(this[BUFFER]);
+		readable.push(null);
+		return readable;
+	}
+	toString() {
+		return '[object Blob]';
+	}
+	slice() {
+		const size = this.size;
+
+		const start = arguments[0];
+		const end = arguments[1];
+		let relativeStart, relativeEnd;
+		if (start === undefined) {
+			relativeStart = 0;
+		} else if (start < 0) {
+			relativeStart = Math.max(size + start, 0);
+		} else {
+			relativeStart = Math.min(start, size);
+		}
+		if (end === undefined) {
+			relativeEnd = size;
+		} else if (end < 0) {
+			relativeEnd = Math.max(size + end, 0);
+		} else {
+			relativeEnd = Math.min(end, size);
+		}
+		const span = Math.max(relativeEnd - relativeStart, 0);
+
+		const buffer = this[BUFFER];
+		const slicedBuffer = buffer.slice(relativeStart, relativeStart + span);
+		const blob = new Blob([], { type: arguments[2] });
+		blob[BUFFER] = slicedBuffer;
+		return blob;
+	}
+}
+
+Object.defineProperties(Blob.prototype, {
+	size: { enumerable: true },
+	type: { enumerable: true },
+	slice: { enumerable: true }
+});
+
+Object.defineProperty(Blob.prototype, Symbol.toStringTag, {
+	value: 'Blob',
+	writable: false,
+	enumerable: false,
+	configurable: true
+});
+
+/**
+ * fetch-error.js
+ *
+ * FetchError interface for operational errors
+ */
+
+/**
+ * Create FetchError instance
+ *
+ * @param   String      message      Error message for human
+ * @param   String      type         Error type for machine
+ * @param   String      systemError  For Node.js system error
+ * @return  FetchError
+ */
+function FetchError(message, type, systemError) {
+  Error.call(this, message);
+
+  this.message = message;
+  this.type = type;
+
+  // when err.type is `system`, err.code contains system error code
+  if (systemError) {
+    this.code = this.errno = systemError.code;
+  }
+
+  // hide custom error implementation details from end-users
+  Error.captureStackTrace(this, this.constructor);
+}
+
+FetchError.prototype = Object.create(Error.prototype);
+FetchError.prototype.constructor = FetchError;
+FetchError.prototype.name = 'FetchError';
+
+let convert;
+try {
+	convert = __webpack_require__(2877).convert;
+} catch (e) {}
+
+const INTERNALS = Symbol('Body internals');
+
+// fix an issue where "PassThrough" isn't a named export for node <10
+const PassThrough = Stream.PassThrough;
+
+/**
+ * Body mixin
+ *
+ * Ref: https://fetch.spec.whatwg.org/#body
+ *
+ * @param   Stream  body  Readable stream
+ * @param   Object  opts  Response options
+ * @return  Void
+ */
+function Body(body) {
+	var _this = this;
+
+	var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
+	    _ref$size = _ref.size;
+
+	let size = _ref$size === undefined ? 0 : _ref$size;
+	var _ref$timeout = _ref.timeout;
+	let timeout = _ref$timeout === undefined ? 0 : _ref$timeout;
+
+	if (body == null) {
+		// body is undefined or null
+		body = null;
+	} else if (isURLSearchParams(body)) {
+		// body is a URLSearchParams
+		body = Buffer.from(body.toString());
+	} else if (isBlob(body)) ; else if (Buffer.isBuffer(body)) ; else if (Object.prototype.toString.call(body) === '[object ArrayBuffer]') {
+		// body is ArrayBuffer
+		body = Buffer.from(body);
+	} else if (ArrayBuffer.isView(body)) {
+		// body is ArrayBufferView
+		body = Buffer.from(body.buffer, body.byteOffset, body.byteLength);
+	} else if (body instanceof Stream) ; else {
+		// none of the above
+		// coerce to string then buffer
+		body = Buffer.from(String(body));
+	}
+	this[INTERNALS] = {
+		body,
+		disturbed: false,
+		error: null
+	};
+	this.size = size;
+	this.timeout = timeout;
+
+	if (body instanceof Stream) {
+		body.on('error', function (err) {
+			const error = err.name === 'AbortError' ? err : new FetchError(`Invalid response body while trying to fetch ${_this.url}: ${err.message}`, 'system', err);
+			_this[INTERNALS].error = error;
+		});
+	}
+}
+
+Body.prototype = {
+	get body() {
+		return this[INTERNALS].body;
+	},
+
+	get bodyUsed() {
+		return this[INTERNALS].disturbed;
+	},
+
+	/**
+  * Decode response as ArrayBuffer
+  *
+  * @return  Promise
+  */
+	arrayBuffer() {
+		return consumeBody.call(this).then(function (buf) {
+			return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
+		});
+	},
+
+	/**
+  * Return raw response as Blob
+  *
+  * @return Promise
+  */
+	blob() {
+		let ct = this.headers && this.headers.get('content-type') || '';
+		return consumeBody.call(this).then(function (buf) {
+			return Object.assign(
+			// Prevent copying
+			new Blob([], {
+				type: ct.toLowerCase()
+			}), {
+				[BUFFER]: buf
+			});
+		});
+	},
+
+	/**
+  * Decode response as json
+  *
+  * @return  Promise
+  */
+	json() {
+		var _this2 = this;
+
+		return consumeBody.call(this).then(function (buffer) {
+			try {
+				return JSON.parse(buffer.toString());
+			} catch (err) {
+				return Body.Promise.reject(new FetchError(`invalid json response body at ${_this2.url} reason: ${err.message}`, 'invalid-json'));
+			}
+		});
+	},
+
+	/**
+  * Decode response as text
+  *
+  * @return  Promise
+  */
+	text() {
+		return consumeBody.call(this).then(function (buffer) {
+			return buffer.toString();
+		});
+	},
+
+	/**
+  * Decode response as buffer (non-spec api)
+  *
+  * @return  Promise
+  */
+	buffer() {
+		return consumeBody.call(this);
+	},
+
+	/**
+  * Decode response as text, while automatically detecting the encoding and
+  * trying to decode to UTF-8 (non-spec api)
+  *
+  * @return  Promise
+  */
+	textConverted() {
+		var _this3 = this;
+
+		return consumeBody.call(this).then(function (buffer) {
+			return convertBody(buffer, _this3.headers);
+		});
+	}
+};
+
+// In browsers, all properties are enumerable.
+Object.defineProperties(Body.prototype, {
+	body: { enumerable: true },
+	bodyUsed: { enumerable: true },
+	arrayBuffer: { enumerable: true },
+	blob: { enumerable: true },
+	json: { enumerable: true },
+	text: { enumerable: true }
+});
+
+Body.mixIn = function (proto) {
+	for (const name of Object.getOwnPropertyNames(Body.prototype)) {
+		// istanbul ignore else: future proof
+		if (!(name in proto)) {
+			const desc = Object.getOwnPropertyDescriptor(Body.prototype, name);
+			Object.defineProperty(proto, name, desc);
+		}
+	}
+};
+
+/**
+ * Consume and convert an entire Body to a Buffer.
+ *
+ * Ref: https://fetch.spec.whatwg.org/#concept-body-consume-body
+ *
+ * @return  Promise
+ */
+function consumeBody() {
+	var _this4 = this;
+
+	if (this[INTERNALS].disturbed) {
+		return Body.Promise.reject(new TypeError(`body used already for: ${this.url}`));
+	}
+
+	this[INTERNALS].disturbed = true;
+
+	if (this[INTERNALS].error) {
+		return Body.Promise.reject(this[INTERNALS].error);
+	}
+
+	let body = this.body;
+
+	// body is null
+	if (body === null) {
+		return Body.Promise.resolve(Buffer.alloc(0));
+	}
+
+	// body is blob
+	if (isBlob(body)) {
+		body = body.stream();
+	}
+
+	// body is buffer
+	if (Buffer.isBuffer(body)) {
+		return Body.Promise.resolve(body);
+	}
+
+	// istanbul ignore if: should never happen
+	if (!(body instanceof Stream)) {
+		return Body.Promise.resolve(Buffer.alloc(0));
+	}
+
+	// body is stream
+	// get ready to actually consume the body
+	let accum = [];
+	let accumBytes = 0;
+	let abort = false;
+
+	return new Body.Promise(function (resolve, reject) {
+		let resTimeout;
+
+		// allow timeout on slow response body
+		if (_this4.timeout) {
+			resTimeout = setTimeout(function () {
+				abort = true;
+				reject(new FetchError(`Response timeout while trying to fetch ${_this4.url} (over ${_this4.timeout}ms)`, 'body-timeout'));
+			}, _this4.timeout);
+		}
+
+		// handle stream errors
+		body.on('error', function (err) {
+			if (err.name === 'AbortError') {
+				// if the request was aborted, reject with this Error
+				abort = true;
+				reject(err);
+			} else {
+				// other errors, such as incorrect content-encoding
+				reject(new FetchError(`Invalid response body while trying to fetch ${_this4.url}: ${err.message}`, 'system', err));
+			}
+		});
+
+		body.on('data', function (chunk) {
+			if (abort || chunk === null) {
+				return;
+			}
+
+			if (_this4.size && accumBytes + chunk.length > _this4.size) {
+				abort = true;
+				reject(new FetchError(`content size at ${_this4.url} over limit: ${_this4.size}`, 'max-size'));
+				return;
+			}
+
+			accumBytes += chunk.length;
+			accum.push(chunk);
+		});
+
+		body.on('end', function () {
+			if (abort) {
+				return;
+			}
+
+			clearTimeout(resTimeout);
+
+			try {
+				resolve(Buffer.concat(accum, accumBytes));
+			} catch (err) {
+				// handle streams that have accumulated too much data (issue #414)
+				reject(new FetchError(`Could not create Buffer from response body for ${_this4.url}: ${err.message}`, 'system', err));
+			}
+		});
+	});
+}
+
+/**
+ * Detect buffer encoding and convert to target encoding
+ * ref: http://www.w3.org/TR/2011/WD-html5-20110113/parsing.html#determining-the-character-encoding
+ *
+ * @param   Buffer  buffer    Incoming buffer
+ * @param   String  encoding  Target encoding
+ * @return  String
+ */
+function convertBody(buffer, headers) {
+	if (typeof convert !== 'function') {
+		throw new Error('The package `encoding` must be installed to use the textConverted() function');
+	}
+
+	const ct = headers.get('content-type');
+	let charset = 'utf-8';
+	let res, str;
+
+	// header
+	if (ct) {
+		res = /charset=([^;]*)/i.exec(ct);
+	}
+
+	// no charset in content type, peek at response body for at most 1024 bytes
+	str = buffer.slice(0, 1024).toString();
+
+	// html5
+	if (!res && str) {
+		res = /<meta.+?charset=(['"])(.+?)\1/i.exec(str);
+	}
+
+	// html4
+	if (!res && str) {
+		res = /<meta[\s]+?http-equiv=(['"])content-type\1[\s]+?content=(['"])(.+?)\2/i.exec(str);
+		if (!res) {
+			res = /<meta[\s]+?content=(['"])(.+?)\1[\s]+?http-equiv=(['"])content-type\3/i.exec(str);
+			if (res) {
+				res.pop(); // drop last quote
+			}
+		}
+
+		if (res) {
+			res = /charset=(.*)/i.exec(res.pop());
+		}
+	}
+
+	// xml
+	if (!res && str) {
+		res = /<\?xml.+?encoding=(['"])(.+?)\1/i.exec(str);
+	}
+
+	// found charset
+	if (res) {
+		charset = res.pop();
+
+		// prevent decode issues when sites use incorrect encoding
+		// ref: https://hsivonen.fi/encoding-menu/
+		if (charset === 'gb2312' || charset === 'gbk') {
+			charset = 'gb18030';
+		}
+	}
+
+	// turn raw buffers into a single utf-8 buffer
+	return convert(buffer, 'UTF-8', charset).toString();
+}
+
+/**
+ * Detect a URLSearchParams object
+ * ref: https://github.com/bitinn/node-fetch/issues/296#issuecomment-307598143
+ *
+ * @param   Object  obj     Object to detect by type or brand
+ * @return  String
+ */
+function isURLSearchParams(obj) {
+	// Duck-typing as a necessary condition.
+	if (typeof obj !== 'object' || typeof obj.append !== 'function' || typeof obj.delete !== 'function' || typeof obj.get !== 'function' || typeof obj.getAll !== 'function' || typeof obj.has !== 'function' || typeof obj.set !== 'function') {
+		return false;
+	}
+
+	// Brand-checking and more duck-typing as optional condition.
+	return obj.constructor.name === 'URLSearchParams' || Object.prototype.toString.call(obj) === '[object URLSearchParams]' || typeof obj.sort === 'function';
+}
+
+/**
+ * Check if `obj` is a W3C `Blob` object (which `File` inherits from)
+ * @param  {*} obj
+ * @return {boolean}
+ */
+function isBlob(obj) {
+	return typeof obj === 'object' && typeof obj.arrayBuffer === 'function' && typeof obj.type === 'string' && typeof obj.stream === 'function' && typeof obj.constructor === 'function' && typeof obj.constructor.name === 'string' && /^(Blob|File)$/.test(obj.constructor.name) && /^(Blob|File)$/.test(obj[Symbol.toStringTag]);
+}
+
+/**
+ * Clone body given Res/Req instance
+ *
+ * @param   Mixed  instance  Response or Request instance
+ * @return  Mixed
+ */
+function clone(instance) {
+	let p1, p2;
+	let body = instance.body;
+
+	// don't allow cloning a used body
+	if (instance.bodyUsed) {
+		throw new Error('cannot clone body after it is used');
+	}
+
+	// check that body is a stream and not form-data object
+	// note: we can't clone the form-data object without having it as a dependency
+	if (body instanceof Stream && typeof body.getBoundary !== 'function') {
+		// tee instance body
+		p1 = new PassThrough();
+		p2 = new PassThrough();
+		body.pipe(p1);
+		body.pipe(p2);
+		// set instance body to teed body and return the other teed body
+		instance[INTERNALS].body = p1;
+		body = p2;
+	}
+
+	return body;
+}
+
+/**
+ * Performs the operation "extract a `Content-Type` value from |object|" as
+ * specified in the specification:
+ * https://fetch.spec.whatwg.org/#concept-bodyinit-extract
+ *
+ * This function assumes that instance.body is present.
+ *
+ * @param   Mixed  instance  Any options.body input
+ */
+function extractContentType(body) {
+	if (body === null) {
+		// body is null
+		return null;
+	} else if (typeof body === 'string') {
+		// body is string
+		return 'text/plain;charset=UTF-8';
+	} else if (isURLSearchParams(body)) {
+		// body is a URLSearchParams
+		return 'application/x-www-form-urlencoded;charset=UTF-8';
+	} else if (isBlob(body)) {
+		// body is blob
+		return body.type || null;
+	} else if (Buffer.isBuffer(body)) {
+		// body is buffer
+		return null;
+	} else if (Object.prototype.toString.call(body) === '[object ArrayBuffer]') {
+		// body is ArrayBuffer
+		return null;
+	} else if (ArrayBuffer.isView(body)) {
+		// body is ArrayBufferView
+		return null;
+	} else if (typeof body.getBoundary === 'function') {
+		// detect form data input from form-data module
+		return `multipart/form-data;boundary=${body.getBoundary()}`;
+	} else if (body instanceof Stream) {
+		// body is stream
+		// can't really do much about this
+		return null;
+	} else {
+		// Body constructor defaults other things to string
+		return 'text/plain;charset=UTF-8';
+	}
+}
+
+/**
+ * The Fetch Standard treats this as if "total bytes" is a property on the body.
+ * For us, we have to explicitly get it with a function.
+ *
+ * ref: https://fetch.spec.whatwg.org/#concept-body-total-bytes
+ *
+ * @param   Body    instance   Instance of Body
+ * @return  Number?            Number of bytes, or null if not possible
+ */
+function getTotalBytes(instance) {
+	const body = instance.body;
+
+
+	if (body === null) {
+		// body is null
+		return 0;
+	} else if (isBlob(body)) {
+		return body.size;
+	} else if (Buffer.isBuffer(body)) {
+		// body is buffer
+		return body.length;
+	} else if (body && typeof body.getLengthSync === 'function') {
+		// detect form data input from form-data module
+		if (body._lengthRetrievers && body._lengthRetrievers.length == 0 || // 1.x
+		body.hasKnownLength && body.hasKnownLength()) {
+			// 2.x
+			return body.getLengthSync();
+		}
+		return null;
+	} else {
+		// body is stream
+		return null;
+	}
+}
+
+/**
+ * Write a Body to a Node.js WritableStream (e.g. http.Request) object.
+ *
+ * @param   Body    instance   Instance of Body
+ * @return  Void
+ */
+function writeToStream(dest, instance) {
+	const body = instance.body;
+
+
+	if (body === null) {
+		// body is null
+		dest.end();
+	} else if (isBlob(body)) {
+		body.stream().pipe(dest);
+	} else if (Buffer.isBuffer(body)) {
+		// body is buffer
+		dest.write(body);
+		dest.end();
+	} else {
+		// body is stream
+		body.pipe(dest);
+	}
+}
+
+// expose Promise
+Body.Promise = global.Promise;
+
+/**
+ * headers.js
+ *
+ * Headers class offers convenient helpers
+ */
+
+const invalidTokenRegex = /[^\^_`a-zA-Z\-0-9!#$%&'*+.|~]/;
+const invalidHeaderCharRegex = /[^\t\x20-\x7e\x80-\xff]/;
+
+function validateName(name) {
+	name = `${name}`;
+	if (invalidTokenRegex.test(name) || name === '') {
+		throw new TypeError(`${name} is not a legal HTTP header name`);
+	}
+}
+
+function validateValue(value) {
+	value = `${value}`;
+	if (invalidHeaderCharRegex.test(value)) {
+		throw new TypeError(`${value} is not a legal HTTP header value`);
+	}
+}
+
+/**
+ * Find the key in the map object given a header name.
+ *
+ * Returns undefined if not found.
+ *
+ * @param   String  name  Header name
+ * @return  String|Undefined
+ */
+function find(map, name) {
+	name = name.toLowerCase();
+	for (const key in map) {
+		if (key.toLowerCase() === name) {
+			return key;
+		}
+	}
+	return undefined;
+}
+
+const MAP = Symbol('map');
+class Headers {
+	/**
+  * Headers class
+  *
+  * @param   Object  headers  Response headers
+  * @return  Void
+  */
+	constructor() {
+		let init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
+
+		this[MAP] = Object.create(null);
+
+		if (init instanceof Headers) {
+			const rawHeaders = init.raw();
+			const headerNames = Object.keys(rawHeaders);
+
+			for (const headerName of headerNames) {
+				for (const value of rawHeaders[headerName]) {
+					this.append(headerName, value);
+				}
+			}
+
+			return;
+		}
+
+		// We don't worry about converting prop to ByteString here as append()
+		// will handle it.
+		if (init == null) ; else if (typeof init === 'object') {
+			const method = init[Symbol.iterator];
+			if (method != null) {
+				if (typeof method !== 'function') {
+					throw new TypeError('Header pairs must be iterable');
+				}
+
+				// sequence<sequence<ByteString>>
+				// Note: per spec we have to first exhaust the lists then process them
+				const pairs = [];
+				for (const pair of init) {
+					if (typeof pair !== 'object' || typeof pair[Symbol.iterator] !== 'function') {
+						throw new TypeError('Each header pair must be iterable');
+					}
+					pairs.push(Array.from(pair));
+				}
+
+				for (const pair of pairs) {
+					if (pair.length !== 2) {
+						throw new TypeError('Each header pair must be a name/value tuple');
+					}
+					this.append(pair[0], pair[1]);
+				}
+			} else {
+				// record<ByteString, ByteString>
+				for (const key of Object.keys(init)) {
+					const value = init[key];
+					this.append(key, value);
+				}
+			}
+		} else {
+			throw new TypeError('Provided initializer must be an object');
+		}
+	}
+
+	/**
+  * Return combined header value given name
+  *
+  * @param   String  name  Header name
+  * @return  Mixed
+  */
+	get(name) {
+		name = `${name}`;
+		validateName(name);
+		const key = find(this[MAP], name);
+		if (key === undefined) {
+			return null;
+		}
+
+		return this[MAP][key].join(', ');
+	}
+
+	/**
+  * Iterate over all headers
+  *
+  * @param   Function  callback  Executed for each item with parameters (value, name, thisArg)
+  * @param   Boolean   thisArg   `this` context for callback function
+  * @return  Void
+  */
+	forEach(callback) {
+		let thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
+
+		let pairs = getHeaders(this);
+		let i = 0;
+		while (i < pairs.length) {
+			var _pairs$i = pairs[i];
+			const name = _pairs$i[0],
+			      value = _pairs$i[1];
+
+			callback.call(thisArg, value, name, this);
+			pairs = getHeaders(this);
+			i++;
+		}
+	}
+
+	/**
+  * Overwrite header values given name
+  *
+  * @param   String  name   Header name
+  * @param   String  value  Header value
+  * @return  Void
+  */
+	set(name, value) {
+		name = `${name}`;
+		value = `${value}`;
+		validateName(name);
+		validateValue(value);
+		const key = find(this[MAP], name);
+		this[MAP][key !== undefined ? key : name] = [value];
+	}
+
+	/**
+  * Append a value onto existing header
+  *
+  * @param   String  name   Header name
+  * @param   String  value  Header value
+  * @return  Void
+  */
+	append(name, value) {
+		name = `${name}`;
+		value = `${value}`;
+		validateName(name);
+		validateValue(value);
+		const key = find(this[MAP], name);
+		if (key !== undefined) {
+			this[MAP][key].push(value);
+		} else {
+			this[MAP][name] = [value];
+		}
+	}
+
+	/**
+  * Check for header name existence
+  *
+  * @param   String   name  Header name
+  * @return  Boolean
+  */
+	has(name) {
+		name = `${name}`;
+		validateName(name);
+		return find(this[MAP], name) !== undefined;
+	}
+
+	/**
+  * Delete all header values given name
+  *
+  * @param   String  name  Header name
+  * @return  Void
+  */
+	delete(name) {
+		name = `${name}`;
+		validateName(name);
+		const key = find(this[MAP], name);
+		if (key !== undefined) {
+			delete this[MAP][key];
+		}
+	}
+
+	/**
+  * Return raw headers (non-spec api)
+  *
+  * @return  Object
+  */
+	raw() {
+		return this[MAP];
+	}
+
+	/**
+  * Get an iterator on keys.
+  *
+  * @return  Iterator
+  */
+	keys() {
+		return createHeadersIterator(this, 'key');
+	}
+
+	/**
+  * Get an iterator on values.
+  *
+  * @return  Iterator
+  */
+	values() {
+		return createHeadersIterator(this, 'value');
+	}
+
+	/**
+  * Get an iterator on entries.
+  *
+  * This is the default iterator of the Headers object.
+  *
+  * @return  Iterator
+  */
+	[Symbol.iterator]() {
+		return createHeadersIterator(this, 'key+value');
+	}
+}
+Headers.prototype.entries = Headers.prototype[Symbol.iterator];
+
+Object.defineProperty(Headers.prototype, Symbol.toStringTag, {
+	value: 'Headers',
+	writable: false,
+	enumerable: false,
+	configurable: true
+});
+
+Object.defineProperties(Headers.prototype, {
+	get: { enumerable: true },
+	forEach: { enumerable: true },
+	set: { enumerable: true },
+	append: { enumerable: true },
+	has: { enumerable: true },
+	delete: { enumerable: true },
+	keys: { enumerable: true },
+	values: { enumerable: true },
+	entries: { enumerable: true }
+});
+
+function getHeaders(headers) {
+	let kind = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'key+value';
+
+	const keys = Object.keys(headers[MAP]).sort();
+	return keys.map(kind === 'key' ? function (k) {
+		return k.toLowerCase();
+	} : kind === 'value' ? function (k) {
+		return headers[MAP][k].join(', ');
+	} : function (k) {
+		return [k.toLowerCase(), headers[MAP][k].join(', ')];
+	});
+}
+
+const INTERNAL = Symbol('internal');
+
+function createHeadersIterator(target, kind) {
+	const iterator = Object.create(HeadersIteratorPrototype);
+	iterator[INTERNAL] = {
+		target,
+		kind,
+		index: 0
+	};
+	return iterator;
+}
+
+const HeadersIteratorPrototype = Object.setPrototypeOf({
+	next() {
+		// istanbul ignore if
+		if (!this || Object.getPrototypeOf(this) !== HeadersIteratorPrototype) {
+			throw new TypeError('Value of `this` is not a HeadersIterator');
+		}
+
+		var _INTERNAL = this[INTERNAL];
+		const target = _INTERNAL.target,
+		      kind = _INTERNAL.kind,
+		      index = _INTERNAL.index;
+
+		const values = getHeaders(target, kind);
+		const len = values.length;
+		if (index >= len) {
+			return {
+				value: undefined,
+				done: true
+			};
+		}
+
+		this[INTERNAL].index = index + 1;
+
+		return {
+			value: values[index],
+			done: false
+		};
+	}
+}, Object.getPrototypeOf(Object.getPrototypeOf([][Symbol.iterator]())));
+
+Object.defineProperty(HeadersIteratorPrototype, Symbol.toStringTag, {
+	value: 'HeadersIterator',
+	writable: false,
+	enumerable: false,
+	configurable: true
+});
+
+/**
+ * Export the Headers object in a form that Node.js can consume.
+ *
+ * @param   Headers  headers
+ * @return  Object
+ */
+function exportNodeCompatibleHeaders(headers) {
+	const obj = Object.assign({ __proto__: null }, headers[MAP]);
+
+	// http.request() only supports string as Host header. This hack makes
+	// specifying custom Host header possible.
+	const hostHeaderKey = find(headers[MAP], 'Host');
+	if (hostHeaderKey !== undefined) {
+		obj[hostHeaderKey] = obj[hostHeaderKey][0];
+	}
+
+	return obj;
+}
+
+/**
+ * Create a Headers object from an object of headers, ignoring those that do
+ * not conform to HTTP grammar productions.
+ *
+ * @param   Object  obj  Object of headers
+ * @return  Headers
+ */
+function createHeadersLenient(obj) {
+	const headers = new Headers();
+	for (const name of Object.keys(obj)) {
+		if (invalidTokenRegex.test(name)) {
+			continue;
+		}
+		if (Array.isArray(obj[name])) {
+			for (const val of obj[name]) {
+				if (invalidHeaderCharRegex.test(val)) {
+					continue;
+				}
+				if (headers[MAP][name] === undefined) {
+					headers[MAP][name] = [val];
+				} else {
+					headers[MAP][name].push(val);
+				}
+			}
+		} else if (!invalidHeaderCharRegex.test(obj[name])) {
+			headers[MAP][name] = [obj[name]];
+		}
+	}
+	return headers;
+}
+
+const INTERNALS$1 = Symbol('Response internals');
+
+// fix an issue where "STATUS_CODES" aren't a named export for node <10
+const STATUS_CODES = http.STATUS_CODES;
+
+/**
+ * Response class
+ *
+ * @param   Stream  body  Readable stream
+ * @param   Object  opts  Response options
+ * @return  Void
+ */
+class Response {
+	constructor() {
+		let body = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+		let opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+		Body.call(this, body, opts);
+
+		const status = opts.status || 200;
+		const headers = new Headers(opts.headers);
+
+		if (body != null && !headers.has('Content-Type')) {
+			const contentType = extractContentType(body);
+			if (contentType) {
+				headers.append('Content-Type', contentType);
+			}
+		}
+
+		this[INTERNALS$1] = {
+			url: opts.url,
+			status,
+			statusText: opts.statusText || STATUS_CODES[status],
+			headers,
+			counter: opts.counter
+		};
+	}
+
+	get url() {
+		return this[INTERNALS$1].url || '';
+	}
+
+	get status() {
+		return this[INTERNALS$1].status;
+	}
+
+	/**
+  * Convenience property representing if the request ended normally
+  */
+	get ok() {
+		return this[INTERNALS$1].status >= 200 && this[INTERNALS$1].status < 300;
+	}
+
+	get redirected() {
+		return this[INTERNALS$1].counter > 0;
+	}
+
+	get statusText() {
+		return this[INTERNALS$1].statusText;
+	}
+
+	get headers() {
+		return this[INTERNALS$1].headers;
+	}
+
+	/**
+  * Clone this response
+  *
+  * @return  Response
+  */
+	clone() {
+		return new Response(clone(this), {
+			url: this.url,
+			status: this.status,
+			statusText: this.statusText,
+			headers: this.headers,
+			ok: this.ok,
+			redirected: this.redirected
+		});
+	}
+}
+
+Body.mixIn(Response.prototype);
+
+Object.defineProperties(Response.prototype, {
+	url: { enumerable: true },
+	status: { enumerable: true },
+	ok: { enumerable: true },
+	redirected: { enumerable: true },
+	statusText: { enumerable: true },
+	headers: { enumerable: true },
+	clone: { enumerable: true }
+});
+
+Object.defineProperty(Response.prototype, Symbol.toStringTag, {
+	value: 'Response',
+	writable: false,
+	enumerable: false,
+	configurable: true
+});
+
+const INTERNALS$2 = Symbol('Request internals');
+
+// fix an issue where "format", "parse" aren't a named export for node <10
+const parse_url = Url.parse;
+const format_url = Url.format;
+
+const streamDestructionSupported = 'destroy' in Stream.Readable.prototype;
+
+/**
+ * Check if a value is an instance of Request.
+ *
+ * @param   Mixed   input
+ * @return  Boolean
+ */
+function isRequest(input) {
+	return typeof input === 'object' && typeof input[INTERNALS$2] === 'object';
+}
+
+function isAbortSignal(signal) {
+	const proto = signal && typeof signal === 'object' && Object.getPrototypeOf(signal);
+	return !!(proto && proto.constructor.name === 'AbortSignal');
+}
+
+/**
+ * Request class
+ *
+ * @param   Mixed   input  Url or Request instance
+ * @param   Object  init   Custom options
+ * @return  Void
+ */
+class Request {
+	constructor(input) {
+		let init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+		let parsedURL;
+
+		// normalize input
+		if (!isRequest(input)) {
+			if (input && input.href) {
+				// in order to support Node.js' Url objects; though WHATWG's URL objects
+				// will fall into this branch also (since their `toString()` will return
+				// `href` property anyway)
+				parsedURL = parse_url(input.href);
+			} else {
+				// coerce input to a string before attempting to parse
+				parsedURL = parse_url(`${input}`);
+			}
+			input = {};
+		} else {
+			parsedURL = parse_url(input.url);
+		}
+
+		let method = init.method || input.method || 'GET';
+		method = method.toUpperCase();
+
+		if ((init.body != null || isRequest(input) && input.body !== null) && (method === 'GET' || method === 'HEAD')) {
+			throw new TypeError('Request with GET/HEAD method cannot have body');
+		}
+
+		let inputBody = init.body != null ? init.body : isRequest(input) && input.body !== null ? clone(input) : null;
+
+		Body.call(this, inputBody, {
+			timeout: init.timeout || input.timeout || 0,
+			size: init.size || input.size || 0
+		});
+
+		const headers = new Headers(init.headers || input.headers || {});
+
+		if (inputBody != null && !headers.has('Content-Type')) {
+			const contentType = extractContentType(inputBody);
+			if (contentType) {
+				headers.append('Content-Type', contentType);
+			}
+		}
+
+		let signal = isRequest(input) ? input.signal : null;
+		if ('signal' in init) signal = init.signal;
+
+		if (signal != null && !isAbortSignal(signal)) {
+			throw new TypeError('Expected signal to be an instanceof AbortSignal');
+		}
+
+		this[INTERNALS$2] = {
+			method,
+			redirect: init.redirect || input.redirect || 'follow',
+			headers,
+			parsedURL,
+			signal
+		};
+
+		// node-fetch-only options
+		this.follow = init.follow !== undefined ? init.follow : input.follow !== undefined ? input.follow : 20;
+		this.compress = init.compress !== undefined ? init.compress : input.compress !== undefined ? input.compress : true;
+		this.counter = init.counter || input.counter || 0;
+		this.agent = init.agent || input.agent;
+	}
+
+	get method() {
+		return this[INTERNALS$2].method;
+	}
+
+	get url() {
+		return format_url(this[INTERNALS$2].parsedURL);
+	}
+
+	get headers() {
+		return this[INTERNALS$2].headers;
+	}
+
+	get redirect() {
+		return this[INTERNALS$2].redirect;
+	}
+
+	get signal() {
+		return this[INTERNALS$2].signal;
+	}
+
+	/**
+  * Clone this request
+  *
+  * @return  Request
+  */
+	clone() {
+		return new Request(this);
+	}
+}
+
+Body.mixIn(Request.prototype);
+
+Object.defineProperty(Request.prototype, Symbol.toStringTag, {
+	value: 'Request',
+	writable: false,
+	enumerable: false,
+	configurable: true
+});
+
+Object.defineProperties(Request.prototype, {
+	method: { enumerable: true },
+	url: { enumerable: true },
+	headers: { enumerable: true },
+	redirect: { enumerable: true },
+	clone: { enumerable: true },
+	signal: { enumerable: true }
+});
+
+/**
+ * Convert a Request to Node.js http request options.
+ *
+ * @param   Request  A Request instance
+ * @return  Object   The options object to be passed to http.request
+ */
+function getNodeRequestOptions(request) {
+	const parsedURL = request[INTERNALS$2].parsedURL;
+	const headers = new Headers(request[INTERNALS$2].headers);
+
+	// fetch step 1.3
+	if (!headers.has('Accept')) {
+		headers.set('Accept', '*/*');
+	}
+
+	// Basic fetch
+	if (!parsedURL.protocol || !parsedURL.hostname) {
+		throw new TypeError('Only absolute URLs are supported');
+	}
+
+	if (!/^https?:$/.test(parsedURL.protocol)) {
+		throw new TypeError('Only HTTP(S) protocols are supported');
+	}
+
+	if (request.signal && request.body instanceof Stream.Readable && !streamDestructionSupported) {
+		throw new Error('Cancellation of streamed requests with AbortSignal is not supported in node < 8');
+	}
+
+	// HTTP-network-or-cache fetch steps 2.4-2.7
+	let contentLengthValue = null;
+	if (request.body == null && /^(POST|PUT)$/i.test(request.method)) {
+		contentLengthValue = '0';
+	}
+	if (request.body != null) {
+		const totalBytes = getTotalBytes(request);
+		if (typeof totalBytes === 'number') {
+			contentLengthValue = String(totalBytes);
+		}
+	}
+	if (contentLengthValue) {
+		headers.set('Content-Length', contentLengthValue);
+	}
+
+	// HTTP-network-or-cache fetch step 2.11
+	if (!headers.has('User-Agent')) {
+		headers.set('User-Agent', 'node-fetch/1.0 (+https://github.com/bitinn/node-fetch)');
+	}
+
+	// HTTP-network-or-cache fetch step 2.15
+	if (request.compress && !headers.has('Accept-Encoding')) {
+		headers.set('Accept-Encoding', 'gzip,deflate');
+	}
+
+	let agent = request.agent;
+	if (typeof agent === 'function') {
+		agent = agent(parsedURL);
+	}
+
+	if (!headers.has('Connection') && !agent) {
+		headers.set('Connection', 'close');
+	}
+
+	// HTTP-network fetch step 4.2
+	// chunked encoding is handled by Node.js
+
+	return Object.assign({}, parsedURL, {
+		method: request.method,
+		headers: exportNodeCompatibleHeaders(headers),
+		agent
+	});
+}
+
+/**
+ * abort-error.js
+ *
+ * AbortError interface for cancelled requests
+ */
+
+/**
+ * Create AbortError instance
+ *
+ * @param   String      message      Error message for human
+ * @return  AbortError
+ */
+function AbortError(message) {
+  Error.call(this, message);
+
+  this.type = 'aborted';
+  this.message = message;
+
+  // hide custom error implementation details from end-users
+  Error.captureStackTrace(this, this.constructor);
+}
+
+AbortError.prototype = Object.create(Error.prototype);
+AbortError.prototype.constructor = AbortError;
+AbortError.prototype.name = 'AbortError';
+
+// fix an issue where "PassThrough", "resolve" aren't a named export for node <10
+const PassThrough$1 = Stream.PassThrough;
+const resolve_url = Url.resolve;
+
+/**
+ * Fetch function
+ *
+ * @param   Mixed    url   Absolute url or Request instance
+ * @param   Object   opts  Fetch options
+ * @return  Promise
+ */
+function fetch(url, opts) {
+
+	// allow custom promise
+	if (!fetch.Promise) {
+		throw new Error('native promise missing, set fetch.Promise to your favorite alternative');
+	}
+
+	Body.Promise = fetch.Promise;
+
+	// wrap http.request into fetch
+	return new fetch.Promise(function (resolve, reject) {
+		// build request object
+		const request = new Request(url, opts);
+		const options = getNodeRequestOptions(request);
+
+		const send = (options.protocol === 'https:' ? https : http).request;
+		const signal = request.signal;
+
+		let response = null;
+
+		const abort = function abort() {
+			let error = new AbortError('The user aborted a request.');
+			reject(error);
+			if (request.body && request.body instanceof Stream.Readable) {
+				request.body.destroy(error);
+			}
+			if (!response || !response.body) return;
+			response.body.emit('error', error);
+		};
+
+		if (signal && signal.aborted) {
+			abort();
+			return;
+		}
+
+		const abortAndFinalize = function abortAndFinalize() {
+			abort();
+			finalize();
+		};
+
+		// send request
+		const req = send(options);
+		let reqTimeout;
+
+		if (signal) {
+			signal.addEventListener('abort', abortAndFinalize);
+		}
+
+		function finalize() {
+			req.abort();
+			if (signal) signal.removeEventListener('abort', abortAndFinalize);
+			clearTimeout(reqTimeout);
+		}
+
+		if (request.timeout) {
+			req.once('socket', function (socket) {
+				reqTimeout = setTimeout(function () {
+					reject(new FetchError(`network timeout at: ${request.url}`, 'request-timeout'));
+					finalize();
+				}, request.timeout);
+			});
+		}
+
+		req.on('error', function (err) {
+			reject(new FetchError(`request to ${request.url} failed, reason: ${err.message}`, 'system', err));
+			finalize();
+		});
+
+		req.on('response', function (res) {
+			clearTimeout(reqTimeout);
+
+			const headers = createHeadersLenient(res.headers);
+
+			// HTTP fetch step 5
+			if (fetch.isRedirect(res.statusCode)) {
+				// HTTP fetch step 5.2
+				const location = headers.get('Location');
+
+				// HTTP fetch step 5.3
+				const locationURL = location === null ? null : resolve_url(request.url, location);
+
+				// HTTP fetch step 5.5
+				switch (request.redirect) {
+					case 'error':
+						reject(new FetchError(`uri requested responds with a redirect, redirect mode is set to error: ${request.url}`, 'no-redirect'));
+						finalize();
+						return;
+					case 'manual':
+						// node-fetch-specific step: make manual redirect a bit easier to use by setting the Location header value to the resolved URL.
+						if (locationURL !== null) {
+							// handle corrupted header
+							try {
+								headers.set('Location', locationURL);
+							} catch (err) {
+								// istanbul ignore next: nodejs server prevent invalid response headers, we can't test this through normal request
+								reject(err);
+							}
+						}
+						break;
+					case 'follow':
+						// HTTP-redirect fetch step 2
+						if (locationURL === null) {
+							break;
+						}
+
+						// HTTP-redirect fetch step 5
+						if (request.counter >= request.follow) {
+							reject(new FetchError(`maximum redirect reached at: ${request.url}`, 'max-redirect'));
+							finalize();
+							return;
+						}
+
+						// HTTP-redirect fetch step 6 (counter increment)
+						// Create a new Request object.
+						const requestOpts = {
+							headers: new Headers(request.headers),
+							follow: request.follow,
+							counter: request.counter + 1,
+							agent: request.agent,
+							compress: request.compress,
+							method: request.method,
+							body: request.body,
+							signal: request.signal,
+							timeout: request.timeout,
+							size: request.size
+						};
+
+						// HTTP-redirect fetch step 9
+						if (res.statusCode !== 303 && request.body && getTotalBytes(request) === null) {
+							reject(new FetchError('Cannot follow redirect with body being a readable stream', 'unsupported-redirect'));
+							finalize();
+							return;
+						}
+
+						// HTTP-redirect fetch step 11
+						if (res.statusCode === 303 || (res.statusCode === 301 || res.statusCode === 302) && request.method === 'POST') {
+							requestOpts.method = 'GET';
+							requestOpts.body = undefined;
+							requestOpts.headers.delete('content-length');
+						}
+
+						// HTTP-redirect fetch step 15
+						resolve(fetch(new Request(locationURL, requestOpts)));
+						finalize();
+						return;
+				}
+			}
+
+			// prepare response
+			res.once('end', function () {
+				if (signal) signal.removeEventListener('abort', abortAndFinalize);
+			});
+			let body = res.pipe(new PassThrough$1());
+
+			const response_options = {
+				url: request.url,
+				status: res.statusCode,
+				statusText: res.statusMessage,
+				headers: headers,
+				size: request.size,
+				timeout: request.timeout,
+				counter: request.counter
+			};
+
+			// HTTP-network fetch step 12.1.1.3
+			const codings = headers.get('Content-Encoding');
+
+			// HTTP-network fetch step 12.1.1.4: handle content codings
+
+			// in following scenarios we ignore compression support
+			// 1. compression support is disabled
+			// 2. HEAD request
+			// 3. no Content-Encoding header
+			// 4. no content response (204)
+			// 5. content not modified response (304)
+			if (!request.compress || request.method === 'HEAD' || codings === null || res.statusCode === 204 || res.statusCode === 304) {
+				response = new Response(body, response_options);
+				resolve(response);
+				return;
+			}
+
+			// For Node v6+
+			// Be less strict when decoding compressed responses, since sometimes
+			// servers send slightly invalid responses that are still accepted
+			// by common browsers.
+			// Always using Z_SYNC_FLUSH is what cURL does.
+			const zlibOptions = {
+				flush: zlib.Z_SYNC_FLUSH,
+				finishFlush: zlib.Z_SYNC_FLUSH
+			};
+
+			// for gzip
+			if (codings == 'gzip' || codings == 'x-gzip') {
+				body = body.pipe(zlib.createGunzip(zlibOptions));
+				response = new Response(body, response_options);
+				resolve(response);
+				return;
+			}
+
+			// for deflate
+			if (codings == 'deflate' || codings == 'x-deflate') {
+				// handle the infamous raw deflate response from old servers
+				// a hack for old IIS and Apache servers
+				const raw = res.pipe(new PassThrough$1());
+				raw.once('data', function (chunk) {
+					// see http://stackoverflow.com/questions/37519828
+					if ((chunk[0] & 0x0F) === 0x08) {
+						body = body.pipe(zlib.createInflate());
+					} else {
+						body = body.pipe(zlib.createInflateRaw());
+					}
+					response = new Response(body, response_options);
+					resolve(response);
+				});
+				return;
+			}
+
+			// for br
+			if (codings == 'br' && typeof zlib.createBrotliDecompress === 'function') {
+				body = body.pipe(zlib.createBrotliDecompress());
+				response = new Response(body, response_options);
+				resolve(response);
+				return;
+			}
+
+			// otherwise, use response as-is
+			response = new Response(body, response_options);
+			resolve(response);
+		});
+
+		writeToStream(req, request);
+	});
+}
+/**
+ * Redirect code matching
+ *
+ * @param   Number   code  Status code
+ * @return  Boolean
+ */
+fetch.isRedirect = function (code) {
+	return code === 301 || code === 302 || code === 303 || code === 307 || code === 308;
+};
+
+// expose Promise
+fetch.Promise = global.Promise;
+
+module.exports = exports = fetch;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.default = exports;
+exports.Headers = Headers;
+exports.Request = Request;
+exports.Response = Response;
+exports.FetchError = FetchError;
+
+
+/***/ }),
+
+/***/ 1223:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var wrappy = __webpack_require__(2940)
+module.exports = wrappy(once)
+module.exports.strict = wrappy(onceStrict)
+
+once.proto = once(function () {
+  Object.defineProperty(Function.prototype, 'once', {
+    value: function () {
+      return once(this)
+    },
+    configurable: true
+  })
+
+  Object.defineProperty(Function.prototype, 'onceStrict', {
+    value: function () {
+      return onceStrict(this)
+    },
+    configurable: true
+  })
+})
+
+function once (fn) {
+  var f = function () {
+    if (f.called) return f.value
+    f.called = true
+    return f.value = fn.apply(this, arguments)
+  }
+  f.called = false
+  return f
+}
+
+function onceStrict (fn) {
+  var f = function () {
+    if (f.called)
+      throw new Error(f.onceError)
+    f.called = true
+    return f.value = fn.apply(this, arguments)
+  }
+  var name = fn.name || 'Function wrapped with `once`'
+  f.onceError = name + " shouldn't be called more than once"
+  f.called = false
+  return f
+}
+
+
+/***/ }),
+
+/***/ 8577:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+
+const {esModuleFactory, gitExportFactory} = __webpack_require__(1949);
+const {gitP} = __webpack_require__(941);
+
+module.exports = esModuleFactory(
+   gitExportFactory(gitP)
+);
+
+
+/***/ }),
+
+/***/ 1949:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const Git = __webpack_require__(4966);
+const {GitConstructError} = __webpack_require__(4732);
+const {createInstanceConfig, folderExists} = __webpack_require__(847);
+
+const api = Object.create(null);
+for (let imported = __webpack_require__(4732), keys = Object.keys(imported), i = 0; i < keys.length; i++) {
+   const name = keys[i];
+   if (/^[A-Z]/.test(name)) {
+      api[name] = imported[name];
+   }
+}
+
+/**
+ * Adds the necessary properties to the supplied object to enable it for use as
+ * the default export of a module.
+ *
+ * Eg: `module.exports = esModuleFactory({ something () {} })`
+ */
+module.exports.esModuleFactory = function esModuleFactory (defaultExport) {
+   return Object.defineProperties(defaultExport, {
+      __esModule: {value: true},
+      default: {value: defaultExport},
+   });
+}
+
+module.exports.gitExportFactory = function gitExportFactory (factory, extra) {
+   return Object.assign(function () {
+         return factory.apply(null, arguments);
+      },
+      api,
+      extra || {},
+   );
+};
+
+module.exports.gitInstanceFactory = function gitInstanceFactory (baseDir, options) {
+   const config = createInstanceConfig(
+      baseDir && (typeof baseDir === 'string' ? {baseDir} : baseDir),
+      options
+   );
+
+   if (!folderExists(config.baseDir)) {
+      throw new GitConstructError(config, `Cannot use simple-git on a directory that does not exist`);
+   }
+
+   return new Git(config);
+};
+
+
+/***/ }),
+
+/***/ 4966:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const responses = __webpack_require__(5301);
+
+const {GitExecutor} = __webpack_require__(4701);
+const {Scheduler} = __webpack_require__(3421);
+const {GitLogger} = __webpack_require__(7178);
+const {adhocExecTask, configurationErrorTask} = __webpack_require__(2815);
+const {NOOP, appendTaskOptions, asArray, filterArray, filterPrimitives, filterString, filterType, folderExists, getTrailingOptions, trailingFunctionArgument, trailingOptionsArgument} = __webpack_require__(847);
+const {branchTask, branchLocalTask, deleteBranchesTask, deleteBranchTask} = __webpack_require__(17);
+const {taskCallback} = __webpack_require__(8850);
+const {checkIsRepoTask} = __webpack_require__(221);
+const {cloneTask, cloneMirrorTask} = __webpack_require__(3173);
+const {addConfigTask, listConfigTask} = __webpack_require__(7597);
+const {cleanWithOptionsTask, isCleanOptionsArray} = __webpack_require__(4386);
+const {initTask} = __webpack_require__(6016);
+const {hashObjectTask} = __webpack_require__(8199);
+const {mergeTask} = __webpack_require__(8829);
+const {moveTask} = __webpack_require__(6520);
+const {pullTask} = __webpack_require__(4636);
+const {pushTagsTask, pushTask} = __webpack_require__(1435);
+const {addRemoteTask, getRemotesTask, listRemotesTask, remoteTask, removeRemoteTask} = __webpack_require__(9866);
+const {getResetMode, resetTask} = __webpack_require__(2377);
+const {statusTask} = __webpack_require__(9197);
+const {addSubModuleTask, initSubModuleTask, subModuleTask, updateSubModuleTask} = __webpack_require__(8772);
+const {addAnnotatedTagTask, addTagTask, tagListTask} = __webpack_require__(8540);
+const {straightThroughStringTask} = __webpack_require__(2815);
+const {parseCheckIgnore} = __webpack_require__(9926);
+
+const ChainedExecutor = Symbol('ChainedExecutor');
+
+/**
+ * Git handling for node. All public functions can be chained and all `then` handlers are optional.
+ *
+ * @param {SimpleGitOptions} options Configuration settings for this instance
+ *
+ * @constructor
+ */
+function Git (options) {
+   this._executor = new GitExecutor(
+      options.binary, options.baseDir,
+      new Scheduler(options.maxConcurrentProcesses)
+   );
+   this._logger = new GitLogger();
+}
+
+/**
+ * The executor that runs each of the added commands
+ * @type {GitExecutor}
+ * @private
+ */
+Git.prototype._executor = null;
+
+/**
+ * Logging utility for printing out info or error messages to the user
+ * @type {GitLogger}
+ * @private
+ */
+Git.prototype._logger = null;
+
+/**
+ * Sets the path to a custom git binary, should either be `git` when there is an installation of git available on
+ * the system path, or a fully qualified path to the executable.
+ *
+ * @param {string} command
+ * @returns {Git}
+ */
+Git.prototype.customBinary = function (command) {
+   this._executor.binary = command;
+   return this;
+};
+
+/**
+ * Sets an environment variable for the spawned child process, either supply both a name and value as strings or
+ * a single object to entirely replace the current environment variables.
+ *
+ * @param {string|Object} name
+ * @param {string} [value]
+ * @returns {Git}
+ */
+Git.prototype.env = function (name, value) {
+   if (arguments.length === 1 && typeof name === 'object') {
+      this._executor.env = name;
+   } else {
+      (this._executor.env = this._executor.env || {})[name] = value;
+   }
+
+   return this;
+};
+
+/**
+ * Sets the working directory of the subsequent commands.
+ */
+Git.prototype.cwd = function (workingDirectory, then) {
+   const task = (typeof workingDirectory !== 'string')
+      ? configurationErrorTask('Git.cwd: workingDirectory must be supplied as a string')
+      : adhocExecTask(() => {
+         if (!folderExists(workingDirectory)) {
+            throw new Error(`Git.cwd: cannot change to non-directory "${ workingDirectory }"`);
+         }
+
+         return (this._executor.cwd = workingDirectory);
+      });
+
+   return this._runTask(task, trailingFunctionArgument(arguments) || NOOP);
+};
+
+/**
+ * Sets a handler function to be called whenever a new child process is created, the handler function will be called
+ * with the name of the command being run and the stdout & stderr streams used by the ChildProcess.
+ *
+ * @example
+ * require('simple-git')
+ *    .outputHandler(function (command, stdout, stderr) {
+ *       stdout.pipe(process.stdout);
+ *    })
+ *    .checkout('https://github.com/user/repo.git');
+ *
+ * @see https://nodejs.org/api/child_process.html#child_process_class_childprocess
+ * @see https://nodejs.org/api/stream.html#stream_class_stream_readable
+ * @param {Function} outputHandler
+ * @returns {Git}
+ */
+Git.prototype.outputHandler = function (outputHandler) {
+   this._executor.outputHandler = outputHandler;
+   return this;
+};
+
+/**
+ * Initialize a git repo
+ *
+ * @param {Boolean} [bare=false]
+ * @param {Function} [then]
+ */
+Git.prototype.init = function (bare, then) {
+   return this._runTask(
+      initTask(bare === true, this._executor.cwd, getTrailingOptions(arguments)),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Check the status of the local repo
+ */
+Git.prototype.status = function () {
+   return this._runTask(
+      statusTask(getTrailingOptions(arguments)),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * List the stash(s) of the local repo
+ *
+ * @param {Object|Array} [options]
+ * @param {Function} [then]
+ */
+Git.prototype.stashList = function (options, then) {
+   var handler = trailingFunctionArgument(arguments);
+   var opt = (handler === then ? options : null) || {};
+
+   var splitter = opt.splitter || requireResponseHandler('ListLogSummary').SPLITTER;
+   var command = ["stash", "list", "--pretty=format:"
+   + requireResponseHandler('ListLogSummary').START_BOUNDARY
+   + "%H %ai %s%d %aN %ae".replace(/\s+/g, splitter)
+   + requireResponseHandler('ListLogSummary').COMMIT_BOUNDARY
+   ];
+
+   if (Array.isArray(opt)) {
+      command = command.concat(opt);
+   }
+
+   return this._run(command, handler, {parser: Git.responseParser('ListLogSummary', splitter)});
+};
+
+/**
+ * Stash the local repo
+ *
+ * @param {Object|Array} [options]
+ * @param {Function} [then]
+ */
+Git.prototype.stash = function (options, then) {
+   return this._run(
+      ['stash'].concat(getTrailingOptions(arguments)),
+      trailingFunctionArgument(arguments)
+   );
+};
+
+function createCloneTask (api, task, repoPath, localPath) {
+   if (typeof repoPath !== 'string') {
+      return configurationErrorTask(`git.${ api }() requires a string 'repoPath'`);
+   }
+
+   return task(repoPath, filterType(localPath, filterString), getTrailingOptions(arguments));
+}
+
+
+/**
+ * Clone a git repo
+ */
+Git.prototype.clone = function () {
+   return this._runTask(
+      createCloneTask('clone', cloneTask, ...arguments),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Mirror a git repo
+ */
+Git.prototype.mirror = function () {
+   return this._runTask(
+      createCloneTask('mirror', cloneMirrorTask, ...arguments),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Moves one or more files to a new destination.
+ *
+ * @see https://git-scm.com/docs/git-mv
+ *
+ * @param {string|string[]} from
+ * @param {string} to
+ */
+Git.prototype.mv = function (from, to) {
+   return this._runTask(moveTask(from, to), trailingFunctionArgument(arguments));
+};
+
+/**
+ * Internally uses pull and tags to get the list of tags then checks out the latest tag.
+ *
+ * @param {Function} [then]
+ */
+Git.prototype.checkoutLatestTag = function (then) {
+   var git = this;
+   return this.pull(function () {
+      git.tags(function (err, tags) {
+         git.checkout(tags.latest, then);
+      });
+   });
+};
+
+/**
+ * Adds one or more files to source control
+ */
+Git.prototype.add = function (files) {
+   return this._run(
+      ['add'].concat(files),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Commits changes in the current working directory - when specific file paths are supplied, only changes on those
+ * files will be committed.
+ *
+ * @param {string|string[]} message
+ * @param {string|string[]} [files]
+ * @param {Object} [options]
+ * @param {Function} [then]
+ */
+Git.prototype.commit = function (message, files, options, then) {
+   var command = ['commit'];
+
+   asArray(message).forEach(function (message) {
+      command.push('-m', message);
+   });
+
+   asArray(typeof files === "string" || Array.isArray(files) ? files : []).forEach(cmd => command.push(cmd));
+
+   command.push(...getTrailingOptions(arguments, 0, true));
+
+   return this._run(
+      command,
+      trailingFunctionArgument(arguments),
+      {
+         parser: Git.responseParser('CommitSummary'),
+      },
+   );
+};
+
+/**
+ * Pull the updated contents of the current repo
+ *
+ * @param {string} [remote] When supplied must also include the branch
+ * @param {string} [branch] When supplied must also include the remote
+ * @param {Object} [options] Optionally include set of options to merge into the command
+ * @param {Function} [then]
+ */
+Git.prototype.pull = function (remote, branch, options, then) {
+   return this._runTask(
+      pullTask(filterType(remote, filterString), filterType(branch, filterString), getTrailingOptions(arguments)),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Fetch the updated contents of the current repo.
+ *
+ * @example
+ *   .fetch('upstream', 'master') // fetches from master on remote named upstream
+ *   .fetch(function () {}) // runs fetch against default remote and branch and calls function
+ *
+ * @param {string} [remote]
+ * @param {string} [branch]
+ * @param {Function} [then]
+ */
+Git.prototype.fetch = function (remote, branch, then) {
+   const command = ["fetch"].concat(getTrailingOptions(arguments));
+
+   if (typeof remote === 'string' && typeof branch === 'string') {
+      command.push(remote, branch);
+   }
+
+   return this._run(
+      command,
+      trailingFunctionArgument(arguments),
+      {
+         concatStdErr: true,
+         parser: Git.responseParser('FetchSummary'),
+      }
+   );
+};
+
+/**
+ * Disables/enables the use of the console for printing warnings and errors, by default messages are not shown in
+ * a production environment.
+ *
+ * @param {boolean} silence
+ * @returns {Git}
+ */
+Git.prototype.silent = function (silence) {
+   this._logger.silent(!!silence);
+   return this;
+};
+
+/**
+ * List all tags. When using git 2.7.0 or above, include an options object with `"--sort": "property-name"` to
+ * sort the tags by that property instead of using the default semantic versioning sort.
+ *
+ * Note, supplying this option when it is not supported by your Git version will cause the operation to fail.
+ *
+ * @param {Object} [options]
+ * @param {Function} [then]
+ */
+Git.prototype.tags = function (options, then) {
+   return this._runTask(
+      tagListTask(getTrailingOptions(arguments)),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Rebases the current working copy. Options can be supplied either as an array of string parameters
+ * to be sent to the `git rebase` command, or a standard options object.
+ *
+ * @param {Object|String[]} [options]
+ * @param {Function} [then]
+ * @returns {Git}
+ */
+Git.prototype.rebase = function (options, then) {
+   return this._run(
+      ['rebase'].concat(getTrailingOptions(arguments)),
+      trailingFunctionArgument(arguments)
+   );
+};
+
+/**
+ * Reset a repo
+ *
+ * @param {string|string[]} [mode=soft] Either an array of arguments supported by the 'git reset' command, or the
+ *                                        string value 'soft' or 'hard' to set the reset mode.
+ * @param {Function} [then]
+ */
+Git.prototype.reset = function (mode, then) {
+   return this._runTask(
+      resetTask(getResetMode(mode), getTrailingOptions(arguments)),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Revert one or more commits in the local working copy
+ *
+ * @param {string} commit The commit to revert. Can be any hash, offset (eg: `HEAD~2`) or range (eg: `master~5..master~2`)
+ * @param {Object} [options] Optional options object
+ * @param {Function} [then]
+ */
+Git.prototype.revert = function (commit, options, then) {
+   const next = trailingFunctionArgument(arguments);
+
+   if (typeof commit !== 'string') {
+      return this._runTask(
+         configurationErrorTask('Commit must be a string'),
+         next,
+      );
+   }
+
+   return this._run([
+      'revert',
+      ...getTrailingOptions(arguments, 0, true),
+      commit
+   ], next);
+};
+
+/**
+ * Add a lightweight tag to the head of the current branch
+ *
+ * @param {string} name
+ * @param {Function} [then]
+ */
+Git.prototype.addTag = function (name, then) {
+   const task = (typeof name === 'string')
+      ? addTagTask(name)
+      : configurationErrorTask('Git.addTag requires a tag name');
+
+   return this._runTask(task, trailingFunctionArgument(arguments));
+};
+
+/**
+ * Add an annotated tag to the head of the current branch
+ *
+ * @param {string} tagName
+ * @param {string} tagMessage
+ * @param {Function} [then]
+ */
+Git.prototype.addAnnotatedTag = function (tagName, tagMessage, then) {
+   return this._runTask(
+      addAnnotatedTagTask(tagName, tagMessage),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Check out a tag or revision, any number of additional arguments can be passed to the `git checkout` command
+ * by supplying either a string or array of strings as the `what` parameter.
+ *
+ * @param {string|string[]} what One or more commands to pass to `git checkout`
+ * @param {Function} [then]
+ */
+Git.prototype.checkout = function (what, then) {
+   const commands = ['checkout', ...getTrailingOptions(arguments, true)];
+   return this._runTask(
+      straightThroughStringTask(commands),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Check out a remote branch
+ *
+ * @param {string} branchName name of branch
+ * @param {string} startPoint (e.g origin/development)
+ * @param {Function} [then]
+ */
+Git.prototype.checkoutBranch = function (branchName, startPoint, then) {
+   return this.checkout(['-b', branchName, startPoint], trailingFunctionArgument(arguments));
+};
+
+/**
+ * Check out a local branch
+ */
+Git.prototype.checkoutLocalBranch = function (branchName, then) {
+   return this.checkout(['-b', branchName], trailingFunctionArgument(arguments));
+};
+
+/**
+ * Delete a local branch
+ */
+Git.prototype.deleteLocalBranch = function (branchName, forceDelete, then) {
+   return this._runTask(
+      deleteBranchTask(branchName, typeof forceDelete === "boolean" ? forceDelete : false),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Delete one or more local branches
+ */
+Git.prototype.deleteLocalBranches = function (branchNames, forceDelete, then) {
+   return this._runTask(
+      deleteBranchesTask(branchNames, typeof forceDelete === "boolean" ? forceDelete : false),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * List all branches
+ *
+ * @param {Object | string[]} [options]
+ * @param {Function} [then]
+ */
+Git.prototype.branch = function (options, then) {
+   return this._runTask(
+      branchTask(getTrailingOptions(arguments)),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Return list of local branches
+ *
+ * @param {Function} [then]
+ */
+Git.prototype.branchLocal = function (then) {
+   return this._runTask(
+      branchLocalTask(),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Add config to local git instance
+ *
+ * @param {string} key configuration key (e.g user.name)
+ * @param {string} value for the given key (e.g your name)
+ * @param {boolean} [append=false] optionally append the key/value pair (equivalent of passing `--add` option).
+ * @param {Function} [then]
+ */
+Git.prototype.addConfig = function (key, value, append, then) {
+   return this._runTask(
+      addConfigTask(key, value, typeof append === "boolean" ? append : false),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+Git.prototype.listConfig = function () {
+   return this._runTask(listConfigTask(), trailingFunctionArgument(arguments));
+};
+
+/**
+ * Executes any command against the git binary.
+ */
+Git.prototype.raw = function (commands) {
+   const createRestCommands = !Array.isArray(commands);
+   const command = [].slice.call(createRestCommands ? arguments : commands, 0);
+
+   for (let i = 0; i < command.length && createRestCommands; i++) {
+      if (!filterPrimitives(command[i])) {
+         command.splice(i, command.length - i);
+         break;
+      }
+   }
+
+   command.push(
+      ...getTrailingOptions(arguments, 0, true),
+   );
+
+   var next = trailingFunctionArgument(arguments);
+
+   if (!command.length) {
+      return this._runTask(
+         configurationErrorTask('Raw: must supply one or more command to execute'),
+         next,
+      );
+   }
+
+   return this._run(command, next);
+};
+
+Git.prototype.submoduleAdd = function (repo, path, then) {
+   return this._runTask(
+      addSubModuleTask(repo, path),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+Git.prototype.submoduleUpdate = function (args, then) {
+   return this._runTask(
+      updateSubModuleTask(getTrailingOptions(arguments, true)),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+Git.prototype.submoduleInit = function (args, then) {
+   return this._runTask(
+      initSubModuleTask(getTrailingOptions(arguments, true)),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+Git.prototype.subModule = function (options, then) {
+   return this._runTask(
+      subModuleTask(getTrailingOptions(arguments)),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+Git.prototype.listRemote = function () {
+   return this._runTask(
+      listRemotesTask(getTrailingOptions(arguments)),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Adds a remote to the list of remotes.
+ */
+Git.prototype.addRemote = function (remoteName, remoteRepo, then) {
+   return this._runTask(
+      addRemoteTask(remoteName, remoteRepo, getTrailingOptions(arguments)),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Removes an entry by name from the list of remotes.
+ */
+Git.prototype.removeRemote = function (remoteName, then) {
+   return this._runTask(
+      removeRemoteTask(remoteName),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Gets the currently available remotes, setting the optional verbose argument to true includes additional
+ * detail on the remotes themselves.
+ */
+Git.prototype.getRemotes = function (verbose, then) {
+   return this._runTask(
+      getRemotesTask(verbose === true),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Compute object ID from a file
+ */
+Git.prototype.hashObject = function (path, write) {
+   return this._runTask(
+      hashObjectTask(path, write === true),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Call any `git remote` function with arguments passed as an array of strings.
+ *
+ * @param {string[]} options
+ * @param {Function} [then]
+ */
+Git.prototype.remote = function (options, then) {
+   return this._runTask(
+      remoteTask(getTrailingOptions(arguments)),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Merges from one branch to another, equivalent to running `git merge ${from} $[to}`, the `options` argument can
+ * either be an array of additional parameters to pass to the command or null / omitted to be ignored.
+ *
+ * @param {string} from
+ * @param {string} to
+ * @param {string[]} [options]
+ * @param {Function} [then]
+ */
+Git.prototype.mergeFromTo = function (from, to) {
+   if (!(filterString(from) && filterString(to))) {
+      return this._runTask(configurationErrorTask(
+         `Git.mergeFromTo requires that the 'from' and 'to' arguments are supplied as strings`
+      ));
+   }
+
+   return this._runTask(
+      mergeTask([from, to, ...getTrailingOptions(arguments)]),
+      trailingFunctionArgument(arguments, false),
+   );
+};
+
+/**
+ * Runs a merge, `options` can be either an array of arguments
+ * supported by the [`git merge`](https://git-scm.com/docs/git-merge)
+ * or an options object.
+ *
+ * Conflicts during the merge result in an error response,
+ * the response type whether it was an error or success will be a MergeSummary instance.
+ * When successful, the MergeSummary has all detail from a the PullSummary
+ *
+ * @param {Object | string[]} [options]
+ * @param {Function} [then]
+ * @returns {*}
+ *
+ * @see ./responses/MergeSummary.js
+ * @see ./responses/PullSummary.js
+ */
+Git.prototype.merge = function () {
+   return this._runTask(
+      mergeTask(getTrailingOptions(arguments)),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Call any `git tag` function with arguments passed as an array of strings.
+ *
+ * @param {string[]} options
+ * @param {Function} [then]
+ */
+Git.prototype.tag = function (options, then) {
+   const command = getTrailingOptions(arguments);
+
+   if (command[0] !== 'tag') {
+      command.unshift('tag');
+   }
+
+   return this._run(command, trailingFunctionArgument(arguments));
+};
+
+/**
+ * Updates repository server info
+ *
+ * @param {Function} [then]
+ */
+Git.prototype.updateServerInfo = function (then) {
+   return this._run(["update-server-info"], trailingFunctionArgument(arguments));
+};
+
+/**
+ * Pushes the current committed changes to a remote, optionally specify the names of the remote and branch to use
+ * when pushing. Supply multiple options as an array of strings in the first argument - see examples below.
+ *
+ * @param {string|string[]} [remote]
+ * @param {string} [branch]
+ * @param {Function} [then]
+ */
+Git.prototype.push = function (remote, branch, then) {
+   const task = pushTask(
+      {remote: filterType(remote, filterString), branch: filterType(branch, filterString)},
+      getTrailingOptions(arguments),
+   );
+   return this._runTask(task, trailingFunctionArgument(arguments));
+};
+
+/**
+ * Pushes the current tag changes to a remote which can be either a URL or named remote. When not specified uses the
+ * default configured remote spec.
+ *
+ * @param {string} [remote]
+ * @param {Function} [then]
+ */
+Git.prototype.pushTags = function (remote, then) {
+   const task = pushTagsTask({remote: filterType(remote, filterString)}, getTrailingOptions(arguments));
+
+   return this._runTask(task, trailingFunctionArgument(arguments));
+};
+
+/**
+ * Removes the named files from source control.
+ *
+ * @param {string|string[]} files
+ * @param {Function} [then]
+ */
+Git.prototype.rm = function (files, then) {
+   return this._rm(files, '-f', then);
+};
+
+/**
+ * Removes the named files from source control but keeps them on disk rather than deleting them entirely. To
+ * completely remove the files, use `rm`.
+ *
+ * @param {string|string[]} files
+ * @param {Function} [then]
+ */
+Git.prototype.rmKeepLocal = function (files, then) {
+   return this._rm(files, '--cached', then);
+};
+
+/**
+ * Returns a list of objects in a tree based on commit hash. Passing in an object hash returns the object's content,
+ * size, and type.
+ *
+ * Passing "-p" will instruct cat-file to determine the object type, and display its formatted contents.
+ *
+ * @param {string[]} [options]
+ * @param {Function} [then]
+ */
+Git.prototype.catFile = function (options, then) {
+   return this._catFile('utf-8', arguments);
+};
+
+/**
+ * Equivalent to `catFile` but will return the native `Buffer` of content from the git command's stdout.
+ *
+ * @param {string[]} options
+ * @param then
+ */
+Git.prototype.binaryCatFile = function (options, then) {
+   return this._catFile('buffer', arguments);
+};
+
+Git.prototype._catFile = function (format, args) {
+   var handler = trailingFunctionArgument(args);
+   var command = ['cat-file'];
+   var options = args[0];
+
+   if (typeof options === 'string') {
+      return this._runTask(
+         configurationErrorTask('Git#catFile: options must be supplied as an array of strings'),
+         handler,
+      );
+   }
+
+   if (Array.isArray(options)) {
+      command.push.apply(command, options);
+   }
+
+   return this._run(command, handler, {
+      format: format
+   });
+};
+
+/**
+ * Return repository changes.
+ */
+Git.prototype.diff = function (options, then) {
+   const command = ['diff', ...getTrailingOptions(arguments)];
+
+   if (typeof options === 'string') {
+      command.splice(1, 0, options);
+      this._logger.warn('Git#diff: supplying options as a single string is now deprecated, switch to an array of strings');
+   }
+
+   return this._runTask(
+      straightThroughStringTask(command),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+Git.prototype.diffSummary = function () {
+   return this._run(
+      ['diff', '--stat=4096', ...getTrailingOptions(arguments, true)],
+      trailingFunctionArgument(arguments),
+      {
+         parser: Git.responseParser('DiffSummary'),
+      }
+   );
+};
+
+Git.prototype.revparse = function (options, then) {
+   const commands = ['rev-parse', ...getTrailingOptions(arguments, true)];
+   return this._runTask(
+      straightThroughStringTask(commands, true),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Show various types of objects, for example the file at a certain commit
+ *
+ * @param {string[]} [options]
+ * @param {Function} [then]
+ */
+Git.prototype.show = function (options, then) {
+   var handler = trailingFunctionArgument(arguments) || NOOP;
+
+   var command = ['show'];
+   if (typeof options === 'string' || Array.isArray(options)) {
+      command = command.concat(options);
+   }
+
+   return this._run(command, function (err, data) {
+      err ? handler(err) : handler(null, data);
+   });
+};
+
+/**
+ */
+Git.prototype.clean = function (mode, options, then) {
+   const usingCleanOptionsArray = isCleanOptionsArray(mode);
+   const cleanMode = usingCleanOptionsArray && mode.join('') || filterType(mode, filterString) || '';
+   const customArgs = getTrailingOptions([].slice.call(arguments, usingCleanOptionsArray ? 1 : 0));
+
+   return this._runTask(
+      cleanWithOptionsTask(cleanMode, customArgs),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+/**
+ * Call a simple function at the next step in the chain.
+ * @param {Function} [then]
+ */
+Git.prototype.exec = function (then) {
+   const task = {
+      commands: [],
+      format: 'utf-8',
+      parser () {
+         if (typeof then === 'function') {
+            then();
+         }
+      }
+   };
+
+   return this._runTask(task);
+};
+
+/**
+ * Show commit logs from `HEAD` to the first commit.
+ * If provided between `options.from` and `options.to` tags or branch.
+ *
+ * Additionally you can provide options.file, which is the path to a file in your repository. Then only this file will be considered.
+ *
+ * To use a custom splitter in the log format, set `options.splitter` to be the string the log should be split on.
+ *
+ * Options can also be supplied as a standard options object for adding custom properties supported by the git log command.
+ * For any other set of options, supply options as an array of strings to be appended to the git log command.
+ *
+ * @param {Object|string[]} [options]
+ * @param {boolean} [options.strictDate=true] Determine whether to use strict ISO date format (default) or not (when set to `false`)
+ * @param {string} [options.from] The first commit to include
+ * @param {string} [options.to] The most recent commit to include
+ * @param {string} [options.file] A single file to include in the result
+ * @param {boolean} [options.multiLine] Optionally include multi-line commit messages
+ *
+ * @param {Function} [then]
+ */
+Git.prototype.log = function (options, then) {
+   var handler = trailingFunctionArgument(arguments);
+   var opt = trailingOptionsArgument(arguments) || {};
+
+   var splitter = opt.splitter || requireResponseHandler('ListLogSummary').SPLITTER;
+   var format = opt.format || {
+      hash: '%H',
+      date: opt.strictDate === false ? '%ai' : '%aI',
+      message: '%s',
+      refs: '%D',
+      body: opt.multiLine ? '%B' : '%b',
+      author_name: '%aN',
+      author_email: '%ae'
+   };
+   var rangeOperator = (opt.symmetric !== false) ? '...' : '..';
+
+   var fields = Object.keys(format);
+   var formatstr = fields.map(function (k) {
+      return format[k];
+   }).join(splitter);
+   var suffix = [];
+   var command = ["log", "--pretty=format:"
+   + requireResponseHandler('ListLogSummary').START_BOUNDARY
+   + formatstr
+   + requireResponseHandler('ListLogSummary').COMMIT_BOUNDARY
+   ];
+
+   if (filterArray(options)) {
+      command = command.concat(options);
+      opt = {};
+   } else if (typeof arguments[0] === "string" || typeof arguments[1] === "string") {
+      this._logger.warn('Git#log: supplying to or from as strings is now deprecated, switch to an options configuration object');
+      opt = {
+         from: arguments[0],
+         to: arguments[1]
+      };
+   }
+
+   if (opt.n || opt['max-count']) {
+      command.push("--max-count=" + (opt.n || opt['max-count']));
+   }
+
+   if (opt.from && opt.to) {
+      command.push(opt.from + rangeOperator + opt.to);
+   }
+
+   if (opt.file) {
+      suffix.push("--follow", options.file);
+   }
+
+   'splitter n max-count file from to --pretty format symmetric multiLine strictDate'.split(' ').forEach(function (key) {
+      delete opt[key];
+   });
+
+   appendTaskOptions(opt, command);
+
+   return this._run(
+      command.concat(suffix),
+      handler,
+      {
+         parser: Git.responseParser('ListLogSummary', [splitter, fields])
+      }
+   );
+};
+
+/**
+ * Clears the queue of pending commands and returns the wrapper instance for chaining.
+ *
+ * @returns {Git}
+ */
+Git.prototype.clearQueue = function () {
+   // TODO:
+   // this._executor.clear();
+   return this;
+};
+
+/**
+ * Check if a pathname or pathnames are excluded by .gitignore
+ *
+ * @param {string|string[]} pathnames
+ * @param {Function} [then]
+ */
+Git.prototype.checkIgnore = function (pathnames, then) {
+   var handler = trailingFunctionArgument(arguments);
+   var command = ["check-ignore"];
+
+   if (handler !== pathnames) {
+      command = command.concat(pathnames);
+   }
+
+   return this._run(command, function (err, data) {
+      handler && handler(err, !err && parseCheckIgnore(data));
+   });
+};
+
+Git.prototype.checkIsRepo = function (checkType, then) {
+   return this._runTask(
+      checkIsRepoTask(filterType(checkType, filterString)),
+      trailingFunctionArgument(arguments),
+   );
+};
+
+Git.prototype._rm = function (_files, options, then) {
+   var files = [].concat(_files);
+   var args = ['rm', options];
+   args.push.apply(args, files);
+
+   return this._run(args, trailingFunctionArgument(arguments));
+};
+
+/**
+ * Schedules the supplied command to be run, the command should not include the name of the git binary and should
+ * be an array of strings passed as the arguments to the git binary.
+ *
+ * @param {string[]} command
+ * @param {Function} then
+ * @param {Object} [opt]
+ * @param {boolean} [opt.concatStdErr=false] Optionally concatenate stderr output into the stdout
+ * @param {boolean} [opt.format="utf-8"] The format to use when reading the content of stdout
+ * @param {Function} [opt.onError] Optional error handler for this command - can be used to allow non-clean exits
+ *                                  without killing the remaining stack of commands
+ * @param {Function} [opt.parser] Optional parser function
+ * @param {number} [opt.onError.exitCode]
+ * @param {string} [opt.onError.stdErr]
+ *
+ * @returns {Git}
+ */
+Git.prototype._run = function (command, then, opt) {
+
+   const task = Object.assign({
+      concatStdErr: false,
+      onError: undefined,
+      format: 'utf-8',
+      parser (data) {
+         return data;
+      }
+   }, opt || {}, {
+      commands: command,
+   });
+
+   return this._runTask(task, then);
+};
+
+Git.prototype._runTask = function (task, then) {
+   const executor = this[ChainedExecutor] || this._executor.chain();
+   const promise = executor.push(task);
+
+   taskCallback(
+      task,
+      promise,
+      then);
+
+   return Object.create(this, {
+      then: {value: promise.then.bind(promise)},
+      catch: {value: promise.catch.bind(promise)},
+      [ChainedExecutor]: {value: executor},
+   });
+};
+
+/**
+ * Handles an exception in the processing of a command.
+ */
+Git.fail = function (git, error, handler) {
+   git._logger.error(error);
+
+   git.clearQueue();
+
+   if (typeof handler === 'function') {
+      handler.call(git, error, null);
+   }
+};
+
+/**
+ * Creates a parser for a task
+ *
+ * @param {string} type
+ * @param {any[]} [args]
+ */
+Git.responseParser = function (type, args) {
+   const handler = requireResponseHandler(type);
+   return function (data) {
+      return handler.parse.apply(handler, [data].concat(args === undefined ? [] : args));
+   };
+};
+
+/**
+ * Marks the git instance as having had a fatal exception by clearing the pending queue of tasks and
+ * logging to the console.
+ *
+ * @param git
+ * @param error
+ * @param callback
+ */
+Git.exception = function (git, error, callback) {
+   const err = error instanceof Error ? error : new Error(error);
+
+   if (typeof callback === 'function') {
+      callback(err);
+   }
+
+   throw err;
+};
+
+module.exports = Git;
+
+/**
+ * Requires and returns a response handler based on its named type
+ * @param {string} type
+ */
+function requireResponseHandler (type) {
+   return responses[type];
+}
+
+
+/***/ }),
+
+/***/ 4732:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var clean_1 = __webpack_require__(4386);
+exports.CleanOptions = clean_1.CleanOptions;
+var check_is_repo_1 = __webpack_require__(221);
+exports.CheckRepoActions = check_is_repo_1.CheckRepoActions;
+var reset_1 = __webpack_require__(2377);
+exports.ResetMode = reset_1.ResetMode;
+var git_construct_error_1 = __webpack_require__(1876);
+exports.GitConstructError = git_construct_error_1.GitConstructError;
+var git_error_1 = __webpack_require__(5757);
+exports.GitError = git_error_1.GitError;
+var git_response_error_1 = __webpack_require__(5131);
+exports.GitResponseError = git_response_error_1.GitResponseError;
+var task_configuration_error_1 = __webpack_require__(740);
+exports.TaskConfigurationError = task_configuration_error_1.TaskConfigurationError;
+//# sourceMappingURL=api.js.map
+
+/***/ }),
+
+/***/ 1876:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const git_error_1 = __webpack_require__(5757);
+/**
+ * The `GitConstructError` is thrown when an error occurs in the constructor
+ * of the `simple-git` instance itself. Most commonly as a result of using
+ * a `baseDir` option that points to a folder that either does not exist,
+ * or cannot be read by the user the node script is running as.
+ *
+ * Check the `.message` property for more detail including the properties
+ * passed to the constructor.
+ */
+class GitConstructError extends git_error_1.GitError {
+    constructor(config, message) {
+        super(undefined, message);
+        this.config = config;
+    }
+}
+exports.GitConstructError = GitConstructError;
+//# sourceMappingURL=git-construct-error.js.map
+
+/***/ }),
+
+/***/ 5757:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/**
+ * The `GitError` is thrown when the underlying `git` process throws a
+ * fatal exception (eg an `ENOENT` exception when attempting to use a
+ * non-writable directory as the root for your repo), and acts as the
+ * base class for more specific errors thrown by the parsing of the
+ * git response or errors in the configuration of the task about to
+ * be run.
+ *
+ * When an exception is thrown, pending tasks in the same instance will
+ * not be executed. The recommended way to run a series of tasks that
+ * can independently fail without needing to prevent future tasks from
+ * running is to catch them individually:
+ *
+ * ```typescript
+ import { gitP, SimpleGit, GitError, PullResult } from 'simple-git';
+
+ function catchTask (e: GitError) {
+   return e.
+ }
+
+ const git = gitP(repoWorkingDir);
+ const pulled: PullResult | GitError = await git.pull().catch(catchTask);
+ const pushed: string | GitError = await git.pushTags().catch(catchTask);
+ ```
+ */
+class GitError extends Error {
+    constructor(task, message) {
+        super(message);
+        this.task = task;
+        Object.setPrototypeOf(this, new.target.prototype);
+    }
+}
+exports.GitError = GitError;
+//# sourceMappingURL=git-error.js.map
+
+/***/ }),
+
+/***/ 5131:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const git_error_1 = __webpack_require__(5757);
+/**
+ * The `GitResponseError` is the wrapper for a parsed response that is treated as
+ * a fatal error, for example attempting a `merge` can leave the repo in a corrupted
+ * state when there are conflicts so the task will reject rather than resolve.
+ *
+ * For example, catching the merge conflict exception:
+ *
+ * ```typescript
+ import { gitP, SimpleGit, GitResponseError, MergeSummary } from 'simple-git';
+
+ const git = gitP(repoRoot);
+ const mergeOptions: string[] = ['--no-ff', 'other-branch'];
+ const mergeSummary: MergeSummary = await git.merge(mergeOptions)
+      .catch((e: GitResponseError<MergeSummary>) => e.git);
+
+ if (mergeSummary.failed) {
+   // deal with the error
+ }
+ ```
+ */
+class GitResponseError extends git_error_1.GitError {
+    constructor(
+    /**
+     * `.git` access the parsed response that is treated as being an error
+     */
+    git, message) {
+        super(undefined, message || String(git));
+        this.git = git;
+    }
+}
+exports.GitResponseError = GitResponseError;
+//# sourceMappingURL=git-response-error.js.map
+
+/***/ }),
+
+/***/ 740:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const git_error_1 = __webpack_require__(5757);
+/**
+ * The `TaskConfigurationError` is thrown when a command was incorrectly
+ * configured. An error of this kind means that no attempt was made to
+ * run your command through the underlying `git` binary.
+ *
+ * Check the `.message` property for more detail on why your configuration
+ * resulted in an error.
+ */
+class TaskConfigurationError extends git_error_1.GitError {
+    constructor(message) {
+        super(undefined, message);
+    }
+}
+exports.TaskConfigurationError = TaskConfigurationError;
+//# sourceMappingURL=task-configuration-error.js.map
+
+/***/ }),
+
+/***/ 7178:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const debug_1 = __webpack_require__(8231);
+const utils_1 = __webpack_require__(847);
+debug_1.default.formatters.L = (value) => String(utils_1.filterHasLength(value) ? value.length : '-');
+debug_1.default.formatters.B = (value) => {
+    if (Buffer.isBuffer(value)) {
+        return value.toString('utf8');
+    }
+    return utils_1.objectToString(value);
+};
+/**
+ * The shared debug logging instance
+ */
+exports.log = debug_1.default('simple-git');
+function prefixedLogger(to, prefix, forward) {
+    if (!prefix || !String(prefix).replace(/\s*/, '')) {
+        return !forward ? to : (message, ...args) => {
+            to(message, ...args);
+            forward(message, ...args);
+        };
+    }
+    return (message, ...args) => {
+        to(`%s ${message}`, prefix, ...args);
+        if (forward) {
+            forward(message, ...args);
+        }
+    };
+}
+function childLoggerName(name, childDebugger, { namespace: parentNamespace }) {
+    if (typeof name === 'string') {
+        return name;
+    }
+    const childNamespace = childDebugger && childDebugger.namespace || '';
+    if (childNamespace.startsWith(parentNamespace)) {
+        return childNamespace.substr(parentNamespace.length + 1);
+    }
+    return childNamespace || parentNamespace;
+}
+function createLogger(label, verbose, initialStep, infoDebugger = exports.log) {
+    const labelPrefix = label && `[${label}]` || '';
+    const spawned = [];
+    const debugDebugger = (typeof verbose === 'string') ? infoDebugger.extend(verbose) : verbose;
+    const key = childLoggerName(utils_1.filterType(verbose, utils_1.filterString), debugDebugger, infoDebugger);
+    const kill = ((debugDebugger === null || debugDebugger === void 0 ? void 0 : debugDebugger.destroy) || utils_1.NOOP).bind(debugDebugger);
+    return step(initialStep);
+    function destroy() {
+        kill();
+        spawned.forEach(logger => logger.destroy());
+        spawned.length = 0;
+    }
+    function child(name) {
+        return utils_1.append(spawned, createLogger(label, debugDebugger && debugDebugger.extend(name) || name));
+    }
+    function sibling(name, initial) {
+        return utils_1.append(spawned, createLogger(label, key.replace(/^[^:]+/, name), initial, infoDebugger));
+    }
+    function step(phase) {
+        const stepPrefix = phase && `[${phase}]` || '';
+        const debug = debugDebugger && prefixedLogger(debugDebugger, stepPrefix) || utils_1.NOOP;
+        const info = prefixedLogger(infoDebugger, `${labelPrefix} ${stepPrefix}`, debug);
+        return Object.assign(debugDebugger ? debug : info, {
+            key,
+            label,
+            child,
+            sibling,
+            debug,
+            info,
+            step,
+            destroy,
+        });
+    }
+}
+exports.createLogger = createLogger;
+/**
+ * The `GitLogger` is used by the main `SimpleGit` runner to handle logging
+ * any warnings or errors.
+ */
+class GitLogger {
+    constructor(_out = exports.log) {
+        this._out = _out;
+        this.error = prefixedLogger(_out, '[ERROR]');
+        this.warn = prefixedLogger(_out, '[WARN]');
+    }
+    silent(silence = false) {
+        if (silence !== this._out.enabled) {
+            return;
+        }
+        const { namespace } = this._out;
+        const env = (process.env.DEBUG || '').split(',').filter(s => !!s);
+        const hasOn = env.includes(namespace);
+        const hasOff = env.includes(`-${namespace}`);
+        // enabling the log
+        if (!silence) {
+            if (hasOff) {
+                utils_1.remove(env, `-${namespace}`);
+            }
+            else {
+                env.push(namespace);
+            }
+        }
+        else {
+            if (hasOn) {
+                utils_1.remove(env, namespace);
+            }
+            else {
+                env.push(`-${namespace}`);
+            }
+        }
+        debug_1.default.enable(env.join(','));
+    }
+}
+exports.GitLogger = GitLogger;
+//# sourceMappingURL=git-logger.js.map
+
+/***/ }),
+
+/***/ 6086:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const BranchDeleteSummary_1 = __webpack_require__(3755);
+const utils_1 = __webpack_require__(847);
+const deleteSuccessRegex = /(\S+)\s+\(\S+\s([^)]+)\)/;
+const deleteErrorRegex = /^error[^']+'([^']+)'/m;
+const parsers = [
+    new utils_1.LineParser(deleteSuccessRegex, (result, [branch, hash]) => {
+        const deletion = BranchDeleteSummary_1.branchDeletionSuccess(branch, hash);
+        result.all.push(deletion);
+        result.branches[branch] = deletion;
+    }),
+    new utils_1.LineParser(deleteErrorRegex, (result, [branch]) => {
+        const deletion = BranchDeleteSummary_1.branchDeletionFailure(branch);
+        result.errors.push(deletion);
+        result.all.push(deletion);
+        result.branches[branch] = deletion;
+    }),
+];
+exports.parseBranchDeletions = (stdOut) => {
+    return utils_1.parseStringResponse(new BranchDeleteSummary_1.BranchDeletionBatch(), parsers, stdOut);
+};
+function hasBranchDeletionError(data, processExitCode) {
+    return processExitCode === utils_1.ExitCodes.ERROR && deleteErrorRegex.test(data);
+}
+exports.hasBranchDeletionError = hasBranchDeletionError;
+//# sourceMappingURL=parse-branch-delete.js.map
+
+/***/ }),
+
+/***/ 9264:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const BranchSummary_1 = __webpack_require__(4446);
+const utils_1 = __webpack_require__(847);
+const parsers = [
+    new utils_1.LineParser(/^(\*\s)?\((?:HEAD )?detached (?:from|at) (\S+)\)\s+([a-z0-9]+)\s(.*)$/, (result, [current, name, commit, label]) => {
+        result.push(!!current, true, name, commit, label);
+    }),
+    new utils_1.LineParser(/^(\*\s)?(\S+)\s+([a-z0-9]+)\s(.*)$/, (result, [current, name, commit, label]) => {
+        result.push(!!current, false, name, commit, label);
+    })
+];
+exports.parseBranchSummary = function (stdOut) {
+    return utils_1.parseStringResponse(new BranchSummary_1.BranchSummaryResult(), parsers, stdOut);
+};
+//# sourceMappingURL=parse-branch.js.map
+
+/***/ }),
+
+/***/ 6412:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const MergeSummary_1 = __webpack_require__(1651);
+const utils_1 = __webpack_require__(847);
+const parse_pull_1 = __webpack_require__(5658);
+const parsers = [
+    new utils_1.LineParser(/^Auto-merging\s+(.+)$/, (summary, [autoMerge]) => {
+        summary.merges.push(autoMerge);
+    }),
+    new utils_1.LineParser(/^CONFLICT\s+\((.+)\): Merge conflict in (.+)$/, (summary, [reason, file]) => {
+        summary.conflicts.push(new MergeSummary_1.MergeSummaryConflict(reason, file));
+    }),
+    new utils_1.LineParser(/^CONFLICT\s+\((.+\/delete)\): (.+) deleted in (.+) and/, (summary, [reason, file, deleteRef]) => {
+        summary.conflicts.push(new MergeSummary_1.MergeSummaryConflict(reason, file, { deleteRef }));
+    }),
+    new utils_1.LineParser(/^CONFLICT\s+\((.+)\):/, (summary, [reason]) => {
+        summary.conflicts.push(new MergeSummary_1.MergeSummaryConflict(reason, null));
+    }),
+    new utils_1.LineParser(/^Automatic merge failed;\s+(.+)$/, (summary, [result]) => {
+        summary.result = result;
+    }),
+];
+/**
+ * Parse the complete response from `git.merge`
+ */
+exports.parseMergeResult = (stdOut, stdErr) => {
+    return Object.assign(exports.parseMergeDetail(stdOut, stdErr), parse_pull_1.parsePullResult(stdOut, stdErr));
+};
+/**
+ * Parse the merge specific detail (ie: not the content also available in the pull detail) from `git.mnerge`
+ * @param stdOut
+ */
+exports.parseMergeDetail = (stdOut) => {
+    return utils_1.parseStringResponse(new MergeSummary_1.MergeSummaryDetail(), parsers, stdOut);
+};
+//# sourceMappingURL=parse-merge.js.map
+
+/***/ }),
+
+/***/ 7444:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const utils_1 = __webpack_require__(847);
+const parsers = [
+    new utils_1.LineParser(/^Renaming (.+) to (.+)$/, (result, [from, to]) => {
+        result.moves.push({ from, to });
+    }),
+];
+exports.parseMoveResult = function (stdOut) {
+    return utils_1.parseStringResponse({ moves: [] }, parsers, stdOut);
+};
+//# sourceMappingURL=parse-move.js.map
+
+/***/ }),
+
+/***/ 5658:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const PullSummary_1 = __webpack_require__(3567);
+const utils_1 = __webpack_require__(847);
+const parse_remote_messages_1 = __webpack_require__(2661);
+const FILE_UPDATE_REGEX = /^\s*(.+?)\s+\|\s+\d+\s*(\+*)(-*)/;
+const SUMMARY_REGEX = /(\d+)\D+((\d+)\D+\(\+\))?(\D+(\d+)\D+\(-\))?/;
+const ACTION_REGEX = /^(create|delete) mode \d+ (.+)/;
+const parsers = [
+    new utils_1.LineParser(FILE_UPDATE_REGEX, (result, [file, insertions, deletions]) => {
+        result.files.push(file);
+        if (insertions) {
+            result.insertions[file] = insertions.length;
+        }
+        if (deletions) {
+            result.deletions[file] = deletions.length;
+        }
+    }),
+    new utils_1.LineParser(SUMMARY_REGEX, (result, [changes, , insertions, , deletions]) => {
+        if (insertions !== undefined || deletions !== undefined) {
+            result.summary.changes = +changes || 0;
+            result.summary.insertions = +insertions || 0;
+            result.summary.deletions = +deletions || 0;
+            return true;
+        }
+        return false;
+    }),
+    new utils_1.LineParser(ACTION_REGEX, (result, [action, file]) => {
+        utils_1.append(result.files, file);
+        utils_1.append((action === 'create') ? result.created : result.deleted, file);
+    }),
+];
+exports.parsePullDetail = (stdOut, stdErr) => {
+    return utils_1.parseStringResponse(new PullSummary_1.PullSummary(), parsers, `${stdOut}\n${stdErr}`);
+};
+exports.parsePullResult = (stdOut, stdErr) => {
+    return Object.assign(new PullSummary_1.PullSummary(), exports.parsePullDetail(stdOut, stdErr), parse_remote_messages_1.parseRemoteMessages(stdOut, stdErr));
+};
+//# sourceMappingURL=parse-pull.js.map
+
+/***/ }),
+
+/***/ 8530:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const utils_1 = __webpack_require__(847);
+const parse_remote_messages_1 = __webpack_require__(2661);
+function pushResultPushedItem(local, remote, status) {
+    const deleted = status.includes('deleted');
+    const tag = status.includes('tag') || /^refs\/tags/.test(local);
+    const alreadyUpdated = !status.includes('new');
+    return {
+        deleted,
+        tag,
+        branch: !tag,
+        new: !alreadyUpdated,
+        alreadyUpdated,
+        local,
+        remote,
+    };
+}
+const parsers = [
+    new utils_1.LineParser(/^Pushing to (.+)$/, (result, [repo]) => {
+        result.repo = repo;
+    }),
+    new utils_1.LineParser(/^updating local tracking ref '(.+)'/, (result, [local]) => {
+        result.ref = Object.assign(Object.assign({}, (result.ref || {})), { local });
+    }),
+    new utils_1.LineParser(/^[*-=]\s+([^:]+):(\S+)\s+\[(.+)]$/, (result, [local, remote, type]) => {
+        result.pushed.push(pushResultPushedItem(local, remote, type));
+    }),
+    new utils_1.LineParser(/^Branch '([^']+)' set up to track remote branch '([^']+)' from '([^']+)'/, (result, [local, remote, remoteName]) => {
+        result.branch = Object.assign(Object.assign({}, (result.branch || {})), { local,
+            remote,
+            remoteName });
+    }),
+    new utils_1.LineParser(/^([^:]+):(\S+)\s+([a-z0-9]+)\.\.([a-z0-9]+)$/, (result, [local, remote, from, to]) => {
+        result.update = {
+            head: {
+                local,
+                remote,
+            },
+            hash: {
+                from,
+                to,
+            },
+        };
+    }),
+];
+exports.parsePushResult = (stdOut, stdErr) => {
+    const pushDetail = exports.parsePushDetail(stdOut, stdErr);
+    const responseDetail = parse_remote_messages_1.parseRemoteMessages(stdOut, stdErr);
+    return Object.assign(Object.assign({}, pushDetail), responseDetail);
+};
+exports.parsePushDetail = (stdOut, stdErr) => {
+    return utils_1.parseStringResponse({ pushed: [] }, parsers, `${stdOut}\n${stdErr}`);
+};
+//# sourceMappingURL=parse-push.js.map
+
+/***/ }),
+
+/***/ 2661:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const utils_1 = __webpack_require__(847);
+const parse_remote_objects_1 = __webpack_require__(3565);
+const parsers = [
+    new utils_1.RemoteLineParser(/^remote:\s*(.+)$/, (result, [text]) => {
+        result.remoteMessages.all.push(text.trim());
+        return false;
+    }),
+    ...parse_remote_objects_1.remoteMessagesObjectParsers,
+    new utils_1.RemoteLineParser([/create a (?:pull|merge) request/i, /\s(https?:\/\/\S+)$/], (result, [pullRequestUrl]) => {
+        result.remoteMessages.pullRequestUrl = pullRequestUrl;
+    }),
+    new utils_1.RemoteLineParser([/found (\d+) vulnerabilities.+\(([^)]+)\)/i, /\s(https?:\/\/\S+)$/], (result, [count, summary, url]) => {
+        result.remoteMessages.vulnerabilities = {
+            count: utils_1.asNumber(count),
+            summary,
+            url,
+        };
+    }),
+];
+function parseRemoteMessages(_stdOut, stdErr) {
+    return utils_1.parseStringResponse({ remoteMessages: new RemoteMessageSummary() }, parsers, stdErr);
+}
+exports.parseRemoteMessages = parseRemoteMessages;
+class RemoteMessageSummary {
+    constructor() {
+        this.all = [];
+    }
+}
+exports.RemoteMessageSummary = RemoteMessageSummary;
+//# sourceMappingURL=parse-remote-messages.js.map
+
+/***/ }),
+
+/***/ 3565:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const utils_1 = __webpack_require__(847);
+function objectEnumerationResult(remoteMessages) {
+    return (remoteMessages.objects = remoteMessages.objects || {
+        compressing: 0,
+        counting: 0,
+        enumerating: 0,
+        packReused: 0,
+        reused: { count: 0, delta: 0 },
+        total: { count: 0, delta: 0 }
+    });
+}
+function asObjectCount(source) {
+    const count = /^\s*(\d+)/.exec(source);
+    const delta = /delta (\d+)/i.exec(source);
+    return {
+        count: utils_1.asNumber(count && count[1] || '0'),
+        delta: utils_1.asNumber(delta && delta[1] || '0'),
+    };
+}
+exports.remoteMessagesObjectParsers = [
+    new utils_1.RemoteLineParser(/^remote:\s*(enumerating|counting|compressing) objects: (\d+),/i, (result, [action, count]) => {
+        const key = action.toLowerCase();
+        const enumeration = objectEnumerationResult(result.remoteMessages);
+        Object.assign(enumeration, { [key]: utils_1.asNumber(count) });
+    }),
+    new utils_1.RemoteLineParser(/^remote:\s*(enumerating|counting|compressing) objects: \d+% \(\d+\/(\d+)\),/i, (result, [action, count]) => {
+        const key = action.toLowerCase();
+        const enumeration = objectEnumerationResult(result.remoteMessages);
+        Object.assign(enumeration, { [key]: utils_1.asNumber(count) });
+    }),
+    new utils_1.RemoteLineParser(/total ([^,]+), reused ([^,]+), pack-reused (\d+)/i, (result, [total, reused, packReused]) => {
+        const objects = objectEnumerationResult(result.remoteMessages);
+        objects.total = asObjectCount(total);
+        objects.reused = asObjectCount(reused);
+        objects.packReused = utils_1.asNumber(packReused);
+    }),
+];
+//# sourceMappingURL=parse-remote-objects.js.map
+
+/***/ }),
+
+/***/ 3755:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+class BranchDeletionBatch {
+    constructor() {
+        this.all = [];
+        this.branches = {};
+        this.errors = [];
+    }
+    get success() {
+        return !this.errors.length;
+    }
+}
+exports.BranchDeletionBatch = BranchDeletionBatch;
+function branchDeletionSuccess(branch, hash) {
+    return {
+        branch, hash, success: true,
+    };
+}
+exports.branchDeletionSuccess = branchDeletionSuccess;
+function branchDeletionFailure(branch) {
+    return {
+        branch, hash: null, success: false,
+    };
+}
+exports.branchDeletionFailure = branchDeletionFailure;
+function isSingleBranchDeleteFailure(test) {
+    return test.success;
+}
+exports.isSingleBranchDeleteFailure = isSingleBranchDeleteFailure;
+//# sourceMappingURL=BranchDeleteSummary.js.map
+
+/***/ }),
+
+/***/ 4446:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+class BranchSummaryResult {
+    constructor() {
+        this.all = [];
+        this.branches = {};
+        this.current = '';
+        this.detached = false;
+    }
+    push(current, detached, name, commit, label) {
+        if (current) {
+            this.detached = detached;
+            this.current = name;
+        }
+        this.all.push(name);
+        this.branches[name] = {
+            current: current,
+            name: name,
+            commit: commit,
+            label: label
+        };
+    }
+}
+exports.BranchSummaryResult = BranchSummaryResult;
+//# sourceMappingURL=BranchSummary.js.map
+
+/***/ }),
+
+/***/ 9926:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/**
+ * Parser for the `check-ignore` command - returns each file as a string array
+ */
+exports.parseCheckIgnore = (text) => {
+    return text.split(/\n/g)
+        .map(line => line.trim())
+        .filter(file => !!file);
+};
+//# sourceMappingURL=CheckIgnore.js.map
+
+/***/ }),
+
+/***/ 5689:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const utils_1 = __webpack_require__(847);
+class CleanResponse {
+    constructor(dryRun) {
+        this.dryRun = dryRun;
+        this.paths = [];
+        this.files = [];
+        this.folders = [];
+    }
+}
+exports.CleanResponse = CleanResponse;
+const removalRegexp = /^[a-z]+\s*/i;
+const dryRunRemovalRegexp = /^[a-z]+\s+[a-z]+\s*/i;
+const isFolderRegexp = /\/$/;
+function cleanSummaryParser(dryRun, text) {
+    const summary = new CleanResponse(dryRun);
+    const regexp = dryRun ? dryRunRemovalRegexp : removalRegexp;
+    utils_1.toLinesWithContent(text).forEach(line => {
+        const removed = line.replace(regexp, '');
+        summary.paths.push(removed);
+        (isFolderRegexp.test(removed) ? summary.folders : summary.files).push(removed);
+    });
+    return summary;
+}
+exports.cleanSummaryParser = cleanSummaryParser;
+//# sourceMappingURL=CleanSummary.js.map
+
+/***/ }),
+
+/***/ 7219:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const utils_1 = __webpack_require__(847);
+class ConfigList {
+    constructor() {
+        this.files = [];
+        this.values = Object.create(null);
+    }
+    get all() {
+        if (!this._all) {
+            this._all = this.files.reduce((all, file) => {
+                return Object.assign(all, this.values[file]);
+            }, {});
+        }
+        return this._all;
+    }
+    addFile(file) {
+        if (!(file in this.values)) {
+            const latest = utils_1.last(this.files);
+            this.values[file] = latest ? Object.create(this.values[latest]) : {};
+            this.files.push(file);
+        }
+        return this.values[file];
+    }
+    addValue(file, key, value) {
+        const values = this.addFile(file);
+        if (!values.hasOwnProperty(key)) {
+            values[key] = value;
+        }
+        else if (Array.isArray(values[key])) {
+            values[key].push(value);
+        }
+        else {
+            values[key] = [values[key], value];
+        }
+        this._all = undefined;
+    }
+}
+exports.ConfigList = ConfigList;
+function configListParser(text) {
+    const config = new ConfigList();
+    const lines = text.split('\0');
+    for (let i = 0, max = lines.length - 1; i < max;) {
+        const file = configFilePath(lines[i++]);
+        const [key, value] = utils_1.splitOn(lines[i++], '\n');
+        config.addValue(file, key, value);
+    }
+    return config;
+}
+exports.configListParser = configListParser;
+function configFilePath(filePath) {
+    return filePath.replace(/^(file):/, '');
+}
+//# sourceMappingURL=ConfigList.js.map
+
+/***/ }),
+
+/***/ 860:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.fromPathRegex = /^(.+) -> (.+)$/;
+class FileStatusSummary {
+    constructor(path, index, working_dir) {
+        this.path = path;
+        this.index = index;
+        this.working_dir = working_dir;
+        if ('R' === (index + working_dir)) {
+            const detail = exports.fromPathRegex.exec(path) || [null, path, path];
+            this.from = detail[1] || '';
+            this.path = detail[2] || '';
+        }
+    }
+}
+exports.FileStatusSummary = FileStatusSummary;
+//# sourceMappingURL=FileStatusSummary.js.map
+
+/***/ }),
+
+/***/ 9999:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const utils_1 = __webpack_require__(847);
+function parseGetRemotes(text) {
+    const remotes = {};
+    forEach(text, ([name]) => remotes[name] = { name });
+    return Object.values(remotes);
+}
+exports.parseGetRemotes = parseGetRemotes;
+function parseGetRemotesVerbose(text) {
+    const remotes = {};
+    forEach(text, ([name, url, purpose]) => {
+        if (!remotes.hasOwnProperty(name)) {
+            remotes[name] = {
+                name: name,
+                refs: { fetch: '', push: '' },
+            };
+        }
+        if (purpose && url) {
+            remotes[name].refs[purpose.replace(/[^a-z]/g, '')] = url;
+        }
+    });
+    return Object.values(remotes);
+}
+exports.parseGetRemotesVerbose = parseGetRemotesVerbose;
+function forEach(text, handler) {
+    utils_1.forEachLineWithContent(text, (line) => handler(line.split(/\s+/)));
+}
+//# sourceMappingURL=GetRemoteSummary.js.map
+
+/***/ }),
+
+/***/ 8690:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+class InitSummary {
+    constructor(bare, path, existing, gitDir) {
+        this.bare = bare;
+        this.path = path;
+        this.existing = existing;
+        this.gitDir = gitDir;
+    }
+}
+exports.InitSummary = InitSummary;
+const initResponseRegex = /^Init.+ repository in (.+)$/;
+const reInitResponseRegex = /^Rein.+ in (.+)$/;
+function parseInit(bare, path, text) {
+    const response = String(text).trim();
+    let result;
+    if ((result = initResponseRegex.exec(response))) {
+        return new InitSummary(bare, path, false, result[1]);
+    }
+    if ((result = reInitResponseRegex.exec(response))) {
+        return new InitSummary(bare, path, true, result[1]);
+    }
+    let gitDir = '';
+    const tokens = response.split(' ');
+    while (tokens.length) {
+        const token = tokens.shift();
+        if (token === 'in') {
+            gitDir = tokens.join(' ');
+            break;
+        }
+    }
+    return new InitSummary(bare, path, /^re/i.test(response), gitDir);
+}
+exports.parseInit = parseInit;
+//# sourceMappingURL=InitSummary.js.map
+
+/***/ }),
+
+/***/ 1651:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+class MergeSummaryConflict {
+    constructor(reason, file = null, meta) {
+        this.reason = reason;
+        this.file = file;
+        this.meta = meta;
+    }
+    toString() {
+        return `${this.file}:${this.reason}`;
+    }
+}
+exports.MergeSummaryConflict = MergeSummaryConflict;
+class MergeSummaryDetail {
+    constructor() {
+        this.conflicts = [];
+        this.merges = [];
+        this.result = 'success';
+    }
+    get failed() {
+        return this.conflicts.length > 0;
+    }
+    get reason() {
+        return this.result;
+    }
+    toString() {
+        if (this.conflicts.length) {
+            return `CONFLICTS: ${this.conflicts.join(', ')}`;
+        }
+        return 'OK';
+    }
+}
+exports.MergeSummaryDetail = MergeSummaryDetail;
+//# sourceMappingURL=MergeSummary.js.map
+
+/***/ }),
+
+/***/ 3567:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+class PullSummary {
+    constructor() {
+        this.remoteMessages = {
+            all: [],
+        };
+        this.created = [];
+        this.deleted = [];
+        this.files = [];
+        this.deletions = {};
+        this.insertions = {};
+        this.summary = {
+            changes: 0,
+            deletions: 0,
+            insertions: 0,
+        };
+    }
+}
+exports.PullSummary = PullSummary;
+//# sourceMappingURL=PullSummary.js.map
+
+/***/ }),
+
+/***/ 6790:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const FileStatusSummary_1 = __webpack_require__(860);
+/**
+ * The StatusSummary is returned as a response to getting `git().status()`
+ */
+class StatusSummary {
+    constructor() {
+        this.not_added = [];
+        this.conflicted = [];
+        this.created = [];
+        this.deleted = [];
+        this.modified = [];
+        this.renamed = [];
+        /**
+         * All files represented as an array of objects containing the `path` and status in `index` and
+         * in the `working_dir`.
+         */
+        this.files = [];
+        this.staged = [];
+        /**
+         * Number of commits ahead of the tracked branch
+         */
+        this.ahead = 0;
+        /**
+         *Number of commits behind the tracked branch
+         */
+        this.behind = 0;
+        /**
+         * Name of the current branch
+         */
+        this.current = null;
+        /**
+         * Name of the branch being tracked
+         */
+        this.tracking = null;
+    }
+    /**
+     * Gets whether this StatusSummary represents a clean working branch.
+     */
+    isClean() {
+        return !this.files.length;
+    }
+}
+exports.StatusSummary = StatusSummary;
+exports.StatusSummaryParsers = {
+    '##': function (line, status) {
+        const aheadReg = /ahead (\d+)/;
+        const behindReg = /behind (\d+)/;
+        const currentReg = /^(.+?(?=(?:\.{3}|\s|$)))/;
+        const trackingReg = /\.{3}(\S*)/;
+        const onEmptyBranchReg = /\son\s([\S]+)$/;
+        let regexResult;
+        regexResult = aheadReg.exec(line);
+        status.ahead = regexResult && +regexResult[1] || 0;
+        regexResult = behindReg.exec(line);
+        status.behind = regexResult && +regexResult[1] || 0;
+        regexResult = currentReg.exec(line);
+        status.current = regexResult && regexResult[1];
+        regexResult = trackingReg.exec(line);
+        status.tracking = regexResult && regexResult[1];
+        regexResult = onEmptyBranchReg.exec(line);
+        status.current = regexResult && regexResult[1] || status.current;
+    },
+    '??': function (line, status) {
+        status.not_added.push(line);
+    },
+    A: function (line, status) {
+        status.created.push(line);
+    },
+    AM: function (line, status) {
+        status.created.push(line);
+    },
+    D: function (line, status) {
+        status.deleted.push(line);
+    },
+    M: function (line, status, indexState) {
+        status.modified.push(line);
+        if (indexState === 'M') {
+            status.staged.push(line);
+        }
+    },
+    R: function (line, status) {
+        const detail = /^(.+) -> (.+)$/.exec(line) || [null, line, line];
+        status.renamed.push({
+            from: String(detail[1]),
+            to: String(detail[2])
+        });
+    },
+    UU: function (line, status) {
+        status.conflicted.push(line);
+    }
+};
+exports.StatusSummaryParsers.MM = exports.StatusSummaryParsers.M;
+/* Map all unmerged status code combinations to UU to mark as conflicted */
+exports.StatusSummaryParsers.AA = exports.StatusSummaryParsers.UU;
+exports.StatusSummaryParsers.UD = exports.StatusSummaryParsers.UU;
+exports.StatusSummaryParsers.DU = exports.StatusSummaryParsers.UU;
+exports.StatusSummaryParsers.DD = exports.StatusSummaryParsers.UU;
+exports.StatusSummaryParsers.AU = exports.StatusSummaryParsers.UU;
+exports.StatusSummaryParsers.UA = exports.StatusSummaryParsers.UU;
+exports.parseStatusSummary = function (text) {
+    let file;
+    const lines = text.trim().split('\n');
+    const status = new StatusSummary();
+    for (let i = 0, l = lines.length; i < l; i++) {
+        file = splitLine(lines[i]);
+        if (!file) {
+            continue;
+        }
+        if (file.handler) {
+            file.handler(file.path, status, file.index, file.workingDir);
+        }
+        if (file.code !== '##') {
+            status.files.push(new FileStatusSummary_1.FileStatusSummary(file.path, file.index, file.workingDir));
+        }
+    }
+    return status;
+};
+function splitLine(lineStr) {
+    let line = lineStr.trim().match(/(..?)(\s+)(.*)/);
+    if (!line || !line[1].trim()) {
+        line = lineStr.trim().match(/(..?)\s+(.*)/);
+    }
+    if (!line) {
+        return;
+    }
+    let code = line[1];
+    if (line[2].length > 1) {
+        code += ' ';
+    }
+    if (code.length === 1 && line[2].length === 1) {
+        code = ' ' + code;
+    }
+    return {
+        raw: code,
+        code: code.trim(),
+        index: code.charAt(0),
+        workingDir: code.charAt(1),
+        handler: exports.StatusSummaryParsers[code.trim()],
+        path: line[3]
+    };
+}
+//# sourceMappingURL=StatusSummary.js.map
+
+/***/ }),
+
+/***/ 4539:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+class TagList {
+    constructor(all, latest) {
+        this.all = all;
+        this.latest = latest;
+    }
+}
+exports.TagList = TagList;
+exports.parseTagList = function (data, customSort = false) {
+    const tags = data
+        .split('\n')
+        .map(trimmed)
+        .filter(Boolean);
+    if (!customSort) {
+        tags.sort(function (tagA, tagB) {
+            const partsA = tagA.split('.');
+            const partsB = tagB.split('.');
+            if (partsA.length === 1 || partsB.length === 1) {
+                return singleSorted(toNumber(partsA[0]), toNumber(partsB[0]));
+            }
+            for (let i = 0, l = Math.max(partsA.length, partsB.length); i < l; i++) {
+                const diff = sorted(toNumber(partsA[i]), toNumber(partsB[i]));
+                if (diff) {
+                    return diff;
+                }
+            }
+            return 0;
+        });
+    }
+    const latest = customSort ? tags[0] : [...tags].reverse().find((tag) => tag.indexOf('.') >= 0);
+    return new TagList(tags, latest);
+};
+function singleSorted(a, b) {
+    const aIsNum = isNaN(a);
+    const bIsNum = isNaN(b);
+    if (aIsNum !== bIsNum) {
+        return aIsNum ? 1 : -1;
+    }
+    return aIsNum ? sorted(a, b) : 0;
+}
+function sorted(a, b) {
+    return a === b ? 0 : a > b ? 1 : -1;
+}
+function trimmed(input) {
+    return input.trim();
+}
+function toNumber(input) {
+    if (typeof input === 'string') {
+        return parseInt(input.replace(/^\D+/g, ''), 10) || 0;
+    }
+    return 0;
+}
+//# sourceMappingURL=TagList.js.map
+
+/***/ }),
+
+/***/ 8543:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const child_process_1 = __webpack_require__(3129);
+const api_1 = __webpack_require__(4732);
+const task_1 = __webpack_require__(2815);
+const tasks_pending_queue_1 = __webpack_require__(6676);
+const utils_1 = __webpack_require__(847);
+class GitExecutorChain {
+    constructor(_executor, _scheduler) {
+        this._executor = _executor;
+        this._scheduler = _scheduler;
+        this._chain = Promise.resolve();
+        this._queue = new tasks_pending_queue_1.TasksPendingQueue();
+    }
+    get binary() {
+        return this._executor.binary;
+    }
+    get outputHandler() {
+        return this._executor.outputHandler;
+    }
+    get cwd() {
+        return this._executor.cwd;
+    }
+    get env() {
+        return this._executor.env;
+    }
+    push(task) {
+        this._queue.push(task);
+        return this._chain = this._chain.then(() => this.attemptTask(task));
+    }
+    attemptTask(task) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const onScheduleComplete = yield this._scheduler.next();
+            const onQueueComplete = () => this._queue.complete(task);
+            try {
+                const { logger } = this._queue.attempt(task);
+                return yield (task_1.isEmptyTask(task)
+                    ? this.attemptEmptyTask(task, logger)
+                    : this.attemptRemoteTask(task, logger));
+            }
+            catch (e) {
+                throw this.onFatalException(task, e);
+            }
+            finally {
+                onQueueComplete();
+                onScheduleComplete();
+            }
+        });
+    }
+    onFatalException(task, e) {
+        const gitError = (e instanceof api_1.GitError) ? Object.assign(e, { task }) : new api_1.GitError(task, e && String(e));
+        this._chain = Promise.resolve();
+        this._queue.fatal(gitError);
+        return gitError;
+    }
+    attemptRemoteTask(task, logger) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const raw = yield this.gitResponse(this.binary, task.commands, this.outputHandler, logger.step('SPAWN'));
+            const outputStreams = yield this.handleTaskData(task, raw, logger.step('HANDLE'));
+            logger(`passing response to task's parser as a %s`, task.format);
+            if (task_1.isBufferTask(task)) {
+                return utils_1.callTaskParser(task.parser, outputStreams);
+            }
+            return utils_1.callTaskParser(task.parser, outputStreams.asStrings());
+        });
+    }
+    attemptEmptyTask(task, logger) {
+        return __awaiter(this, void 0, void 0, function* () {
+            logger(`empty task bypassing child process to call to task's parser`);
+            return task.parser();
+        });
+    }
+    handleTaskData({ onError, concatStdErr }, { exitCode, stdOut, stdErr }, logger) {
+        return new Promise((done, fail) => {
+            logger(`Preparing to handle process response exitCode=%d stdOut=`, exitCode);
+            if (exitCode && stdErr.length && onError) {
+                logger.info(`exitCode=%s handling with custom error handler`);
+                logger(`concatenate stdErr to stdOut: %j`, concatStdErr);
+                return onError(exitCode, Buffer.concat([...(concatStdErr ? stdOut : []), ...stdErr]).toString('utf-8'), (result) => {
+                    logger.info(`custom error handler treated as success`);
+                    logger(`custom error returned a %s`, utils_1.objectToString(result));
+                    done(new utils_1.GitOutputStreams(Buffer.isBuffer(result) ? result : Buffer.from(String(result)), Buffer.concat(stdErr)));
+                }, fail);
+            }
+            if (exitCode && stdErr.length) {
+                logger.info(`exitCode=%s treated as error when then child process has written to stdErr`);
+                return fail(Buffer.concat(stdErr).toString('utf-8'));
+            }
+            if (concatStdErr) {
+                logger(`concatenating stdErr onto stdOut before processing`);
+                logger(`stdErr: $O`, stdErr);
+                stdOut.push(...stdErr);
+            }
+            logger.info(`retrieving task output complete`);
+            done(new utils_1.GitOutputStreams(Buffer.concat(stdOut), Buffer.concat(stdErr)));
+        });
+    }
+    gitResponse(command, args, outputHandler, logger) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const outputLogger = logger.sibling('output');
+            const spawnOptions = {
+                cwd: this.cwd,
+                env: this.env,
+                windowsHide: true,
+            };
+            return new Promise((done) => {
+                const stdOut = [];
+                const stdErr = [];
+                let attempted = false;
+                function attemptClose(exitCode, event = 'retry') {
+                    // closing when there is content, terminate immediately
+                    if (attempted || stdErr.length || stdOut.length) {
+                        logger.info(`exitCode=%s event=%s`, exitCode, event);
+                        done({
+                            stdOut,
+                            stdErr,
+                            exitCode,
+                        });
+                        attempted = true;
+                        outputLogger.destroy();
+                    }
+                    // first attempt at closing but no content yet, wait briefly for the close/exit that may follow
+                    if (!attempted) {
+                        attempted = true;
+                        setTimeout(() => attemptClose(exitCode, 'deferred'), 50);
+                        logger('received %s event before content on stdOut/stdErr', event);
+                    }
+                }
+                logger.info(`%s %o`, command, args);
+                logger('%O', spawnOptions);
+                const spawned = child_process_1.spawn(command, args, spawnOptions);
+                spawned.stdout.on('data', onDataReceived(stdOut, 'stdOut', logger, outputLogger.step('stdOut')));
+                spawned.stderr.on('data', onDataReceived(stdErr, 'stdErr', logger, outputLogger.step('stdErr')));
+                spawned.on('error', onErrorReceived(stdErr, logger));
+                spawned.on('close', (code) => attemptClose(code, 'close'));
+                spawned.on('exit', (code) => attemptClose(code, 'exit'));
+                if (outputHandler) {
+                    logger(`Passing child process stdOut/stdErr to custom outputHandler`);
+                    outputHandler(command, spawned.stdout, spawned.stderr, [...args]);
+                }
+            });
+        });
+    }
+}
+exports.GitExecutorChain = GitExecutorChain;
+function onErrorReceived(target, logger) {
+    return (err) => {
+        logger(`[ERROR] child process exception %o`, err);
+        target.push(Buffer.from(String(err.stack), 'ascii'));
+    };
+}
+function onDataReceived(target, name, logger, output) {
+    return (buffer) => {
+        logger(`%s received %L bytes`, name, buffer);
+        output(`%B`, buffer);
+        target.push(buffer);
+    };
+}
+//# sourceMappingURL=git-executor-chain.js.map
+
+/***/ }),
+
+/***/ 4701:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const git_executor_chain_1 = __webpack_require__(8543);
+class GitExecutor {
+    constructor(binary = 'git', cwd, _scheduler) {
+        this.binary = binary;
+        this.cwd = cwd;
+        this._scheduler = _scheduler;
+        this._chain = new git_executor_chain_1.GitExecutorChain(this, this._scheduler);
+    }
+    chain() {
+        return new git_executor_chain_1.GitExecutorChain(this, this._scheduler);
+    }
+    push(task) {
+        return this._chain.push(task);
+    }
+}
+exports.GitExecutor = GitExecutor;
+//# sourceMappingURL=git-executor.js.map
+
+/***/ }),
+
+/***/ 941:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const git_response_error_1 = __webpack_require__(5131);
+const functionNamesBuilderApi = [
+    'customBinary', 'env', 'outputHandler', 'silent',
+];
+const functionNamesPromiseApi = [
+    'add',
+    'addAnnotatedTag',
+    'addConfig',
+    'addRemote',
+    'addTag',
+    'binaryCatFile',
+    'branch',
+    'branchLocal',
+    'catFile',
+    'checkIgnore',
+    'checkIsRepo',
+    'checkout',
+    'checkoutBranch',
+    'checkoutLatestTag',
+    'checkoutLocalBranch',
+    'clean',
+    'clone',
+    'commit',
+    'cwd',
+    'deleteLocalBranch',
+    'deleteLocalBranches',
+    'diff',
+    'diffSummary',
+    'exec',
+    'fetch',
+    'getRemotes',
+    'init',
+    'listConfig',
+    'listRemote',
+    'log',
+    'merge',
+    'mergeFromTo',
+    'mirror',
+    'mv',
+    'pull',
+    'push',
+    'pushTags',
+    'raw',
+    'rebase',
+    'remote',
+    'removeRemote',
+    'reset',
+    'revert',
+    'revparse',
+    'rm',
+    'rmKeepLocal',
+    'show',
+    'stash',
+    'stashList',
+    'status',
+    'subModule',
+    'submoduleAdd',
+    'submoduleInit',
+    'submoduleUpdate',
+    'tag',
+    'tags',
+    'updateServerInfo'
+];
+const { gitInstanceFactory } = __webpack_require__(1949);
+function gitP(...args) {
+    let git;
+    let chain = Promise.resolve();
+    try {
+        git = gitInstanceFactory(...args);
+    }
+    catch (e) {
+        chain = Promise.reject(e);
+    }
+    function builderReturn() {
+        return promiseApi;
+    }
+    function chainReturn() {
+        return chain;
+    }
+    const promiseApi = [...functionNamesBuilderApi, ...functionNamesPromiseApi].reduce((api, name) => {
+        const isAsync = functionNamesPromiseApi.includes(name);
+        const valid = isAsync ? asyncWrapper(name, git) : syncWrapper(name, git, api);
+        const alternative = isAsync ? chainReturn : builderReturn;
+        Object.defineProperty(api, name, {
+            enumerable: false,
+            configurable: false,
+            value: git ? valid : alternative,
+        });
+        return api;
+    }, {});
+    return promiseApi;
+    function asyncWrapper(fn, git) {
+        return function (...args) {
+            if (typeof args[args.length] === 'function') {
+                throw new TypeError('Promise interface requires that handlers are not supplied inline, ' +
+                    'trailing function not allowed in call to ' + fn);
+            }
+            return chain.then(function () {
+                return new Promise(function (resolve, reject) {
+                    const callback = (err, result) => {
+                        if (err) {
+                            return reject(toError(err));
+                        }
+                        resolve(result);
+                    };
+                    args.push(callback);
+                    git[fn].apply(git, args);
+                });
+            });
+        };
+    }
+    function syncWrapper(fn, git, api) {
+        return (...args) => {
+            git[fn](...args);
+            return api;
+        };
+    }
+}
+exports.gitP = gitP;
+function toError(error) {
+    if (error instanceof Error) {
+        return error;
+    }
+    if (typeof error === 'string') {
+        return new Error(error);
+    }
+    return new git_response_error_1.GitResponseError(error);
+}
+//# sourceMappingURL=promise-wrapped.js.map
+
+/***/ }),
+
+/***/ 3421:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const utils_1 = __webpack_require__(847);
+const promise_deferred_1 = __webpack_require__(9819);
+const git_logger_1 = __webpack_require__(7178);
+const logger = git_logger_1.createLogger('', 'scheduler');
+const createScheduledTask = (() => {
+    let id = 0;
+    return () => {
+        id++;
+        const { promise, done } = promise_deferred_1.createDeferred();
+        return {
+            promise,
+            done,
+            id,
+        };
+    };
+})();
+class Scheduler {
+    constructor(concurrency = 2) {
+        this.concurrency = concurrency;
+        this.pending = [];
+        this.running = [];
+        logger(`Constructed, concurrency=%s`, concurrency);
+    }
+    schedule() {
+        if (!this.pending.length || this.running.length >= this.concurrency) {
+            logger(`Schedule attempt ignored, pending=%s running=%s concurrency=%s`, this.pending.length, this.running.length, this.concurrency);
+            return;
+        }
+        const task = utils_1.append(this.running, this.pending.shift());
+        logger(`Attempting id=%s`, task.id);
+        task.done(() => {
+            logger(`Completing id=`, task.id);
+            utils_1.remove(this.running, task);
+            this.schedule();
+        });
+    }
+    next() {
+        const { promise, id } = utils_1.append(this.pending, createScheduledTask());
+        logger(`Scheduling id=%s`, id);
+        this.schedule();
+        return promise;
+    }
+}
+exports.Scheduler = Scheduler;
+//# sourceMappingURL=scheduler.js.map
+
+/***/ }),
+
+/***/ 6676:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const git_logger_1 = __webpack_require__(7178);
+const api_1 = __webpack_require__(4732);
+class TasksPendingQueue {
+    constructor(logLabel = 'GitExecutor') {
+        this.logLabel = logLabel;
+        this._queue = new Map();
+    }
+    withProgress(task) {
+        return this._queue.get(task);
+    }
+    createProgress(task) {
+        const name = TasksPendingQueue.getName(task.commands[0]);
+        const logger = git_logger_1.createLogger(this.logLabel, name);
+        return {
+            task,
+            logger,
+            name,
+        };
+    }
+    push(task) {
+        const progress = this.createProgress(task);
+        progress.logger('Adding task to the queue, commands = %o', task.commands);
+        this._queue.set(task, progress);
+        return progress;
+    }
+    fatal(err) {
+        for (const [task, { logger }] of Array.from(this._queue.entries())) {
+            if (task === err.task) {
+                logger.info(`Failed %o`, err);
+                logger(`Fatal exception, any as-yet un-started tasks run through this executor will not be attempted`);
+            }
+            else {
+                logger.info(`A fatal exception occurred in a previous task, the queue has been purged: %o`, err.message);
+            }
+            this.complete(task);
+        }
+        if (this._queue.size !== 0) {
+            throw new Error(`Queue size should be zero after fatal: ${this._queue.size}`);
+        }
+    }
+    complete(task) {
+        const progress = this.withProgress(task);
+        if (progress) {
+            progress.logger.destroy();
+            this._queue.delete(task);
+        }
+    }
+    attempt(task) {
+        const progress = this.withProgress(task);
+        if (!progress) {
+            throw new api_1.GitError(undefined, 'TasksPendingQueue: attempt called for an unknown task');
+        }
+        progress.logger('Starting task');
+        return progress;
+    }
+    static getName(name = 'empty') {
+        return `task:${name}:${++TasksPendingQueue.counter}`;
+    }
+}
+exports.TasksPendingQueue = TasksPendingQueue;
+TasksPendingQueue.counter = 0;
+//# sourceMappingURL=tasks-pending-queue.js.map
+
+/***/ }),
+
+/***/ 8850:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const api_1 = __webpack_require__(4732);
+const utils_1 = __webpack_require__(847);
+function taskCallback(task, response, callback = utils_1.NOOP) {
+    const onSuccess = (data) => {
+        callback(null, data);
+    };
+    const onError = (err) => {
+        if ((err === null || err === void 0 ? void 0 : err.task) === task) {
+            if (err instanceof api_1.GitResponseError) {
+                return callback(addDeprecationNoticeToError(err));
+            }
+            callback(err);
+        }
+    };
+    response.then(onSuccess, onError);
+}
+exports.taskCallback = taskCallback;
+function addDeprecationNoticeToError(err) {
+    let log = (name) => {
+        console.warn(`simple-git deprecation notice: accessing GitResponseError.${name} should be GitResponseError.git.${name}`);
+        log = utils_1.NOOP;
+    };
+    return Object.create(err, Object.getOwnPropertyNames(err.git).reduce(descriptorReducer, {}));
+    function descriptorReducer(all, name) {
+        if (name in err) {
+            return all;
+        }
+        all[name] = {
+            enumerable: false,
+            configurable: false,
+            get() {
+                log(name);
+                return err.git[name];
+            },
+        };
+        return all;
+    }
+}
+//# sourceMappingURL=task-callback.js.map
+
+/***/ }),
+
+/***/ 17:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const git_response_error_1 = __webpack_require__(5131);
+const parse_branch_delete_1 = __webpack_require__(6086);
+const parse_branch_1 = __webpack_require__(9264);
+function containsDeleteBranchCommand(commands) {
+    const deleteCommands = ['-d', '-D', '--delete'];
+    return commands.some(command => deleteCommands.includes(command));
+}
+exports.containsDeleteBranchCommand = containsDeleteBranchCommand;
+function branchTask(customArgs) {
+    const isDelete = containsDeleteBranchCommand(customArgs);
+    const commands = ['branch', ...customArgs];
+    if (commands.length === 1) {
+        commands.push('-a');
+    }
+    if (!commands.includes('-v')) {
+        commands.splice(1, 0, '-v');
+    }
+    return {
+        format: 'utf-8',
+        commands,
+        parser(stdOut, stdErr) {
+            if (isDelete) {
+                return parse_branch_delete_1.parseBranchDeletions(stdOut, stdErr).all[0];
+            }
+            return parse_branch_1.parseBranchSummary(stdOut, stdErr);
+        },
+    };
+}
+exports.branchTask = branchTask;
+function branchLocalTask() {
+    return {
+        format: 'utf-8',
+        commands: ['branch', '-v'],
+        parser(stdOut, stdErr) {
+            return parse_branch_1.parseBranchSummary(stdOut, stdErr);
+        },
+    };
+}
+exports.branchLocalTask = branchLocalTask;
+function deleteBranchesTask(branches, forceDelete = false) {
+    return {
+        format: 'utf-8',
+        commands: ['branch', '-v', forceDelete ? '-D' : '-d', ...branches],
+        parser(stdOut, stdErr) {
+            return parse_branch_delete_1.parseBranchDeletions(stdOut, stdErr);
+        },
+        onError(exitCode, error, done, fail) {
+            if (!parse_branch_delete_1.hasBranchDeletionError(error, exitCode)) {
+                return fail(error);
+            }
+            done(error);
+        },
+        concatStdErr: true,
+    };
+}
+exports.deleteBranchesTask = deleteBranchesTask;
+function deleteBranchTask(branch, forceDelete = false) {
+    const task = {
+        format: 'utf-8',
+        commands: ['branch', '-v', forceDelete ? '-D' : '-d', branch],
+        parser(stdOut, stdErr) {
+            return parse_branch_delete_1.parseBranchDeletions(stdOut, stdErr).branches[branch];
+        },
+        onError(exitCode, error, _, fail) {
+            if (!parse_branch_delete_1.hasBranchDeletionError(error, exitCode)) {
+                return fail(error);
+            }
+            throw new git_response_error_1.GitResponseError(task.parser(error, ''), error);
+        },
+        concatStdErr: true,
+    };
+    return task;
+}
+exports.deleteBranchTask = deleteBranchTask;
+//# sourceMappingURL=branch.js.map
+
+/***/ }),
+
+/***/ 221:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const utils_1 = __webpack_require__(847);
+var CheckRepoActions;
+(function (CheckRepoActions) {
+    CheckRepoActions["BARE"] = "bare";
+    CheckRepoActions["IN_TREE"] = "tree";
+    CheckRepoActions["IS_REPO_ROOT"] = "root";
+})(CheckRepoActions = exports.CheckRepoActions || (exports.CheckRepoActions = {}));
+const onError = (exitCode, stdErr, done, fail) => {
+    if (exitCode === utils_1.ExitCodes.UNCLEAN && isNotRepoMessage(stdErr)) {
+        return done('false');
+    }
+    fail(stdErr);
+};
+const parser = (text) => {
+    return text.trim() === 'true';
+};
+function checkIsRepoTask(action) {
+    switch (action) {
+        case CheckRepoActions.BARE:
+            return checkIsBareRepoTask();
+        case CheckRepoActions.IS_REPO_ROOT:
+            return checkIsRepoRootTask();
+    }
+    const commands = ['rev-parse', '--is-inside-work-tree'];
+    return {
+        commands,
+        format: 'utf-8',
+        onError,
+        parser,
+    };
+}
+exports.checkIsRepoTask = checkIsRepoTask;
+function checkIsRepoRootTask() {
+    const commands = ['rev-parse', '--git-dir'];
+    return {
+        commands,
+        format: 'utf-8',
+        onError,
+        parser(path) {
+            return /^\.(git)?$/.test(path.trim());
+        },
+    };
+}
+exports.checkIsRepoRootTask = checkIsRepoRootTask;
+function checkIsBareRepoTask() {
+    const commands = ['rev-parse', '--is-bare-repository'];
+    return {
+        commands,
+        format: 'utf-8',
+        onError,
+        parser,
+    };
+}
+exports.checkIsBareRepoTask = checkIsBareRepoTask;
+function isNotRepoMessage(message) {
+    return /(Not a git repository|Kein Git-Repository)/i.test(message);
+}
+//# sourceMappingURL=check-is-repo.js.map
+
+/***/ }),
+
+/***/ 4386:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const CleanSummary_1 = __webpack_require__(5689);
+const utils_1 = __webpack_require__(847);
+const task_1 = __webpack_require__(2815);
+exports.CONFIG_ERROR_INTERACTIVE_MODE = 'Git clean interactive mode is not supported';
+exports.CONFIG_ERROR_MODE_REQUIRED = 'Git clean mode parameter ("n" or "f") is required';
+exports.CONFIG_ERROR_UNKNOWN_OPTION = 'Git clean unknown option found in: ';
+/**
+ * All supported option switches available for use in a `git.clean` operation
+ */
+var CleanOptions;
+(function (CleanOptions) {
+    CleanOptions["DRY_RUN"] = "n";
+    CleanOptions["FORCE"] = "f";
+    CleanOptions["IGNORED_INCLUDED"] = "x";
+    CleanOptions["IGNORED_ONLY"] = "X";
+    CleanOptions["EXCLUDING"] = "e";
+    CleanOptions["QUIET"] = "q";
+    CleanOptions["RECURSIVE"] = "d";
+})(CleanOptions = exports.CleanOptions || (exports.CleanOptions = {}));
+const CleanOptionValues = new Set(['i', ...utils_1.asStringArray(Object.values(CleanOptions))]);
+function cleanWithOptionsTask(mode, customArgs) {
+    const { cleanMode, options, valid } = getCleanOptions(mode);
+    if (!cleanMode) {
+        return task_1.configurationErrorTask(exports.CONFIG_ERROR_MODE_REQUIRED);
+    }
+    if (!valid.options) {
+        return task_1.configurationErrorTask(exports.CONFIG_ERROR_UNKNOWN_OPTION + JSON.stringify(mode));
+    }
+    options.push(...customArgs);
+    if (options.some(isInteractiveMode)) {
+        return task_1.configurationErrorTask(exports.CONFIG_ERROR_INTERACTIVE_MODE);
+    }
+    return cleanTask(cleanMode, options);
+}
+exports.cleanWithOptionsTask = cleanWithOptionsTask;
+function cleanTask(mode, customArgs) {
+    const commands = ['clean', `-${mode}`, ...customArgs];
+    return {
+        commands,
+        format: 'utf-8',
+        parser(text) {
+            return CleanSummary_1.cleanSummaryParser(mode === CleanOptions.DRY_RUN, text);
+        }
+    };
+}
+exports.cleanTask = cleanTask;
+function isCleanOptionsArray(input) {
+    return Array.isArray(input) && input.every(test => CleanOptionValues.has(test));
+}
+exports.isCleanOptionsArray = isCleanOptionsArray;
+function getCleanOptions(input) {
+    let cleanMode;
+    let options = [];
+    let valid = { cleanMode: false, options: true };
+    input.replace(/[^a-z]i/g, '').split('').forEach(char => {
+        if (isCleanMode(char)) {
+            cleanMode = char;
+            valid.cleanMode = true;
+        }
+        else {
+            valid.options = valid.options && isKnownOption(options[options.length] = (`-${char}`));
+        }
+    });
+    return {
+        cleanMode,
+        options,
+        valid,
+    };
+}
+function isCleanMode(cleanMode) {
+    return cleanMode === CleanOptions.FORCE || cleanMode === CleanOptions.DRY_RUN;
+}
+function isKnownOption(option) {
+    return /^-[a-z]$/i.test(option) && CleanOptionValues.has(option.charAt(1));
+}
+function isInteractiveMode(option) {
+    if (/^-[^\-]/.test(option)) {
+        return option.indexOf('i') > 0;
+    }
+    return option === '--interactive';
+}
+//# sourceMappingURL=clean.js.map
+
+/***/ }),
+
+/***/ 3173:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const task_1 = __webpack_require__(2815);
+const utils_1 = __webpack_require__(847);
+function cloneTask(repo, directory, customArgs) {
+    const commands = ['clone', ...customArgs];
+    if (typeof repo === 'string') {
+        commands.push(repo);
+    }
+    if (typeof directory === 'string') {
+        commands.push(directory);
+    }
+    return task_1.straightThroughStringTask(commands);
+}
+exports.cloneTask = cloneTask;
+function cloneMirrorTask(repo, directory, customArgs) {
+    utils_1.append(customArgs, '--mirror');
+    return cloneTask(repo, directory, customArgs);
+}
+exports.cloneMirrorTask = cloneMirrorTask;
+//# sourceMappingURL=clone.js.map
+
+/***/ }),
+
+/***/ 7597:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const ConfigList_1 = __webpack_require__(7219);
+function addConfigTask(key, value, append = false) {
+    const commands = ['config', '--local'];
+    if (append) {
+        commands.push('--add');
+    }
+    commands.push(key, value);
+    return {
+        commands,
+        format: 'utf-8',
+        parser(text) {
+            return text;
+        }
+    };
+}
+exports.addConfigTask = addConfigTask;
+function listConfigTask() {
+    return {
+        commands: ['config', '--list', '--show-origin', '--null'],
+        format: 'utf-8',
+        parser(text) {
+            return ConfigList_1.configListParser(text);
+        },
+    };
+}
+exports.listConfigTask = listConfigTask;
+//# sourceMappingURL=config.js.map
+
+/***/ }),
+
+/***/ 8199:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const task_1 = __webpack_require__(2815);
+/**
+ * Task used by `git.hashObject`
+ */
+function hashObjectTask(filePath, write) {
+    const commands = ['hash-object', filePath];
+    if (write) {
+        commands.push('-w');
+    }
+    return task_1.straightThroughStringTask(commands, true);
+}
+exports.hashObjectTask = hashObjectTask;
+//# sourceMappingURL=hash-object.js.map
+
+/***/ }),
+
+/***/ 6016:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const InitSummary_1 = __webpack_require__(8690);
+const bareCommand = '--bare';
+function hasBareCommand(command) {
+    return command.includes(bareCommand);
+}
+function initTask(bare = false, path, customArgs) {
+    const commands = ['init', ...customArgs];
+    if (bare && !hasBareCommand(commands)) {
+        commands.splice(1, 0, bareCommand);
+    }
+    return {
+        commands,
+        concatStdErr: false,
+        format: 'utf-8',
+        parser(text) {
+            return InitSummary_1.parseInit(commands.includes('--bare'), path, text);
+        }
+    };
+}
+exports.initTask = initTask;
+//# sourceMappingURL=init.js.map
+
+/***/ }),
+
+/***/ 8829:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const api_1 = __webpack_require__(4732);
+const parse_merge_1 = __webpack_require__(6412);
+const task_1 = __webpack_require__(2815);
+function mergeTask(customArgs) {
+    if (!customArgs.length) {
+        return task_1.configurationErrorTask('Git.merge requires at least one option');
+    }
+    return {
+        commands: ['merge', ...customArgs],
+        format: 'utf-8',
+        parser(stdOut, stdErr) {
+            const merge = parse_merge_1.parseMergeResult(stdOut, stdErr);
+            if (merge.failed) {
+                throw new api_1.GitResponseError(merge);
+            }
+            return merge;
+        }
+    };
+}
+exports.mergeTask = mergeTask;
+//# sourceMappingURL=merge.js.map
+
+/***/ }),
+
+/***/ 6520:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const parse_move_1 = __webpack_require__(7444);
+const utils_1 = __webpack_require__(847);
+function moveTask(from, to) {
+    return {
+        commands: ['mv', '-v', ...utils_1.asArray(from), to],
+        format: 'utf-8',
+        parser(stdOut, stdErr) {
+            return parse_move_1.parseMoveResult(stdOut, stdErr);
+        }
+    };
+}
+exports.moveTask = moveTask;
+//# sourceMappingURL=move.js.map
+
+/***/ }),
+
+/***/ 4636:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const parse_pull_1 = __webpack_require__(5658);
+function pullTask(remote, branch, customArgs) {
+    const commands = ['pull', ...customArgs];
+    if (remote && branch) {
+        commands.splice(1, 0, remote, branch);
+    }
+    return {
+        commands,
+        format: 'utf-8',
+        parser(stdOut, stdErr) {
+            return parse_pull_1.parsePullResult(stdOut, stdErr);
+        }
+    };
+}
+exports.pullTask = pullTask;
+//# sourceMappingURL=pull.js.map
+
+/***/ }),
+
+/***/ 1435:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const parse_push_1 = __webpack_require__(8530);
+const utils_1 = __webpack_require__(847);
+function pushTagsTask(ref = {}, customArgs) {
+    utils_1.append(customArgs, '--tags');
+    return pushTask(ref, customArgs);
+}
+exports.pushTagsTask = pushTagsTask;
+function pushTask(ref = {}, customArgs) {
+    const commands = ['push', ...customArgs];
+    if (ref.branch) {
+        commands.splice(1, 0, ref.branch);
+    }
+    if (ref.remote) {
+        commands.splice(1, 0, ref.remote);
+    }
+    utils_1.remove(commands, '-v');
+    utils_1.append(commands, '--verbose');
+    utils_1.append(commands, '--porcelain');
+    return {
+        commands,
+        format: 'utf-8',
+        parser: parse_push_1.parsePushResult,
+    };
+}
+exports.pushTask = pushTask;
+//# sourceMappingURL=push.js.map
+
+/***/ }),
+
+/***/ 9866:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const task_1 = __webpack_require__(2815);
+const GetRemoteSummary_1 = __webpack_require__(9999);
+function addRemoteTask(remoteName, remoteRepo, customArgs = []) {
+    return task_1.straightThroughStringTask(['remote', 'add', ...customArgs, remoteName, remoteRepo]);
+}
+exports.addRemoteTask = addRemoteTask;
+function getRemotesTask(verbose) {
+    const commands = ['remote'];
+    if (verbose) {
+        commands.push('-v');
+    }
+    return {
+        commands,
+        format: 'utf-8',
+        parser: verbose ? GetRemoteSummary_1.parseGetRemotesVerbose : GetRemoteSummary_1.parseGetRemotes,
+    };
+}
+exports.getRemotesTask = getRemotesTask;
+function listRemotesTask(customArgs = []) {
+    const commands = [...customArgs];
+    if (commands[0] !== 'ls-remote') {
+        commands.unshift('ls-remote');
+    }
+    return task_1.straightThroughStringTask(commands);
+}
+exports.listRemotesTask = listRemotesTask;
+function remoteTask(customArgs = []) {
+    const commands = [...customArgs];
+    if (commands[0] !== 'remote') {
+        commands.unshift('remote');
+    }
+    return task_1.straightThroughStringTask(commands);
+}
+exports.remoteTask = remoteTask;
+function removeRemoteTask(remoteName) {
+    return task_1.straightThroughStringTask(['remote', 'remove', remoteName]);
+}
+exports.removeRemoteTask = removeRemoteTask;
+//# sourceMappingURL=remote.js.map
+
+/***/ }),
+
+/***/ 2377:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const task_1 = __webpack_require__(2815);
+var ResetMode;
+(function (ResetMode) {
+    ResetMode["MIXED"] = "mixed";
+    ResetMode["SOFT"] = "soft";
+    ResetMode["HARD"] = "hard";
+    ResetMode["MERGE"] = "merge";
+    ResetMode["KEEP"] = "keep";
+})(ResetMode = exports.ResetMode || (exports.ResetMode = {}));
+const ResetModes = Array.from(Object.values(ResetMode));
+function resetTask(mode, customArgs) {
+    const commands = ['reset'];
+    if (isValidResetMode(mode)) {
+        commands.push(`--${mode}`);
+    }
+    commands.push(...customArgs);
+    return task_1.straightThroughStringTask(commands);
+}
+exports.resetTask = resetTask;
+function getResetMode(mode) {
+    if (isValidResetMode(mode)) {
+        return mode;
+    }
+    switch (typeof mode) {
+        case 'string':
+        case 'undefined':
+            return ResetMode.SOFT;
+    }
+    return;
+}
+exports.getResetMode = getResetMode;
+function isValidResetMode(mode) {
+    return ResetModes.includes(mode);
+}
+//# sourceMappingURL=reset.js.map
+
+/***/ }),
+
+/***/ 9197:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const StatusSummary_1 = __webpack_require__(6790);
+function statusTask(customArgs) {
+    return {
+        format: 'utf-8',
+        commands: ['status', '--porcelain', '-b', '-u', ...customArgs],
+        parser(text) {
+            return StatusSummary_1.parseStatusSummary(text);
+        }
+    };
+}
+exports.statusTask = statusTask;
+//# sourceMappingURL=status.js.map
+
+/***/ }),
+
+/***/ 8772:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const task_1 = __webpack_require__(2815);
+function addSubModuleTask(repo, path) {
+    return subModuleTask(['add', repo, path]);
+}
+exports.addSubModuleTask = addSubModuleTask;
+function initSubModuleTask(customArgs) {
+    return subModuleTask(['init', ...customArgs]);
+}
+exports.initSubModuleTask = initSubModuleTask;
+function subModuleTask(customArgs) {
+    const commands = [...customArgs];
+    if (commands[0] !== 'submodule') {
+        commands.unshift('submodule');
+    }
+    return task_1.straightThroughStringTask(commands);
+}
+exports.subModuleTask = subModuleTask;
+function updateSubModuleTask(customArgs) {
+    return subModuleTask(['update', ...customArgs]);
+}
+exports.updateSubModuleTask = updateSubModuleTask;
+//# sourceMappingURL=sub-module.js.map
+
+/***/ }),
+
+/***/ 8540:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const TagList_1 = __webpack_require__(4539);
+/**
+ * Task used by `git.tags`
+ */
+function tagListTask(customArgs = []) {
+    const hasCustomSort = customArgs.some((option) => /^--sort=/.test(option));
+    return {
+        format: 'utf-8',
+        commands: ['tag', '-l', ...customArgs],
+        parser(text) {
+            return TagList_1.parseTagList(text, hasCustomSort);
+        },
+    };
+}
+exports.tagListTask = tagListTask;
+/**
+ * Task used by `git.addTag`
+ */
+function addTagTask(name) {
+    return {
+        format: 'utf-8',
+        commands: ['tag', name],
+        parser() {
+            return { name };
+        }
+    };
+}
+exports.addTagTask = addTagTask;
+/**
+ * Task used by `git.addTag`
+ */
+function addAnnotatedTagTask(name, tagMessage) {
+    return {
+        format: 'utf-8',
+        commands: ['tag', '-a', '-m', tagMessage, name],
+        parser() {
+            return { name };
+        }
+    };
+}
+exports.addAnnotatedTagTask = addAnnotatedTagTask;
+//# sourceMappingURL=tag.js.map
+
+/***/ }),
+
+/***/ 2815:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const task_configuration_error_1 = __webpack_require__(740);
+exports.EMPTY_COMMANDS = [];
+function adhocExecTask(parser) {
+    return {
+        commands: exports.EMPTY_COMMANDS,
+        format: 'utf-8',
+        parser,
+    };
+}
+exports.adhocExecTask = adhocExecTask;
+function configurationErrorTask(error) {
+    return {
+        commands: exports.EMPTY_COMMANDS,
+        format: 'utf-8',
+        parser() {
+            throw typeof error === 'string' ? new task_configuration_error_1.TaskConfigurationError(error) : error;
+        }
+    };
+}
+exports.configurationErrorTask = configurationErrorTask;
+function straightThroughStringTask(commands, trimmed = false) {
+    return {
+        commands,
+        format: 'utf-8',
+        parser(text) {
+            return trimmed ? String(text).trim() : text;
+        },
+    };
+}
+exports.straightThroughStringTask = straightThroughStringTask;
+function isBufferTask(task) {
+    return task.format === 'buffer';
+}
+exports.isBufferTask = isBufferTask;
+function isEmptyTask(task) {
+    return !task.commands.length;
+}
+exports.isEmptyTask = isEmptyTask;
+//# sourceMappingURL=task.js.map
+
+/***/ }),
+
+/***/ 7366:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const util_1 = __webpack_require__(8237);
+function filterType(input, filter, def) {
+    if (filter(input)) {
+        return input;
+    }
+    return (arguments.length > 2) ? def : undefined;
+}
+exports.filterType = filterType;
+exports.filterArray = (input) => {
+    return Array.isArray(input);
+};
+function filterPrimitives(input, omit) {
+    return /number|string|boolean/.test(typeof input) && (!omit || !omit.includes((typeof input)));
+}
+exports.filterPrimitives = filterPrimitives;
+exports.filterString = (input) => {
+    return typeof input === 'string';
+};
+function filterPlainObject(input) {
+    return !!input && util_1.objectToString(input) === '[object Object]';
+}
+exports.filterPlainObject = filterPlainObject;
+function filterFunction(input) {
+    return typeof input === 'function';
+}
+exports.filterFunction = filterFunction;
+exports.filterHasLength = (input) => {
+    if (input == null || 'number|boolean|function'.includes(typeof input)) {
+        return false;
+    }
+    return Array.isArray(input) || typeof input === 'string' || typeof input.length === 'number';
+};
+//# sourceMappingURL=argument-filters.js.map
+
+/***/ }),
+
+/***/ 2185:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/**
+ * Known process exit codes used by the task parsers to determine whether an error
+ * was one they can automatically handle
+ */
+var ExitCodes;
+(function (ExitCodes) {
+    ExitCodes[ExitCodes["SUCCESS"] = 0] = "SUCCESS";
+    ExitCodes[ExitCodes["ERROR"] = 1] = "ERROR";
+    ExitCodes[ExitCodes["UNCLEAN"] = 128] = "UNCLEAN";
+})(ExitCodes = exports.ExitCodes || (exports.ExitCodes = {}));
+//# sourceMappingURL=exit-codes.js.map
+
+/***/ }),
+
+/***/ 6578:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+class GitOutputStreams {
+    constructor(stdOut, stdErr) {
+        this.stdOut = stdOut;
+        this.stdErr = stdErr;
+    }
+    asStrings() {
+        return new GitOutputStreams(this.stdOut.toString('utf8'), this.stdErr.toString('utf8'));
+    }
+}
+exports.GitOutputStreams = GitOutputStreams;
+//# sourceMappingURL=git-output-streams.js.map
+
+/***/ }),
+
+/***/ 847:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__export(__webpack_require__(7366));
+__export(__webpack_require__(2185));
+__export(__webpack_require__(6578));
+__export(__webpack_require__(9536));
+__export(__webpack_require__(5218));
+__export(__webpack_require__(3546));
+__export(__webpack_require__(1351));
+__export(__webpack_require__(8237));
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 9536:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+class LineParser {
+    constructor(regExp, useMatches) {
+        this.matches = [];
+        this.parse = (line, target) => {
+            this.resetMatches();
+            if (!this._regExp.every((reg, index) => this.addMatch(reg, index, line(index)))) {
+                return false;
+            }
+            return this.useMatches(target, this.prepareMatches()) !== false;
+        };
+        this._regExp = Array.isArray(regExp) ? regExp : [regExp];
+        if (useMatches) {
+            this.useMatches = useMatches;
+        }
+    }
+    // @ts-ignore
+    useMatches(target, match) {
+        throw new Error(`LineParser:useMatches not implemented`);
+    }
+    resetMatches() {
+        this.matches.length = 0;
+    }
+    prepareMatches() {
+        return this.matches;
+    }
+    addMatch(reg, index, line) {
+        const matched = line && reg.exec(line);
+        if (matched) {
+            this.pushMatch(index, matched);
+        }
+        return !!matched;
+    }
+    pushMatch(_index, matched) {
+        this.matches.push(...matched.slice(1));
+    }
+}
+exports.LineParser = LineParser;
+class RemoteLineParser extends LineParser {
+    addMatch(reg, index, line) {
+        return /^remote:\s/.test(String(line)) && super.addMatch(reg, index, line);
+    }
+    pushMatch(index, matched) {
+        if (index > 0 || matched.length > 1) {
+            super.pushMatch(index, matched);
+        }
+    }
+}
+exports.RemoteLineParser = RemoteLineParser;
+//# sourceMappingURL=line-parser.js.map
+
+/***/ }),
+
+/***/ 5218:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const defaultOptions = {
+    binary: 'git',
+    maxConcurrentProcesses: 5,
+};
+function createInstanceConfig(...options) {
+    const baseDir = process.cwd();
+    const config = Object.assign(Object.assign({ baseDir }, defaultOptions), ...(options.filter(o => typeof o === 'object' && o)));
+    config.baseDir = config.baseDir || baseDir;
+    return config;
+}
+exports.createInstanceConfig = createInstanceConfig;
+//# sourceMappingURL=simple-git-options.js.map
+
+/***/ }),
+
+/***/ 3546:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const argument_filters_1 = __webpack_require__(7366);
+const util_1 = __webpack_require__(8237);
+function appendTaskOptions(options, commands = []) {
+    if (!argument_filters_1.filterPlainObject(options)) {
+        return commands;
+    }
+    return Object.keys(options).reduce((commands, key) => {
+        const value = options[key];
+        if (argument_filters_1.filterPrimitives(value, ['boolean'])) {
+            commands.push(key + '=' + value);
+        }
+        else {
+            commands.push(key);
+        }
+        return commands;
+    }, commands);
+}
+exports.appendTaskOptions = appendTaskOptions;
+function getTrailingOptions(args, initialPrimitive = 0, objectOnly = false) {
+    const command = [];
+    for (let i = 0, max = initialPrimitive < 0 ? args.length : initialPrimitive; i < max; i++) {
+        if ('string|number'.includes(typeof args[i])) {
+            command.push(String(args[i]));
+        }
+    }
+    appendTaskOptions(trailingOptionsArgument(args), command);
+    if (!objectOnly) {
+        command.push(...trailingArrayArgument(args));
+    }
+    return command;
+}
+exports.getTrailingOptions = getTrailingOptions;
+function trailingArrayArgument(args) {
+    const hasTrailingCallback = typeof util_1.last(args) === 'function';
+    return argument_filters_1.filterType(util_1.last(args, hasTrailingCallback ? 1 : 0), argument_filters_1.filterArray, []);
+}
+/**
+ * Given any number of arguments, returns the trailing options argument, ignoring a trailing function argument
+ * if there is one. When not found, the return value is null.
+ */
+function trailingOptionsArgument(args) {
+    const hasTrailingCallback = argument_filters_1.filterFunction(util_1.last(args));
+    return argument_filters_1.filterType(util_1.last(args, hasTrailingCallback ? 1 : 0), argument_filters_1.filterPlainObject);
+}
+exports.trailingOptionsArgument = trailingOptionsArgument;
+/**
+ * Returns either the source argument when it is a `Function`, or the default
+ * `NOOP` function constant
+ */
+function trailingFunctionArgument(args, includeNoop = true) {
+    const callback = util_1.asFunction(util_1.last(args));
+    return includeNoop || util_1.isUserFunction(callback) ? callback : undefined;
+}
+exports.trailingFunctionArgument = trailingFunctionArgument;
+//# sourceMappingURL=task-options.js.map
+
+/***/ }),
+
+/***/ 1351:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const util_1 = __webpack_require__(8237);
+function callTaskParser(parser, streams) {
+    return parser(streams.stdOut, streams.stdErr);
+}
+exports.callTaskParser = callTaskParser;
+function parseStringResponse(result, parsers, text) {
+    for (let lines = util_1.toLinesWithContent(text), i = 0, max = lines.length; i < max; i++) {
+        const line = (offset = 0) => {
+            if ((i + offset) >= max) {
+                return;
+            }
+            return lines[i + offset];
+        };
+        parsers.some(({ parse }) => parse(line, result));
+    }
+    return result;
+}
+exports.parseStringResponse = parseStringResponse;
+//# sourceMappingURL=task-parser.js.map
+
+/***/ }),
+
+/***/ 8237:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const file_exists_1 = __webpack_require__(4751);
+exports.NOOP = () => {
+};
+/**
+ * Returns either the source argument when it is a `Function`, or the default
+ * `NOOP` function constant
+ */
+function asFunction(source) {
+    return typeof source === 'function' ? source : exports.NOOP;
+}
+exports.asFunction = asFunction;
+/**
+ * Determines whether the supplied argument is both a function, and is not
+ * the `NOOP` function.
+ */
+function isUserFunction(source) {
+    return (typeof source === 'function' && source !== exports.NOOP);
+}
+exports.isUserFunction = isUserFunction;
+function splitOn(input, char) {
+    const index = input.indexOf(char);
+    if (index <= 0) {
+        return [input, ''];
+    }
+    return [
+        input.substr(0, index),
+        input.substr(index + 1),
+    ];
+}
+exports.splitOn = splitOn;
+function first(input, offset = 0) {
+    return isArrayLike(input) && input.length > offset ? input[offset] : undefined;
+}
+exports.first = first;
+function last(input, offset = 0) {
+    if (isArrayLike(input) && input.length > offset) {
+        return input[input.length - 1 - offset];
+    }
+}
+exports.last = last;
+function isArrayLike(input) {
+    return !!(input && typeof input.length === 'number');
+}
+function toLinesWithContent(input, trimmed = true) {
+    return input.split('\n')
+        .reduce((output, line) => {
+        const lineContent = trimmed ? line.trim() : line;
+        if (lineContent) {
+            output.push(lineContent);
+        }
+        return output;
+    }, []);
+}
+exports.toLinesWithContent = toLinesWithContent;
+function forEachLineWithContent(input, callback) {
+    return toLinesWithContent(input, true).map(line => callback(line));
+}
+exports.forEachLineWithContent = forEachLineWithContent;
+function folderExists(path) {
+    return file_exists_1.exists(path, file_exists_1.FOLDER);
+}
+exports.folderExists = folderExists;
+/**
+ * Adds `item` into the `target` `Array` or `Set` when it is not already present.
+ */
+function append(target, item) {
+    if (Array.isArray(target)) {
+        if (!target.includes(item)) {
+            target.push(item);
+        }
+    }
+    else {
+        target.add(item);
+    }
+    return item;
+}
+exports.append = append;
+function remove(target, item) {
+    if (Array.isArray(target)) {
+        const index = target.indexOf(item);
+        if (index >= 0) {
+            target.splice(index, 1);
+        }
+    }
+    else {
+        target.delete(item);
+    }
+    return item;
+}
+exports.remove = remove;
+exports.objectToString = Object.prototype.toString.call.bind(Object.prototype.toString);
+function asArray(source) {
+    return Array.isArray(source) ? source : [source];
+}
+exports.asArray = asArray;
+function asStringArray(source) {
+    return asArray(source).map(String);
+}
+exports.asStringArray = asStringArray;
+function asNumber(source, onNaN = 0) {
+    if (source == null) {
+        return onNaN;
+    }
+    const num = parseInt(source, 10);
+    return isNaN(num) ? onNaN : num;
+}
+exports.asNumber = asNumber;
+//# sourceMappingURL=util.js.map
+
+/***/ }),
+
+/***/ 921:
+/***/ ((module) => {
+
+
+module.exports = CommitSummary;
+
+function CommitSummary () {
+   this.branch = '';
+   this.commit = '';
+   this.summary = {
+      changes: 0,
+      insertions: 0,
+      deletions: 0
+   };
+   this.author = null;
+}
+
+var COMMIT_BRANCH_MESSAGE_REGEX = /\[([^\s]+) ([^\]]+)/;
+var COMMIT_AUTHOR_MESSAGE_REGEX = /\s*Author:\s(.+)/i;
+
+function setBranchFromCommit (commitSummary, commitData) {
+   if (commitData) {
+      commitSummary.branch = commitData[1];
+      commitSummary.commit = commitData[2];
+   }
+}
+
+function setSummaryFromCommit (commitSummary, commitData) {
+   if (commitSummary.branch && commitData) {
+      commitSummary.summary.changes = parseInt(commitData[1], 10) || 0;
+      commitSummary.summary.insertions = parseInt(commitData[2], 10) || 0;
+      commitSummary.summary.deletions = parseInt(commitData[3], 10) || 0;
+   }
+}
+
+function setAuthorFromCommit (commitSummary, commitData) {
+   var parts = commitData[1].split('<');
+   var email = parts.pop();
+
+   if (email.indexOf('@') <= 0) {
+      return;
+   }
+
+   commitSummary.author = {
+      email: email.substr(0, email.length - 1),
+      name: parts.join('<').trim()
+   };
+}
+
+CommitSummary.parse = function (commit) {
+   var lines = commit.trim().split('\n');
+   var commitSummary = new CommitSummary();
+
+   setBranchFromCommit(commitSummary, COMMIT_BRANCH_MESSAGE_REGEX.exec(lines.shift()));
+
+   if (COMMIT_AUTHOR_MESSAGE_REGEX.test(lines[0])) {
+      setAuthorFromCommit(commitSummary, COMMIT_AUTHOR_MESSAGE_REGEX.exec(lines.shift()));
+   }
+
+   setSummaryFromCommit(commitSummary, /(\d+)[^,]*(?:,\s*(\d+)[^,]*)?(?:,\s*(\d+))?/g.exec(lines.shift()));
+
+   return commitSummary;
+};
+
+
+/***/ }),
+
+/***/ 7286:
+/***/ ((module) => {
+
+
+module.exports = DiffSummary;
+
+/**
+ * The DiffSummary is returned as a response to getting `git().status()`
+ *
+ * @constructor
+ */
+function DiffSummary () {
+   this.files = [];
+   this.insertions = 0;
+   this.deletions = 0;
+   this.changed = 0;
+}
+
+/**
+ * Number of lines added
+ * @type {number}
+ */
+DiffSummary.prototype.insertions = 0;
+
+/**
+ * Number of lines deleted
+ * @type {number}
+ */
+DiffSummary.prototype.deletions = 0;
+
+/**
+ * Number of files changed
+ * @type {number}
+ */
+DiffSummary.prototype.changed = 0;
+
+DiffSummary.parse = function (text) {
+   var line, handler;
+
+   var lines = text.trim().split('\n');
+   var status = new DiffSummary();
+
+   var summary = lines.pop();
+   if (summary) {
+      summary.trim().split(', ').forEach(function (text) {
+         var summary = /(\d+)\s([a-z]+)/.exec(text);
+         if (!summary) {
+            return;
+         }
+
+         if (/files?/.test(summary[2])) {
+            status.changed = parseInt(summary[1], 10);
+         }
+         else {
+            status[summary[2].replace(/s$/, '') + 's'] = parseInt(summary[1], 10);
+         }
+      });
+   }
+
+   while (line = lines.shift()) {
+      textFileChange(line, status.files) || binaryFileChange(line, status.files);
+   }
+
+   return status;
+};
+
+function textFileChange (line, files) {
+   line = line.trim().match(/^(.+)\s+\|\s+(\d+)(\s+[+\-]+)?$/);
+
+   if (line) {
+      var alterations = (line[3] || '').trim();
+      files.push({
+         file: line[1].trim(),
+         changes: parseInt(line[2], 10),
+         insertions: alterations.replace(/-/g, '').length,
+         deletions: alterations.replace(/\+/g, '').length,
+         binary: false
+      });
+
+      return true;
+   }
+}
+
+function binaryFileChange (line, files) {
+   line = line.match(/^(.+) \|\s+Bin ([0-9.]+) -> ([0-9.]+) ([a-z]+)$/);
+   if (line) {
+      files.push({
+         file: line[1].trim(),
+         before: +line[2],
+         after: +line[3],
+         binary: true
+      });
+      return true;
+   }
+}
+
+
+/***/ }),
+
+/***/ 5169:
+/***/ ((module) => {
+
+"use strict";
+
+
+function FetchSummary (raw) {
+   this.raw = raw;
+
+   this.remote = null;
+   this.branches = [];
+   this.tags = [];
+}
+
+FetchSummary.parsers = [
+   [
+      /From (.+)$/, function (fetchSummary, matches) {
+         fetchSummary.remote = matches[0];
+      }
+   ],
+   [
+      /\* \[new branch\]\s+(\S+)\s*\-> (.+)$/, function (fetchSummary, matches) {
+         fetchSummary.branches.push({
+            name: matches[0],
+            tracking: matches[1]
+         });
+      }
+   ],
+   [
+      /\* \[new tag\]\s+(\S+)\s*\-> (.+)$/, function (fetchSummary, matches) {
+         fetchSummary.tags.push({
+            name: matches[0],
+            tracking: matches[1]
+         });
+      }
+   ]
+];
+
+FetchSummary.parse = function (data) {
+   var fetchSummary = new FetchSummary(data);
+
+   String(data)
+      .trim()
+      .split('\n')
+      .forEach(function (line) {
+         var original = line.trim();
+         FetchSummary.parsers.some(function (parser) {
+            var parsed = parser[0].exec(original);
+            if (parsed) {
+               parser[1](fetchSummary, parsed.slice(1));
+               return true;
+            }
+         });
+      });
+
+   return fetchSummary;
+};
+
+module.exports = FetchSummary;
+
+
+/***/ }),
+
+/***/ 6507:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+
+module.exports = ListLogSummary;
+
+var DiffSummary = __webpack_require__(7286);
+
+/**
+ * The ListLogSummary is returned as a response to getting `git().log()` or `git().stashList()`
+ *
+ * @constructor
+ */
+function ListLogSummary (all) {
+   this.all = all;
+   this.latest = all.length && all[0] || null;
+   this.total = all.length;
+}
+
+/**
+ * Detail for each of the log lines
+ * @type {ListLogLine[]}
+ */
+ListLogSummary.prototype.all = null;
+
+/**
+ * Most recent entry in the log
+ * @type {ListLogLine}
+ */
+ListLogSummary.prototype.latest = null;
+
+/**
+ * Number of items in the log
+ * @type {number}
+ */
+ListLogSummary.prototype.total = 0;
+
+function ListLogLine (line, fields) {
+   for (var k = 0; k < fields.length; k++) {
+      this[fields[k]] = line[k] || '';
+   }
+}
+
+/**
+ * When the log was generated with a summary, the `diff` property contains as much detail
+ * as was provided in the log (whether generated with `--stat` or `--shortstat`.
+ * @type {DiffSummary}
+ */
+ListLogLine.prototype.diff = null;
+
+ListLogSummary.START_BOUNDARY = 'òòòòòò ';
+
+ListLogSummary.COMMIT_BOUNDARY = ' òò';
+
+ListLogSummary.SPLITTER = ' ò ';
+
+ListLogSummary.parse = function (text, splitter, fields) {
+   fields = fields || ['hash', 'date', 'message', 'refs', 'author_name', 'author_email'];
+   return new ListLogSummary(
+      text
+         .trim()
+         .split(ListLogSummary.START_BOUNDARY)
+         .filter(function(item) { return !!item.trim(); })
+         .map(function (item) {
+            var lineDetail = item.trim().split(ListLogSummary.COMMIT_BOUNDARY);
+            var listLogLine = new ListLogLine(lineDetail[0].trim().split(splitter), fields);
+
+            if (lineDetail.length > 1 && !!lineDetail[1].trim()) {
+               listLogLine.diff = DiffSummary.parse(lineDetail[1]);
+            }
+
+            return listLogLine;
+         })
+   );
+};
+
+
+/***/ }),
+
+/***/ 5301:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+
+module.exports = {
+   CommitSummary: __webpack_require__(921),
+   DiffSummary: __webpack_require__(7286),
+   FetchSummary: __webpack_require__(5169),
+   ListLogSummary: __webpack_require__(6507),
+};
+
+
+/***/ }),
+
+/***/ 9318:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+const os = __webpack_require__(2087);
+const hasFlag = __webpack_require__(1621);
+
+const env = process.env;
+
+let forceColor;
+if (hasFlag('no-color') ||
+	hasFlag('no-colors') ||
+	hasFlag('color=false')) {
+	forceColor = false;
+} else if (hasFlag('color') ||
+	hasFlag('colors') ||
+	hasFlag('color=true') ||
+	hasFlag('color=always')) {
+	forceColor = true;
+}
+if ('FORCE_COLOR' in env) {
+	forceColor = env.FORCE_COLOR.length === 0 || parseInt(env.FORCE_COLOR, 10) !== 0;
+}
+
+function translateLevel(level) {
+	if (level === 0) {
+		return false;
+	}
+
+	return {
+		level,
+		hasBasic: true,
+		has256: level >= 2,
+		has16m: level >= 3
+	};
+}
+
+function supportsColor(stream) {
+	if (forceColor === false) {
+		return 0;
+	}
+
+	if (hasFlag('color=16m') ||
+		hasFlag('color=full') ||
+		hasFlag('color=truecolor')) {
+		return 3;
+	}
+
+	if (hasFlag('color=256')) {
+		return 2;
+	}
+
+	if (stream && !stream.isTTY && forceColor !== true) {
+		return 0;
+	}
+
+	const min = forceColor ? 1 : 0;
+
+	if (process.platform === 'win32') {
+		// Node.js 7.5.0 is the first version of Node.js to include a patch to
+		// libuv that enables 256 color output on Windows. Anything earlier and it
+		// won't work. However, here we target Node.js 8 at minimum as it is an LTS
+		// release, and Node.js 7 is not. Windows 10 build 10586 is the first Windows
+		// release that supports 256 colors. Windows 10 build 14931 is the first release
+		// that supports 16m/TrueColor.
+		const osRelease = os.release().split('.');
+		if (
+			Number(process.versions.node.split('.')[0]) >= 8 &&
+			Number(osRelease[0]) >= 10 &&
+			Number(osRelease[2]) >= 10586
+		) {
+			return Number(osRelease[2]) >= 14931 ? 3 : 2;
+		}
+
+		return 1;
+	}
+
+	if ('CI' in env) {
+		if (['TRAVIS', 'CIRCLECI', 'APPVEYOR', 'GITLAB_CI'].some(sign => sign in env) || env.CI_NAME === 'codeship') {
+			return 1;
+		}
+
+		return min;
+	}
+
+	if ('TEAMCITY_VERSION' in env) {
+		return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env.TEAMCITY_VERSION) ? 1 : 0;
+	}
+
+	if (env.COLORTERM === 'truecolor') {
+		return 3;
+	}
+
+	if ('TERM_PROGRAM' in env) {
+		const version = parseInt((env.TERM_PROGRAM_VERSION || '').split('.')[0], 10);
+
+		switch (env.TERM_PROGRAM) {
+			case 'iTerm.app':
+				return version >= 3 ? 3 : 2;
+			case 'Apple_Terminal':
+				return 2;
+			// No default
+		}
+	}
+
+	if (/-256(color)?$/i.test(env.TERM)) {
+		return 2;
+	}
+
+	if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env.TERM)) {
+		return 1;
+	}
+
+	if ('COLORTERM' in env) {
+		return 1;
+	}
+
+	if (env.TERM === 'dumb') {
+		return min;
+	}
+
+	return min;
+}
+
+function getSupportLevel(stream) {
+	const level = supportsColor(stream);
+	return translateLevel(level);
+}
+
+module.exports = {
+	supportsColor: getSupportLevel,
+	stdout: getSupportLevel(process.stdout),
+	stderr: getSupportLevel(process.stderr)
+};
+
+
+/***/ }),
+
+/***/ 4294:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+module.exports = __webpack_require__(4219);
+
+
+/***/ }),
+
+/***/ 4219:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+
+var net = __webpack_require__(1631);
+var tls = __webpack_require__(4016);
+var http = __webpack_require__(8605);
+var https = __webpack_require__(7211);
+var events = __webpack_require__(8614);
+var assert = __webpack_require__(2357);
+var util = __webpack_require__(1669);
+
+
+exports.httpOverHttp = httpOverHttp;
+exports.httpsOverHttp = httpsOverHttp;
+exports.httpOverHttps = httpOverHttps;
+exports.httpsOverHttps = httpsOverHttps;
+
+
+function httpOverHttp(options) {
+  var agent = new TunnelingAgent(options);
+  agent.request = http.request;
+  return agent;
+}
+
+function httpsOverHttp(options) {
+  var agent = new TunnelingAgent(options);
+  agent.request = http.request;
+  agent.createSocket = createSecureSocket;
+  agent.defaultPort = 443;
+  return agent;
+}
+
+function httpOverHttps(options) {
+  var agent = new TunnelingAgent(options);
+  agent.request = https.request;
+  return agent;
+}
+
+function httpsOverHttps(options) {
+  var agent = new TunnelingAgent(options);
+  agent.request = https.request;
+  agent.createSocket = createSecureSocket;
+  agent.defaultPort = 443;
+  return agent;
+}
+
+
+function TunnelingAgent(options) {
+  var self = this;
+  self.options = options || {};
+  self.proxyOptions = self.options.proxy || {};
+  self.maxSockets = self.options.maxSockets || http.Agent.defaultMaxSockets;
+  self.requests = [];
+  self.sockets = [];
+
+  self.on('free', function onFree(socket, host, port, localAddress) {
+    var options = toOptions(host, port, localAddress);
+    for (var i = 0, len = self.requests.length; i < len; ++i) {
+      var pending = self.requests[i];
+      if (pending.host === options.host && pending.port === options.port) {
+        // Detect the request to connect same origin server,
+        // reuse the connection.
+        self.requests.splice(i, 1);
+        pending.request.onSocket(socket);
+        return;
+      }
+    }
+    socket.destroy();
+    self.removeSocket(socket);
+  });
+}
+util.inherits(TunnelingAgent, events.EventEmitter);
+
+TunnelingAgent.prototype.addRequest = function addRequest(req, host, port, localAddress) {
+  var self = this;
+  var options = mergeOptions({request: req}, self.options, toOptions(host, port, localAddress));
+
+  if (self.sockets.length >= this.maxSockets) {
+    // We are over limit so we'll add it to the queue.
+    self.requests.push(options);
+    return;
+  }
+
+  // If we are under maxSockets create a new one.
+  self.createSocket(options, function(socket) {
+    socket.on('free', onFree);
+    socket.on('close', onCloseOrRemove);
+    socket.on('agentRemove', onCloseOrRemove);
+    req.onSocket(socket);
+
+    function onFree() {
+      self.emit('free', socket, options);
+    }
+
+    function onCloseOrRemove(err) {
+      self.removeSocket(socket);
+      socket.removeListener('free', onFree);
+      socket.removeListener('close', onCloseOrRemove);
+      socket.removeListener('agentRemove', onCloseOrRemove);
+    }
+  });
+};
+
+TunnelingAgent.prototype.createSocket = function createSocket(options, cb) {
+  var self = this;
+  var placeholder = {};
+  self.sockets.push(placeholder);
+
+  var connectOptions = mergeOptions({}, self.proxyOptions, {
+    method: 'CONNECT',
+    path: options.host + ':' + options.port,
+    agent: false,
+    headers: {
+      host: options.host + ':' + options.port
+    }
+  });
+  if (options.localAddress) {
+    connectOptions.localAddress = options.localAddress;
+  }
+  if (connectOptions.proxyAuth) {
+    connectOptions.headers = connectOptions.headers || {};
+    connectOptions.headers['Proxy-Authorization'] = 'Basic ' +
+        new Buffer(connectOptions.proxyAuth).toString('base64');
+  }
+
+  debug('making CONNECT request');
+  var connectReq = self.request(connectOptions);
+  connectReq.useChunkedEncodingByDefault = false; // for v0.6
+  connectReq.once('response', onResponse); // for v0.6
+  connectReq.once('upgrade', onUpgrade);   // for v0.6
+  connectReq.once('connect', onConnect);   // for v0.7 or later
+  connectReq.once('error', onError);
+  connectReq.end();
+
+  function onResponse(res) {
+    // Very hacky. This is necessary to avoid http-parser leaks.
+    res.upgrade = true;
+  }
+
+  function onUpgrade(res, socket, head) {
+    // Hacky.
+    process.nextTick(function() {
+      onConnect(res, socket, head);
+    });
+  }
+
+  function onConnect(res, socket, head) {
+    connectReq.removeAllListeners();
+    socket.removeAllListeners();
+
+    if (res.statusCode !== 200) {
+      debug('tunneling socket could not be established, statusCode=%d',
+        res.statusCode);
+      socket.destroy();
+      var error = new Error('tunneling socket could not be established, ' +
+        'statusCode=' + res.statusCode);
+      error.code = 'ECONNRESET';
+      options.request.emit('error', error);
+      self.removeSocket(placeholder);
+      return;
+    }
+    if (head.length > 0) {
+      debug('got illegal response body from proxy');
+      socket.destroy();
+      var error = new Error('got illegal response body from proxy');
+      error.code = 'ECONNRESET';
+      options.request.emit('error', error);
+      self.removeSocket(placeholder);
+      return;
+    }
+    debug('tunneling connection has established');
+    self.sockets[self.sockets.indexOf(placeholder)] = socket;
+    return cb(socket);
+  }
+
+  function onError(cause) {
+    connectReq.removeAllListeners();
+
+    debug('tunneling socket could not be established, cause=%s\n',
+          cause.message, cause.stack);
+    var error = new Error('tunneling socket could not be established, ' +
+                          'cause=' + cause.message);
+    error.code = 'ECONNRESET';
+    options.request.emit('error', error);
+    self.removeSocket(placeholder);
+  }
+};
+
+TunnelingAgent.prototype.removeSocket = function removeSocket(socket) {
+  var pos = this.sockets.indexOf(socket)
+  if (pos === -1) {
+    return;
+  }
+  this.sockets.splice(pos, 1);
+
+  var pending = this.requests.shift();
+  if (pending) {
+    // If we have pending requests and a socket gets closed a new one
+    // needs to be created to take over in the pool for the one that closed.
+    this.createSocket(pending, function(socket) {
+      pending.request.onSocket(socket);
+    });
+  }
+};
+
+function createSecureSocket(options, cb) {
+  var self = this;
+  TunnelingAgent.prototype.createSocket.call(self, options, function(socket) {
+    var hostHeader = options.request.getHeader('host');
+    var tlsOptions = mergeOptions({}, self.options, {
+      socket: socket,
+      servername: hostHeader ? hostHeader.replace(/:.*$/, '') : options.host
+    });
+
+    // 0 is dummy port for v0.6
+    var secureSocket = tls.connect(0, tlsOptions);
+    self.sockets[self.sockets.indexOf(socket)] = secureSocket;
+    cb(secureSocket);
+  });
+}
+
+
+function toOptions(host, port, localAddress) {
+  if (typeof host === 'string') { // since v0.10
+    return {
+      host: host,
+      port: port,
+      localAddress: localAddress
+    };
+  }
+  return host; // for v0.11 or later
+}
+
+function mergeOptions(target) {
+  for (var i = 1, len = arguments.length; i < len; ++i) {
+    var overrides = arguments[i];
+    if (typeof overrides === 'object') {
+      var keys = Object.keys(overrides);
+      for (var j = 0, keyLen = keys.length; j < keyLen; ++j) {
+        var k = keys[j];
+        if (overrides[k] !== undefined) {
+          target[k] = overrides[k];
+        }
+      }
+    }
+  }
+  return target;
+}
+
+
+var debug;
+if (process.env.NODE_DEBUG && /\btunnel\b/.test(process.env.NODE_DEBUG)) {
+  debug = function() {
+    var args = Array.prototype.slice.call(arguments);
+    if (typeof args[0] === 'string') {
+      args[0] = 'TUNNEL: ' + args[0];
+    } else {
+      args.unshift('TUNNEL:');
+    }
+    console.error.apply(console, args);
+  }
+} else {
+  debug = function() {};
+}
+exports.debug = debug; // for test
+
+
+/***/ }),
+
+/***/ 5030:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+function getUserAgent() {
+  if (typeof navigator === "object" && "userAgent" in navigator) {
+    return navigator.userAgent;
+  }
+
+  if (typeof process === "object" && "version" in process) {
+    return `Node.js/${process.version.substr(1)} (${process.platform}; ${process.arch})`;
+  }
+
+  return "<environment undetectable>";
+}
+
+exports.getUserAgent = getUserAgent;
+//# sourceMappingURL=index.js.map
+
+
+/***/ }),
+
+/***/ 2940:
+/***/ ((module) => {
+
+// Returns a wrapper function that returns a wrapped callback
+// The wrapper function should do some stuff, and return a
+// presumably different callback function.
+// This makes sure that own properties are retained, so that
+// decorations and such are not lost along the way.
+module.exports = wrappy
+function wrappy (fn, cb) {
+  if (fn && cb) return wrappy(fn)(cb)
+
+  if (typeof fn !== 'function')
+    throw new TypeError('need wrapper function')
+
+  Object.keys(fn).forEach(function (k) {
+    wrapper[k] = fn[k]
+  })
+
+  return wrapper
+
+  function wrapper() {
+    var args = new Array(arguments.length)
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i]
+    }
+    var ret = fn.apply(this, args)
+    var cb = args[args.length-1]
+    if (typeof ret === 'function' && ret !== cb) {
+      Object.keys(cb).forEach(function (k) {
+        ret[k] = cb[k]
+      })
+    }
+    return ret
+  }
+}
+
+
+/***/ }),
+
+/***/ 1713:
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+
+const core = __webpack_require__(2186);
+const { synchronizeBranches } = __webpack_require__(1782);
+
+async function main() {
+  try {
+    const path = core.getInput("path", { required: true });
+    await synchronizeBranches(path);
+  } catch (e) {
+    core.setFailed(e.message);
+  }
+}
+
+if (require.main === require.cache[eval('__filename')]) main();
+
+
+/***/ }),
+
+/***/ 1782:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const core = __webpack_require__(2186);
+const { context } = __webpack_require__(5438);
+const fs = __webpack_require__(5747);
+const simpleGit = __webpack_require__(8577);
+const { basename, join: joinPath, resolve: resolvePath } = __webpack_require__(5622);
+
+/**
+ * Get the path to each git repository in a directory.
+ * @param {string} path the directory to search
+ * @returns {Promise<string[]>} an array of paths
+ */
+async function getChildRepositories(path) {
+  const dir = fs.opendirSync(path);
+  const children = [];
+  let entry;
+
+  // eslint-disable-next-line no-await-in-loop
+  while ((entry = await dir.read())) {
+    const resolved = resolvePath(path, entry.name);
+    if (entry.isDirectory() && fs.existsSync(joinPath(resolved, ".git"))) {
+      children.push(resolved);
+    }
+  }
+
+  dir.closeSync();
+  return children;
+}
+
+/**
+ * Attempt to fetch a matching branch in every git repository in a directory
+ * @param {string} path the directory containing the repositories to synchronize
+ */
+async function synchronizeBranches(path) {
+  if (context.ref === "refs/heads/master" || context.ref.startsWith("refs/tags/")) {
+    core.info(`Skipping synchronize for ${context.ref}`);
+    return;
+  }
+
+  const branch = basename(context.ref);
+  const children = (await getChildRepositories(path)).filter(
+    (child) => basename(child) !== context.repo.repo
+  );
+
+  for (let i = 0; i < children.length; ++i) {
+    const child = children[i];
+    const name = basename(child);
+    const git = simpleGit(child);
+
+    // try to fetch a branch with the same name
+    // eslint-disable-next-line no-await-in-loop
+    await git
+      .silent(true)
+      .fetch(["--no-tags", "--prune", "--no-recurse-submodules", "--depth=1", "origin", branch])
+      .then(
+        () => {
+          core.info(`Checking out ${name} ${branch}`);
+          git.checkout(["--force", "-B", branch, "FETCH_HEAD"]);
+        },
+        (e) => {
+          if (e.message && e.message.includes("couldn't find remote ref")) {
+            const reason = e.message
+              .trim()
+              .split(/(?:[\r\n]+|\s*:\s*)/)
+              .pop();
+            core.info(`Not synchronized in ${name}: ${reason}`);
+          } else {
+            throw e;
+          }
+        }
+      );
+  }
+}
+
+module.exports = { getChildRepositories, synchronizeBranches };
+
+
+/***/ }),
+
+/***/ 2877:
+/***/ ((module) => {
+
+module.exports = eval("require")("encoding");
+
+
+/***/ }),
+
+/***/ 2357:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("assert");;
+
+/***/ }),
+
+/***/ 3129:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("child_process");;
+
+/***/ }),
+
+/***/ 8614:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("events");;
+
+/***/ }),
+
+/***/ 5747:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("fs");;
+
+/***/ }),
+
+/***/ 8605:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("http");;
+
+/***/ }),
+
+/***/ 7211:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("https");;
+
+/***/ }),
+
+/***/ 1631:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("net");;
+
+/***/ }),
+
+/***/ 2087:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("os");;
+
+/***/ }),
+
+/***/ 5622:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("path");;
+
+/***/ }),
+
+/***/ 2413:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("stream");;
+
+/***/ }),
+
+/***/ 4016:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("tls");;
+
+/***/ }),
+
+/***/ 3867:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("tty");;
+
+/***/ }),
+
+/***/ 8835:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("url");;
+
+/***/ }),
+
+/***/ 1669:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("util");;
+
+/***/ }),
+
+/***/ 8761:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("zlib");;
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		if(__webpack_module_cache__[moduleId]) {
+/******/ 			return __webpack_module_cache__[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		var threw = true;
+/******/ 		try {
+/******/ 			__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 			threw = false;
+/******/ 		} finally {
+/******/ 			if(threw) delete __webpack_module_cache__[moduleId];
+/******/ 		}
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/compat */
+/******/ 	
+/******/ 	__webpack_require__.ab = __dirname + "/";/************************************************************************/
+/******/ 	// module exports must be returned from runtime so entry inlining is disabled
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(1713);
+/******/ })()
+;
+//# sourceMappingURL=index.js.map
