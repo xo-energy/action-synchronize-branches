@@ -1,12 +1,11 @@
 {
   "plugins": [
-    "jest",
-    "prettier"
+    "jest"
   ],
   "extends": [
     "airbnb-base",
     "plugin:jest/recommended",
-    "plugin:prettier/recommended"
+    "prettier"
   ],
   "env": {
     "commonjs": true,
@@ -25,12 +24,6 @@
       "error",
       {
         "allowForLoopAfterthoughts": true
-      }
-    ],
-    "prettier/prettier": [
-      "warn",
-      {
-        "printWidth": 100
       }
     ],
     "prefer-destructuring": "off"

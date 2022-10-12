@@ -1,7 +1,6 @@
 const core = require("@actions/core");
-const { context } = require("@actions/github");
 const fs = require("fs");
-const simpleGit = require("simple-git/promise");
+const simpleGit = require("simple-git");
 const { basename, join: joinPath, resolve: resolvePath } = require("path");
 
 /**
@@ -31,14 +30,17 @@ async function getChildRepositories(path) {
  * @param {string} path the directory containing the repositories to synchronize
  */
 async function synchronizeBranches(path) {
-  if (context.ref === "refs/heads/master" || context.ref.startsWith("refs/tags/")) {
-    core.info(`Skipping synchronize for ${context.ref}`);
+  const githubRef = process.env.GITHUB_REF;
+  const [, githubRepository ] = process.env.GITHUB_REPOSITORY.split("/", 2);
+
+  if (githubRef === "refs/heads/master" || githubRef.startsWith("refs/tags/")) {
+    core.info(`Skipping synchronize for ${githubRef}`);
     return;
   }
 
-  const branch = basename(context.ref);
+  const branch = basename(githubRef);
   const children = (await getChildRepositories(path)).filter(
-    (child) => basename(child) !== context.repo.repo
+    (child) => basename(child) !== githubRepository
   );
 
   for (let i = 0; i < children.length; ++i) {
@@ -49,7 +51,6 @@ async function synchronizeBranches(path) {
     // try to fetch a branch with the same name
     // eslint-disable-next-line no-await-in-loop
     await git
-      .silent(true)
       .fetch(["--no-tags", "--prune", "--no-recurse-submodules", "--depth=1", "origin", branch])
       .then(
         () => {
