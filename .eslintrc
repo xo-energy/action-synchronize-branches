@@ -3,7 +3,7 @@
     "jest"
   ],
   "extends": [
-    "airbnb-base",
+    "eslint:recommended",
     "plugin:jest/recommended",
     "prettier"
   ],
