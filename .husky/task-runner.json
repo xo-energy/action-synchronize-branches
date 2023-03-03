@@ -1,0 +1,17 @@
+{
+  "tasks": [
+    {
+      "name": "eslint",
+      "group": "pre-commit",
+      "command": "npx",
+      "args": ["eslint", "--fix", "${staged}"],
+      "include": ["src/**/*.js"]
+    },
+    {
+      "name": "prettier",
+      "group": "pre-commit",
+      "command": "npx",
+      "args": ["prettier", "--ignore-unknown", "--write", "${staged}"]
+    }
+  ]
+}
